@@ -21,33 +21,27 @@ function App() {
 		const createdB = new Date(b.created_at).getTime();
 
 		// Sort by pushed_at, then updated_at, then created_at
-		if (pushB - pushA !== 0) {
-			return pushB - pushA;
-		}
-
-		if (updateB - updateA !== 0) {
-			return updateB - updateA;
-		}
-
+		if (pushB - pushA !== 0) return pushB - pushA;
+		if (updateB - updateA !== 0) return updateB - updateA;
 		return createdB - createdA;
 	});
 
 	return (
 		<div className="container mx-auto p-6">
-			<header className="text-center py-8">
+			<header className="text-center py-8 flex flex-col items-center">
 				<h1 className="text-4xl font-bold">
 					<a
 						href="https://github.com/parsehex"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="hover:text-blue-500"
+						className="hover:text-blue-500 dark:hover:text-blue-400"
 					>
 						parsehex
 					</a>
 					's Sites
 				</h1>
-				<p className="text-lg mt-2 text-gray-600">
-					A list of my projects that have a GitHub pages site.
+				<p className="text-lg mt-2 text-gray-600 dark:text-gray-400">
+					A list of my projects that have a GitHub Pages site.
 				</p>
 			</header>
 
@@ -55,23 +49,23 @@ function App() {
 				{repoList.map((repo) => (
 					<div
 						key={repo.id}
-						className="bg-white shadow-md rounded p-4 hover:shadow-xl transition"
+						className="bg-white dark:bg-gray-800 shadow-md rounded p-4 hover:shadow-xl dark:hover:shadow-lg transition"
 					>
 						<h2 className="text-2xl font-semibold mb-2">
 							<a
 								href={repo.html_url}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="hover:text-blue-500"
+								className="hover:text-blue-500 dark:hover:text-blue-400"
 							>
 								{repo.name}
 							</a>
 						</h2>
-						<p className="text-gray-700 mb-4">
+						<p className="text-gray-700 dark:text-gray-300 mb-4">
 							{repo.description || 'No description provided.'}
 						</p>
 
-						<div className="text-sm text-gray-500 mb-4 space-y-1">
+						<div className="text-sm text-gray-500 dark:text-gray-400 mb-4 space-y-1">
 							{repo.created_at && (
 								<div className="flex items-center">
 									<FaCalendarAlt className="mr-1" />
@@ -96,7 +90,7 @@ function App() {
 							href={repo.homepage || repo.html_url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-blue-500 font-bold hover:border-b"
+							className="text-blue-500 dark:text-blue-400 font-bold hover:border-b"
 						>
 							Go to {repo.homepage || repo.html_url}
 						</a>
