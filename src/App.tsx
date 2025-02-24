@@ -35,7 +35,17 @@ function App() {
 	return (
 		<div className="container mx-auto p-6">
 			<header className="text-center py-8">
-				<h1 className="text-4xl font-bold">parsehex's Sites</h1>
+				<h1 className="text-4xl font-bold">
+					<a
+						href="https://github.com/parsehex"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hover:text-blue-500"
+					>
+						parsehex
+					</a>
+					's Sites
+				</h1>
 				<p className="text-lg mt-2 text-gray-600">
 					A list of my projects that have a GitHub pages site.
 				</p>
