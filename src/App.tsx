@@ -6,15 +6,40 @@ import {
 	FaSort,
 	FaSortDown,
 	FaSortUp,
+	FaStar,
+	FaCodeBranch,
+	FaLink,
 } from 'react-icons/fa';
+import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
-const formatDate = (dateStr: string) => {
+const formatDate = (dateStr: string, long = false) => {
 	const date = new Date(dateStr);
-	return date.toLocaleDateString(undefined, {
+	const cfg = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
-	});
+	} as Intl.DateTimeFormatOptions;
+	if (long) {
+		Object.assign(cfg, {
+			hour: 'numeric',
+			minute: 'numeric',
+			timeZoneName: 'short',
+		});
+	}
+	return date.toLocaleDateString(undefined, cfg);
+};
+
+const relativeDate = (dateStr: string) => {
+	return formatDistanceToNow(parseISO(dateStr), { addSuffix: true });
+};
+
+const showRelativeTime = (dateStr: string) => {
+	const date = new Date(dateStr);
+	return isBefore(date, subWeeks(new Date(), 1))
+		? formatDate(dateStr)
+		: relativeDate(dateStr);
 };
 
 const sortOptions = [
@@ -24,7 +49,6 @@ const sortOptions = [
 ];
 
 function App() {
-	// Load saved sort settings or default to uninitialized
 	const [sortBy, setSortBy] = useState<string | null>(
 		() => localStorage.getItem('sortBy') || null
 	);
@@ -32,7 +56,6 @@ function App() {
 		() => (localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || ''
 	);
 
-	// Save sorting state to localStorage whenever it changes
 	useEffect(() => {
 		if (sortBy) {
 			localStorage.setItem('sortBy', sortBy);
@@ -42,15 +65,19 @@ function App() {
 		localStorage.setItem('sortOrder', sortOrder);
 	}, [sortBy, sortOrder]);
 
+	useEffect(() => {
+		tippy('[data-tooltip]', {
+			content: (el) => el.getAttribute('data-tooltip'),
+		});
+	}, []);
+
 	const handleSortChange = (key: string) => {
 		if (sortBy === key) {
-			// Cycle between 'asc', 'desc', and '' (no sorting)
 			setSortOrder((prev) =>
 				prev === 'desc' ? 'asc' : prev === 'asc' ? '' : 'desc'
 			);
 		} else {
 			setSortBy(key);
-			// Preserve existing sortOrder unless it's uninitialized
 			setSortOrder((prev) => (prev === '' ? 'desc' : prev));
 		}
 	};
@@ -64,6 +91,24 @@ function App() {
 		});
 	}
 
+	// TODO restructure to do better
+	for (const repo of repoList) {
+		const updated = new Date(repo.updated_at);
+		const pushed = new Date(repo.pulls_url);
+		if (isBefore(updated, pushed)) {
+			// @ts-expect-error n/a
+			repo.latest_update = {
+				label: 'Last Push',
+				value: repo.pushed_at,
+			};
+		} else {
+			// @ts-expect-error n/a
+			repo.latest_update = {
+				label: 'Last Update',
+				value: repo.updated_at,
+			};
+		}
+	}
 	return (
 		<div className="container mx-auto p-6">
 			<header className="text-center py-8 flex items-center justify-center">
@@ -91,19 +136,6 @@ function App() {
 			</header>
 
 			<div className="flex justify-end mb-4">
-				<button
-					onClick={() => handleSortChange(sortBy || 'pushed_at')}
-					className="flex items-center py-1 px-2 mr-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-				>
-					{!sortOrder ? (
-						<FaSort />
-					) : sortOrder === 'asc' ? (
-						<FaSortUp />
-					) : (
-						<FaSortDown />
-					)}
-				</button>
-
 				<label className="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
 					<span>Sort by:</span>
 					<select
@@ -118,6 +150,18 @@ function App() {
 						))}
 					</select>
 				</label>
+				<button
+					onClick={() => handleSortChange(sortBy || 'pushed_at')}
+					className="flex items-center py-1 px-2 ml-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+				>
+					{!sortOrder ? (
+						<FaSort />
+					) : sortOrder === 'asc' ? (
+						<FaSortUp />
+					) : (
+						<FaSortDown />
+					)}
+				</button>
 			</div>
 
 			<main className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -141,34 +185,55 @@ function App() {
 						</p>
 
 						<div className="text-sm text-gray-500 dark:text-gray-400 mb-4 space-y-1">
+							<div className="flex items-center gap-2 flex-wrap">
+								<FaClock />
+								<span
+									data-tooltip={formatDate(repo.pushed_at, true)}
+									className="relative"
+								>
+									{repo.latest_update?.label}:{' '}
+									{showRelativeTime(repo.latest_update?.value)}
+								</span>
+							</div>
+
 							{repo.created_at && (
-								<div className="flex items-center">
-									<FaCalendarAlt className="mr-1" />
-									<span>Created: {formatDate(repo.created_at)}</span>
-								</div>
-							)}
-							{repo.updated_at && (
-								<div className="flex items-center">
-									<FaClock className="mr-1" />
-									<span>Updated: {formatDate(repo.updated_at)}</span>
-								</div>
-							)}
-							{repo.pushed_at && (
-								<div className="flex items-center">
-									<FaClock className="mr-1" />
-									<span>Pushed: {formatDate(repo.pushed_at)}</span>
+								<div className="flex items-center gap-2 flex-wrap">
+									<FaCalendarAlt />
+									<span
+										data-tooltip={formatDate(repo.created_at, true)}
+										className="relative"
+									>
+										Created: {showRelativeTime(repo.created_at)}
+									</span>
 								</div>
 							)}
 						</div>
 
-						<a
-							href={repo.homepage || repo.html_url}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-blue-500 dark:text-blue-400 font-bold hover:border-b self-start"
-						>
-							Go to {repo.homepage || repo.html_url}
-						</a>
+						<div className="flex items-center gap-4 text-gray-700 dark:text-gray-300 text-sm mt-auto">
+							{repo.stargazers_count > 0 && (
+								<div className="flex items-center gap-1">
+									<FaStar className="text-yellow-500" />
+									<span>{repo.stargazers_count}</span>
+								</div>
+							)}
+							{repo.forks_count > 0 && (
+								<div className="flex items-center gap-1">
+									<FaCodeBranch />
+									<span>{repo.forks_count}</span>
+								</div>
+							)}
+							{repo.homepage && (
+								<a
+									href={repo.homepage}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:border-b"
+								>
+									<FaLink />
+									<span>{repo.homepage}</span>
+								</a>
+							)}
+						</div>
 					</div>
 				))}
 			</main>
