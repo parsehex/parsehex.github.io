@@ -47,7 +47,16 @@ function App() {
 						key={repo.id}
 						className="bg-white shadow-md rounded p-4 hover:shadow-xl transition"
 					>
-						<h2 className="text-2xl font-semibold mb-2">{repo.name}</h2>
+						<h2 className="text-2xl font-semibold mb-2">
+							<a
+								href={repo.html_url}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="hover:text-blue-500"
+							>
+								{repo.name}
+							</a>
+						</h2>
 						<p className="text-gray-700 mb-4">
 							{repo.description || 'No description provided.'}
 						</p>
