@@ -85,14 +85,13 @@ const showRelativeTime = (dateStr: string) => {
 };
 
 const sortOptions = [
-	{ key: 'pushed_at', label: 'Last Pushed' },
-	{ key: 'updated_at', label: 'Last Updated' },
+	{ key: 'latest_update', label: 'Last Update' },
 	{ key: 'created_at', label: 'Created' },
 ];
 
 function App() {
-	const [sortBy, setSortBy] = useState<string | null>(
-		() => localStorage.getItem('sortBy') || null
+	const [sortBy, setSortBy] = useState<string>(
+		() => localStorage.getItem('sortBy') || 'latest_update'
 	);
 	const [sortOrder, setSortOrder] = useState<'' | 'asc' | 'desc'>(
 		() => (localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || ''
@@ -125,13 +124,6 @@ function App() {
 	};
 
 	const repoList = repos.filter((r) => r.homepage) as Repo[];
-	if (sortBy && sortOrder) {
-		repoList.sort((a, b) => {
-			const timeA = new Date(a[sortBy] as string).getTime();
-			const timeB = new Date(b[sortBy] as string).getTime();
-			return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
-		});
-	}
 
 	// TODO restructure to do better
 	for (const repo of repoList) {
@@ -149,6 +141,19 @@ function App() {
 			};
 		}
 	}
+
+	repoList.sort((a, b) => {
+		let aVal = a[sortBy];
+		let bVal = b[sortBy];
+		if (sortBy === 'latest_update') {
+			aVal = a[sortBy]?.value;
+			bVal = b[sortBy]?.value;
+		}
+		const timeA = new Date(aVal as string).getTime();
+		const timeB = new Date(bVal as string).getTime();
+		return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
+	});
+
 	return (
 		<div className="container mx-auto p-6">
 			<header className="text-center py-8 flex items-center justify-center">
@@ -179,7 +184,7 @@ function App() {
 				<label className="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
 					<span>Sort by:</span>
 					<select
-						value={sortBy || ''}
+						value={sortBy || 'latest_update'}
 						onChange={(e) => handleSortChange(e.target.value)}
 						className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
 					>
@@ -191,7 +196,7 @@ function App() {
 					</select>
 				</label>
 				<button
-					onClick={() => handleSortChange(sortBy || 'pushed_at')}
+					onClick={() => handleSortChange(sortBy || 'latest_update')}
 					className="flex items-center py-1 px-2 ml-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
 				>
 					{!sortOrder ? (
