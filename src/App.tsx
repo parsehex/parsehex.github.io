@@ -20,6 +20,26 @@ interface LangColor {
 	url: string;
 }
 
+interface Repo {
+	id: number;
+	name: string;
+	description: string;
+	language: string;
+	created_at: string;
+	updated_at: string;
+	pushed_at: string;
+	homepage: string;
+	pulls_url: string;
+	html_url: string;
+	stargazers_count: number;
+	forks_count: number;
+	latest_update?: {
+		label: string;
+		value: string;
+	};
+	[key: string]: unknown;
+}
+
 const getColor = (lang: string) => {
 	// @ts-expect-error n/a
 	const c = langColors[lang] as LangColor;
@@ -89,7 +109,7 @@ function App() {
 
 	useEffect(() => {
 		tippy('[data-tooltip]', {
-			content: (el) => el.getAttribute('data-tooltip'),
+			content: (el) => el.getAttribute('data-tooltip') as string,
 		});
 	}, []);
 
@@ -104,11 +124,11 @@ function App() {
 		}
 	};
 
-	const repoList = repos.filter((r) => r.homepage);
+	const repoList = repos.filter((r) => r.homepage) as Repo[];
 	if (sortBy && sortOrder) {
 		repoList.sort((a, b) => {
-			const timeA = new Date(a[sortBy]).getTime();
-			const timeB = new Date(b[sortBy]).getTime();
+			const timeA = new Date(a[sortBy] as string).getTime();
+			const timeB = new Date(b[sortBy] as string).getTime();
 			return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
 		});
 	}
@@ -118,13 +138,11 @@ function App() {
 		const updated = new Date(repo.updated_at);
 		const pushed = new Date(repo.pulls_url);
 		if (isBefore(updated, pushed)) {
-			// @ts-expect-error n/a
 			repo.latest_update = {
 				label: 'Last Push',
 				value: repo.pushed_at,
 			};
 		} else {
-			// @ts-expect-error n/a
 			repo.latest_update = {
 				label: 'Last Update',
 				value: repo.updated_at,
@@ -226,7 +244,8 @@ function App() {
 									className="relative"
 								>
 									{repo.latest_update?.label}:{' '}
-									{showRelativeTime(repo.latest_update?.value)}
+									{repo.latest_update &&
+										showRelativeTime(repo.latest_update.value)}
 								</span>
 							</div>
 
