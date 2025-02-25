@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import repos from './repos.json';
+import langColors from './colors.json';
 import {
 	FaCalendarAlt,
 	FaClock,
@@ -13,6 +14,27 @@ import {
 import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+
+interface LangColor {
+	color: string;
+	url: string;
+}
+
+const getColor = (lang: string) => {
+	// @ts-expect-error n/a
+	const c = langColors[lang] as LangColor;
+	return c.color;
+};
+
+// https://stackoverflow.com/a/11868398
+// http://24ways.org/2010/calculating-color-contrast
+const getContrastYIQ = (hexcolor: string) => {
+	const r = parseInt(hexcolor.substring(1, 3), 16);
+	const g = parseInt(hexcolor.substring(3, 5), 16);
+	const b = parseInt(hexcolor.substring(5, 7), 16);
+	const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+	return yiq >= 128 ? 'black' : 'white';
+};
 
 const formatDate = (dateStr: string, long = false) => {
 	const date = new Date(dateStr);
@@ -170,7 +192,7 @@ function App() {
 						key={repo.id}
 						className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 hover:shadow-xl dark:hover:shadow-lg transition flex flex-col"
 					>
-						<h2 className="text-2xl font-semibold mb-2">
+						<h2 className="flex items-center text-2xl font-semibold mb-2">
 							<a
 								href={repo.html_url}
 								target="_blank"
@@ -179,6 +201,18 @@ function App() {
 							>
 								{repo.name}
 							</a>
+
+							{repo.language && (
+								<span
+									className="inline-flex items-center px-2 py-1 ml-4 text-xs font-semibold rounded bg-gray-200 dark:bg-gray-700"
+									style={{
+										backgroundColor: getColor(repo.language),
+										color: getContrastYIQ(getColor(repo.language)),
+									}}
+								>
+									{repo.language}
+								</span>
+							)}
 						</h2>
 						<p className="text-gray-700 dark:text-gray-300 mb-4 flex-grow">
 							{repo.description || 'No description provided.'}
