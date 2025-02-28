@@ -6,7 +6,7 @@ import * as url from 'url';
 import { isBefore } from 'date-fns';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const username = process.env.VITE_GITHUB_Actor;
+const username = process.env.VITE_GITHUB_ACTOR || process.argv[2];
 
 if (!username) {
 	throw new Error('Did not find username in env (VITE_GITHUB_Actor)');
