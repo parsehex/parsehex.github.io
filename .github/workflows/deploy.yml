@@ -22,7 +22,7 @@ jobs:
           node-version: '22'
       - run: npm install
       - name: Fetch Repos
-        run: npm run fetch-data
+        run: node scripts/fetch-data.js
         env:
           VITE_GITHUB_ACTOR: ${{ github.actor }}
       - name: Build
