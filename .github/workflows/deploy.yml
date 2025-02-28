@@ -16,17 +16,14 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
           node-version: '22'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: true
       - name: Fetch Repos
         run: GITHUB_ACTOR=${{ github.actor }} pnpm run fetch-data
       - name: Build
