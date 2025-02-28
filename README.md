@@ -29,17 +29,17 @@ If you want to run the project locally:
 
    (Note: When deployed via GitHub Actions, the workflow handles the configuration automatically.)
 
-2. Install dependencies using your preferred package manager. For example, with pnpm:
+2. Install dependencies:
 
-   pnpm install
+   npm install
 
 3. Fetch your project’s initial data by running:
 
-   pnpm run fetch-data
+   npm run fetch-data
 
 4. For local development start the server:
 
-   pnpm run dev
+   npm run dev
 
 ## Customization
 
