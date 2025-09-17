@@ -13,12 +13,10 @@ GitCase is a ready-to-use template that deploys a zero-maintenance landing page 
 
 ## Getting Started
 
-1. Create a new repository using this template with the name **USERNAME.github.io** (replace USERNAME with your GitHub profile's name).
-2. Open your new repo and go to **Settings**.
-   1. Go to the **Actions** -> **General** tab. Set **Workflow permissions** to **_Read and write permissions_**.
-   2. Go to the **Pages** tab. Open the **Branch** dropdown and select the **_gh-pages_** branch.
-3. Now, go to the **Actions** tab at the top. You should see a red/failed build -- please click on it and then click the button in the upper-right corner to **Re-run failed jobs**.
-4. Done! The app will start building and should be online soon.
+1. Fork this repository and use the the name **_USERNAME_.github.io** -- replace USERNAME with your GitHub profile's name.
+2. Go to the **Actions** tab at the top. You'll see a message explaining that scheduled workflows have been automatically disabled. To continue setting up, click the **I understand my workflows** button. Next, go to **Build and Deploy to GitHub Pages** on the left, then click **Enable workflow**. Finally, click **Run workflow** to begin the first build.
+3. Now go to **Settings** -> **Pages**. Open the **Branch** dropdown, select the **_gh-pages_** branch and click **Save**.
+4. Done! The app will start building and should be online soon at **_USERNAME_.github.io**.
 
 To customize the app, proceed to the following sections.
 
