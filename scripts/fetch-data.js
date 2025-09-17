@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { writeFileSync } from 'fs';
-import { join } from 'path';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
 
@@ -29,7 +29,7 @@ async function fetchRepos() {
 		const data = await res.json();
 
 		// REPO LIST FILTER
-		// If you want to filter sites by a naming convention, use e.g.:
+		// If you want to filter repos by a naming convention, use e.g.:
 		// const sites = data.filter(repo => repo.name.startsWith('portfolio-'));
 		const sites = data.filter((r) => r.homepage); // keeps repos with a homepage
 
@@ -52,10 +52,75 @@ async function fetchRepos() {
 		const outputPath = join(__dirname, '..', 'src', 'repos.json');
 		writeFileSync(outputPath, JSON.stringify(sites, null, 2));
 		console.log(`Fetched ${sites.length} repos and wrote to ${outputPath}`);
+
+		await fetchReadmes(sites);
 	} catch (error) {
 		console.error('Error fetching repos', error);
 		process.exit(1);
 	}
+}
+
+async function fetchReadmes(repos) {
+	console.log('Fetching READMEs for repositories');
+	const token = process.env.GITHUB_TOKEN;
+	const headers = token
+		? {
+			Authorization: `token ${token}`,
+			Accept: 'application/vnd.github.v3.raw'
+		}
+		: { Accept: 'application/vnd.github.v3.raw' };
+
+	const readmeManifest = [];
+	const publicDir = join(__dirname, '..', 'public', 'readmes');
+
+	// Ensure the public/readmes directory exists
+	if (!existsSync(publicDir)) {
+		mkdirSync(publicDir, { recursive: true });
+	}
+
+	for (const repo of repos) {
+		try {
+			const readmeRes = await fetch(`https://api.github.com/repos/${username}/${repo.name}/readme`, { headers });
+
+			const readmeContent = await readmeRes.text();
+
+			if (readmeRes.ok && !readmeContent.startsWith('<!DOCTYPE html>')) {
+				const readmeFilePath = join(publicDir, `${repo.name}.md`);
+
+				writeFileSync(readmeFilePath, readmeContent);
+				console.log(`Saved README for ${repo.name}`);
+
+				readmeManifest.push({
+					repo: repo.name,
+					path: `/readmes/${repo.name}.md`,
+					success: true,
+					timestamp: new Date().toISOString()
+				});
+			} else {
+				console.log(`No README found for ${repo.name} (${readmeRes.status})`);
+				readmeManifest.push({
+					repo: repo.name,
+					path: null,
+					success: false,
+					timestamp: new Date().toISOString()
+				});
+			}
+		} catch (error) {
+			console.error(`Error fetching README for ${repo.name}:`, error.message);
+			readmeManifest.push({
+				repo: repo.name,
+				path: null,
+				success: false,
+				timestamp: new Date().toISOString(),
+				error: error.message
+			});
+		}
+	}
+
+	// Write manifest file
+	const manifestPath = join(__dirname, '..', 'public', 'readme-manifest.json');
+	writeFileSync(manifestPath, JSON.stringify(readmeManifest, null, 2));
+	console.log(`README manifest written to ${manifestPath}`);
 }
 
 async function fetchColors() {

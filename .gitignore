@@ -26,3 +26,5 @@ dist-ssr
 lang-colors.json
 repos.json
 .env
+public/readmes
+public/readme-manifest.json

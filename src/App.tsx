@@ -13,6 +13,7 @@ import {
 	FaLink,
 	FaThLarge,
 	FaListUl,
+	FaBook,
 } from 'react-icons/fa';
 import { Hero } from './Hero';
 import repos from './repos.json';
@@ -20,6 +21,7 @@ import langColors from './lang-colors.json';
 import config from '../config.json';
 import Header from './Header';
 import Footer from './Footer';
+import { ReadmeModal } from './ReadmeModal';
 
 interface LangColor {
 	color: string;
@@ -44,6 +46,14 @@ interface Repo {
 		value: string;
 	};
 	[key: string]: unknown;
+}
+
+interface ReadmeManifestItem {
+	repo: string;
+	path: string | null;
+	success: boolean;
+	timestamp: string;
+	error?: string;
 }
 
 const getColor = (lang: string) => {
@@ -117,6 +127,12 @@ function App() {
 	});
 
 	const [heroMd, setHeroMd] = useState<string>('');
+	const [readmeManifest, setReadmeManifest] = useState<ReadmeManifestItem[]>(
+		[]
+	);
+	const [isReadmeModalOpen, setIsReadmeModalOpen] = useState(false);
+	const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
+	const [readmeContent, setReadmeContent] = useState<string | null>(null);
 
 	useEffect(() => {
 		tippy('[data-tooltip]', {
@@ -131,6 +147,12 @@ function App() {
 				})
 				.catch((err) => console.error('Failed to load hero markdown:', err));
 		}
+
+		// Load README manifest
+		fetch('/readme-manifest.json')
+			.then((res) => res.json())
+			.then((data) => setReadmeManifest(data))
+			.catch((err) => console.error('Failed to load README manifest:', err));
 	}, []);
 
 	useEffect(() => {
@@ -154,6 +176,36 @@ function App() {
 			setSortBy(key);
 			setSortOrder((prev) => (prev === '' ? 'desc' : prev));
 		}
+	};
+
+	const openReadmeModal = async (repo: Repo) => {
+		setSelectedRepo(repo);
+		const manifestItem = readmeManifest.find((item) => item.repo === repo.name);
+
+		if (manifestItem?.path) {
+			try {
+				const response = await fetch(manifestItem.path);
+				if (response.ok) {
+					const content = await response.text();
+					setReadmeContent(content);
+				} else {
+					setReadmeContent(null);
+				}
+			} catch (error) {
+				console.error('Error loading README:', error);
+				setReadmeContent(null);
+			}
+		} else {
+			setReadmeContent(null);
+		}
+
+		setIsReadmeModalOpen(true);
+	};
+
+	const closeReadmeModal = () => {
+		setIsReadmeModalOpen(false);
+		setSelectedRepo(null);
+		setReadmeContent(null);
 	};
 
 	const repoList = repos as Repo[];
@@ -310,6 +362,18 @@ function App() {
 										<span>{repo.homepage}</span>
 									</a>
 								)}
+								{readmeManifest.find(
+									(item) => item.repo === repo.name && item.success
+								) && (
+									<button
+										onClick={() => openReadmeModal(repo)}
+										className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+										title="View README"
+									>
+										<FaBook />
+										<span>README</span>
+									</button>
+								)}
 							</div>
 						</div>
 					))}
@@ -361,6 +425,18 @@ function App() {
 										<span>{repo.homepage}</span>
 									</a>
 								)}
+								{readmeManifest.find(
+									(item) => item.repo === repo.name && item.success
+								) && (
+									<button
+										onClick={() => openReadmeModal(repo)}
+										className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+										title="View README"
+									>
+										<FaBook />
+										<span>README</span>
+									</button>
+								)}
 							</div>
 						</div>
 					))}
@@ -368,6 +444,13 @@ function App() {
 			)}
 
 			<Footer />
+
+			<ReadmeModal
+				isOpen={isReadmeModalOpen}
+				onClose={closeReadmeModal}
+				repoName={selectedRepo?.name || ''}
+				readmeContent={readmeContent}
+			/>
 		</div>
 	);
 }
