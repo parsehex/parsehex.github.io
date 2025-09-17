@@ -25,7 +25,7 @@ If you want to run the project locally:
 1. Copy `.env.example` to `.env` and update the GitHub username:
    • Example:
 
-   VITE_GITHUB_ACTOR=johnsmith
+   VITE_GITHUB_ACTOR=**your_username**
 
    (Note: When deployed via GitHub Actions, the workflow handles the configuration automatically.)
 
