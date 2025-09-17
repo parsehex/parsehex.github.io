@@ -24,8 +24,8 @@ To customize the app, proceed to the following sections.
 
 ## Customization
 
-- **Enable/Disable or Change hero text**: Change `config.json` to point the `hero.src` property to a `.md` file or make the value blank (i.e. `"src": "",`). For example, to use your repo's readme, use `"src": "./README.md",`
-- **Change repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
+- **Change hero text and more**: `config.json` can point to a `.md` file to display something at the top of the page.
+- **Update repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
 
 ## Demo
 

@@ -1,7 +1,7 @@
 {
   "header": true,
   "hero": {
-    "src": "./hero.md",
+    "src": "/hero.md",
     "center": true
   },
   "display": {
