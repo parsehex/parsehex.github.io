@@ -12,10 +12,6 @@ if (!username) {
 	throw new Error('Did not find username in env (VITE_GITHUB_Actor)');
 }
 
-if (process.argv[2]) {
-	writeFileSync(join(__dirname, '.env'), `VITE_GITHUB_ACTOR=${process.argv[2]}\n`);
-}
-
 const perPage = 100;
 
 async function fetchRepos() {

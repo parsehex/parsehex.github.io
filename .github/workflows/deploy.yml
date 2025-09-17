@@ -25,6 +25,8 @@ jobs:
         run: npm run fetch-data ${{ github.actor }}
       - name: Build
         run: npm run build
+        env:
+          VITE_GITHUB_ACTOR: ${{ github.actor }}
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
