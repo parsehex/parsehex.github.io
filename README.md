@@ -18,6 +18,15 @@ GitCase is a ready-to-use template that deploys a zero-maintenance landing page 
 
 To customize the app, proceed to the following sections.
 
+## Customization
+
+- **Enable/Disable or Change hero text**: Change `config.json` to point the `hero.src` property to a `.md` file or make the value blank (i.e. `"src": "",`). For example, to use your repo's readme, use `"src": "./README.md",`
+- **Change repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
+
+## Demo
+
+To see a working demo of GitCase in action, check out my copy at [parsehex.github.io](https://parsehex.github.io/).
+
 ## Local Development Setup
 
 If you want to run the project locally:
@@ -40,15 +49,6 @@ If you want to run the project locally:
 4. For local development start the server:
 
    npm run dev
-
-## Customization
-
-- **Enable/Disable or Change hero text**: Change `config.json` to point the `hero.src` property to a `.md` file or make the value blank (i.e. `"src": "",`). For example, to use your repo's readme, use `"src": "./README.md",`
-- **Change repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
-
-## Demo
-
-To see a working demo of GitCase in action, check out mine at [parsehex.github.io](https://parsehex.github.io/).
 
 ## License
 
