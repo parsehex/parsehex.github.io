@@ -4,6 +4,7 @@ import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
+import sharp from 'sharp';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const username = process.env.VITE_GITHUB_ACTOR || process.argv[2];
@@ -149,6 +150,7 @@ async function fetchAvatar() {
 	const avatarUrl = `https://github.com/${username}.png`;
 	const publicDir = join(__dirname, '..', 'public');
 	const avatarPath = join(publicDir, 'avatar.png');
+	const faviconPath = join(publicDir, 'favicon.png');
 
 	// Ensure the public directory exists
 	if (!existsSync(publicDir)) {
@@ -163,8 +165,24 @@ async function fetchAvatar() {
 
 		const arrayBuffer = await response.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
+
+		// Save full avatar
 		writeFileSync(avatarPath, buffer);
+
+		// Generate favicon.png (32x32)
+		const faviconBuffer = await sharp(buffer)
+			.resize(32, 32, {
+				kernel: sharp.kernel.nearest,
+				fit: 'contain',
+				background: { r: 255, g: 255, b: 255, alpha: 1 }
+			})
+			.png()
+			.toBuffer();
+
+		writeFileSync(faviconPath, faviconBuffer);
+
 		console.log(`Avatar saved to ${avatarPath}`);
+		console.log(`Favicon saved to ${faviconPath}`);
 	} catch (error) {
 		console.error('Error fetching avatar:', error.message);
 		// Don't exit the process for avatar failure, as it's not critical
