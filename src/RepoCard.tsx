@@ -31,6 +31,18 @@ export function RepoCard({
 		(item) => item.repo === repo.name && item.success
 	);
 
+	const langBadge = repo.language && (
+		<span
+			className="inline-flex items-center px-2 py-1 ml-4 text-xs font-semibold select-none rounded"
+			style={{
+				backgroundColor: getColor(repo.language),
+				color: getContrastYIQ(getColor(repo.language)),
+			}}
+		>
+			{repo.language}
+		</span>
+	);
+
 	const readmeBtn = (
 		<button
 			onClick={() => onReadmeClick(repo)}
@@ -54,17 +66,7 @@ export function RepoCard({
 					>
 						{repo.name}
 					</a>
-					{repo.language && (
-						<span
-							className="inline-flex items-center px-2 py-1 ml-4 text-xs font-semibold select-none rounded"
-							style={{
-								backgroundColor: getColor(repo.language),
-								color: getContrastYIQ(getColor(repo.language)),
-							}}
-						>
-							{repo.language}
-						</span>
-					)}
+					{langBadge}
 				</h2>
 				<p className="text-gray-700 dark:text-gray-300 mb-2 flex-grow">
 					{repo.description || 'No description provided.'}
@@ -135,6 +137,7 @@ export function RepoCard({
 					>
 						{repo.name}
 					</a>
+					{langBadge}
 				</h2>
 				<p className="text-gray-700 dark:text-gray-300">
 					{repo.description || ''}
