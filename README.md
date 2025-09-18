@@ -1,5 +1,9 @@
 # GitCase
 
+> [!NOTE] Name change incoming
+
+---
+
 > You've already created your projects -- show them off without spending more time.
 
 GitCase is a ready-to-use template that deploys a zero-maintenance landing page to your [USERNAME].github.io repository. With a single click, your GitHub repositories are showcased and updated everyday via GitHub Actions. No manual updates needed—just point it at your GitHub account and let it run.
