@@ -3,7 +3,6 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { Hero } from './Hero';
 import repos from './repos.json';
-import config from '../config.json';
 import Header from './Header';
 import Footer from './Footer';
 import { ReadmeModal } from './ReadmeModal';
@@ -29,10 +28,44 @@ function App() {
 		() => (localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || ''
 	);
 
+	const [config, setConfig] = useState<any>(null);
+
+	useEffect(() => {
+		const loadConfig = async () => {
+			try {
+				// Try to load config.user.json first
+				const userConfigResponse = await fetch('/config.user.json');
+				if (userConfigResponse.ok) {
+					const userConfig = await userConfigResponse.json();
+					setConfig(userConfig);
+					return;
+				}
+			} catch (error: any) {
+				if (!error.toString().includes('ERR_MODULE_NOT_FOUND'))
+					console.log(
+						'config.user.json not found or error, falling back to config.json - Error:',
+						error
+					);
+			}
+
+			// Fallback to config.json
+			try {
+				const configResponse = await fetch('/config.json');
+				if (configResponse.ok) {
+					setConfig(await configResponse.json());
+				}
+			} catch (error) {
+				console.error('Error loading config.json:', error);
+			}
+		};
+
+		loadConfig();
+	}, []);
+
 	const [view, setView] = useState<'grid' | 'list'>(() => {
 		return (
 			(localStorage.getItem('view') as 'grid' | 'list') ||
-			(config.display?.view as 'grid' | 'list') ||
+			(config?.display?.view as 'grid' | 'list') ||
 			'grid'
 		);
 	});
@@ -50,7 +83,7 @@ function App() {
 			content: (el) => el.getAttribute('data-tooltip') as string,
 		});
 
-		if (config.hero?.src) {
+		if (config?.hero?.src) {
 			fetch(config.hero.src)
 				.then((res) => res.text())
 				.then((text) => {
@@ -64,7 +97,7 @@ function App() {
 			.then((res) => res.json())
 			.then((data) => setReadmeManifest(data))
 			.catch((err) => console.error('Failed to load README manifest:', err));
-	}, []);
+	}, [config]);
 
 	useEffect(() => {
 		document.title = `${githubUsername}'s Sites`;
@@ -139,7 +172,7 @@ function App() {
 
 	return (
 		<div className="mx-auto p-4">
-			{config.header && <Header />}
+			{config?.header && <Header />}
 
 			{heroMd && <Hero source={heroMd} />}
 

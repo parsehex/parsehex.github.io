@@ -27,7 +27,18 @@ To customize the app, proceed to the following sections.
 
 ## Customization
 
-- **Change hero text and more**: `config.json` can point to a `.md` file to display something at the top of the page.
+To customize the app, create your own configuration file:
+
+1. Copy `config.user.json.example` to `config.user.json` in the root of your repository.
+2. Edit `config.user.json` to make your changes. See below for options.
+
+**Available customizations in config.user.json:**
+
+- **Header**: Enable/Disable the app's Header.
+- **Hero**: Configure the hero section, e.g., `"hero": { "src": "/path/to/your-hero.md", "center": true }` to display custom markdown at the top.
+- **Display mode**: Set the default view, e.g., `"display": { "view": "list" }`.
+- **Footer**: Customize footer text and link, e.g., `"footer": { "text": "Your custom text", "includeGitCaseLink": false }`.
+- **Extra Repos**: Add repositories from other accounts or organizations: `"extraRepos": ["owner1/repo1", "owner2/repo2"]`. These will be fetched and displayed using their full name (owner/repo).
 
 - **Update repo list filter**: The default filter shows repositories with a homepage URL. To customize which repos are displayed:
 

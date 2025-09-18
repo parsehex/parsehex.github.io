@@ -22,12 +22,55 @@ function getFilteredReposDefault(data) {
 
 async function fetchRepos() {
 	console.log('Fetching repo list for', username);
-	const token = process.env.GITHUB_TOKEN;
-
 	try {
 		const reposUrl = `https://api.github.com/users/${username}/repos?per_page=${perPage}`;
-		const dataStr = await downloadFile(reposUrl, null, { token });
+		const dataStr = await downloadFile(reposUrl, null);
 		const data = JSON.parse(dataStr);
+
+		// Load extra repos from config.user.json if exists
+		let extraReposData = [];
+		const userConfigPath = join(__dirname, '..', 'config.user.json');
+		if (existsSync(userConfigPath)) {
+			try {
+				const userConfigStr = await import('fs').then(fs => fs.readFileSync(userConfigPath, 'utf8'));
+				const userConfig = JSON.parse(userConfigStr);
+				extraReposData = userConfig.extraRepos || [];
+			} catch (error) {
+				console.log('Error loading config.user.json:', error);
+			}
+		}
+
+		// Fetch data for extra repos
+		let extraRepos = [];
+		for (const fullName of extraReposData) {
+			if (!fullName || typeof fullName !== 'string') continue;
+			try {
+				const [owner, repoName] = fullName.split('/');
+				if (!owner || !repoName) continue;
+				const extraRepoUrl = `https://api.github.com/repos/${owner}/${repoName}`;
+				const extraDataStr = await downloadFile(extraRepoUrl, null);
+				const extraRepo = JSON.parse(extraDataStr);
+				// external repos should use the full name
+				extraRepo.name = fullName;
+				// Add latest_update
+				const updated = new Date(extraRepo.updated_at);
+				const pushed = new Date(extraRepo.pushed_at);
+				if (isBefore(updated, pushed)) {
+					extraRepo.latest_update = {
+						label: 'Pushed',
+						value: extraRepo.pushed_at,
+					};
+				} else {
+					extraRepo.latest_update = {
+						label: 'Updated',
+						value: extraRepo.updated_at,
+					};
+				}
+				extraRepos.push(extraRepo);
+			} catch (error) {
+				console.log(`Error fetching extra repo ${fullName}:`, error.message);
+			}
+		}
 
 		let getFilteredRepos;
 
@@ -40,7 +83,18 @@ async function fetchRepos() {
 			getFilteredRepos = getFilteredReposDefault;
 		}
 
-		const sites = getFilteredRepos(data);
+		let sites = getFilteredRepos(data).concat(extraRepos);
+
+		// Remove duplicates by name (prefer main user repos if conflict)
+		const seenNames = new Set();
+		const uniqueSites = [];
+		for (const repo of sites) {
+			if (!seenNames.has(repo.name)) {
+				seenNames.add(repo.name);
+				uniqueSites.push(repo);
+			}
+		}
+		sites = uniqueSites;
 
 		for (const repo of sites) {
 			const updated = new Date(repo.updated_at);
@@ -71,7 +125,6 @@ async function fetchRepos() {
 
 async function fetchReadmes(repos) {
 	console.log('Fetching READMEs for repositories');
-	const token = process.env.GITHUB_TOKEN;
 	const publicDir = join(__dirname, '..', 'public', 'readmes');
 
 	// Ensure the public/readmes directory exists
@@ -86,7 +139,6 @@ async function fetchReadmes(repos) {
 			const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
 			const readmeFilePath = join(publicDir, `${repo.name}.md`);
 			await downloadFile(readmeUrl, readmeFilePath, {
-				token,
 				accept: 'application/vnd.github.v3.raw'
 			});
 
@@ -116,11 +168,10 @@ async function fetchReadmes(repos) {
 
 async function fetchColors() {
 	console.log('Fetching lang-colors.json');
-	const token = process.env.GITHUB_TOKEN;
 	const colorsUrl = 'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json';
 	const outputPath = join(__dirname, '..', 'src', 'lang-colors.json');
 	try {
-		await downloadFile(colorsUrl, outputPath, { token });
+		await downloadFile(colorsUrl, outputPath);
 	} catch (error) {
 		console.error('Error fetching lang-colors.json', error);
 		process.exit(1);

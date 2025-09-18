@@ -1,9 +1,35 @@
-import React from 'react';
-import config from '../config.json';
+import React, { useState, useEffect } from 'react';
 
 const Footer: React.FC = () => {
-	// Get footer settings from config.
-	const footerConfig = config.footer || {};
+	const [footerConfig, setFooterConfig] = useState<any>({});
+
+	useEffect(() => {
+		const loadConfig = async () => {
+			let configData: any = null;
+			try {
+				// Try to load config.user.json first
+				const userConfigResponse = await fetch('/config.user.json');
+				if (userConfigResponse.ok) {
+					configData = await userConfigResponse.json();
+				}
+				// oxlint-disable-next-line no-unused-vars
+			} catch (error) {
+				// Fall back to config.json
+				try {
+					const configResponse = await fetch('/config.json');
+					if (configResponse.ok) {
+						configData = await configResponse.json();
+					}
+				} catch (error) {
+					console.error('Error loading config:', error);
+				}
+			}
+			setFooterConfig(configData?.footer || {});
+		};
+
+		loadConfig();
+	}, []);
+
 	// Optional custom text to display on its own line if provided.
 	const footerText = footerConfig.text || '';
 	// Whether to include the GitCase link

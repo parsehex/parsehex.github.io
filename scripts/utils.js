@@ -1,8 +1,10 @@
 import { writeFileSync } from 'fs';
 
 export async function downloadFile(url, filePath, options = {}) {
-	const { token, accept, isBinary = false } = options;
+	const { accept, isBinary = false } = options;
+	let { token } = options;
 	const headers = {};
+	if (!token) token = process.env.GITHUB_TOKEN;
 	if (token) {
 		headers.Authorization = `token ${token}`;
 	}
