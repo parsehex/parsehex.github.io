@@ -144,5 +144,33 @@ async function fetchColors() {
 	}
 }
 
+async function fetchAvatar() {
+	console.log('Fetching avatar for', username);
+	const avatarUrl = `https://github.com/${username}.png`;
+	const publicDir = join(__dirname, '..', 'public');
+	const avatarPath = join(publicDir, 'avatar.png');
+
+	// Ensure the public directory exists
+	if (!existsSync(publicDir)) {
+		mkdirSync(publicDir, { recursive: true });
+	}
+
+	try {
+		const response = await fetch(avatarUrl);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch avatar: ${response.status}`);
+		}
+
+		const arrayBuffer = await response.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+		writeFileSync(avatarPath, buffer);
+		console.log(`Avatar saved to ${avatarPath}`);
+	} catch (error) {
+		console.error('Error fetching avatar:', error.message);
+		// Don't exit the process for avatar failure, as it's not critical
+	}
+}
+
 fetchRepos();
 fetchColors();
+fetchAvatar();
