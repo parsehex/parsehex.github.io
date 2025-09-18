@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { getFilteredRepos } from './repo-filter.js';
 import { join, dirname } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
@@ -29,12 +30,9 @@ async function fetchRepos() {
 		}
 		const data = await res.json();
 
-		// REPO LIST FILTER
-		// If you want to filter repos by a naming convention, use e.g.:
-		// const sites = data.filter(repo => repo.name.startsWith('portfolio-'));
-		const sites = data.filter((r) => r.homepage); // keeps repos with a homepage
+		const sites = getFilteredRepos(data);
 
-		for (const repo of data) {
+		for (const repo of sites) {
 			const updated = new Date(repo.updated_at);
 			const pushed = new Date(repo.pushed_at);
 			if (isBefore(updated, pushed)) {
