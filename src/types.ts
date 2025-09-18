@@ -3,6 +3,11 @@ export interface LangColor {
 	url: string;
 }
 
+export interface SortOption {
+	key: string;
+	label: string;
+}
+
 export interface Repo {
 	id: number;
 	name: string;

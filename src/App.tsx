@@ -7,7 +7,7 @@ import config from '../config.json';
 import Header from './Header';
 import Footer from './Footer';
 import { ReadmeModal } from './ReadmeModal';
-import { ReadmeManifestItem, Repo } from './types';
+import { ReadmeManifestItem, Repo, SortOption } from './types';
 import { SortControls } from './SortControls';
 import { ViewToggle } from './ViewToggle';
 import { RepoCard } from './RepoCard';
@@ -16,7 +16,7 @@ const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
 	{ key: 'updated_at', label: 'Updated' },
 	{ key: 'created_at', label: 'Created' },
-];
+] as SortOption[];
 
 function App() {
 	const githubUsername: string =

@@ -1,9 +1,5 @@
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
-
-interface SortOption {
-	key: string;
-	label: string;
-}
+import type { SortOption } from './types';
 
 interface SortControlsProps {
 	sortBy: string;
