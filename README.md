@@ -24,7 +24,11 @@ To customize the app, proceed to the following sections.
 ## Customization
 
 - **Change hero text and more**: `config.json` can point to a `.md` file to display something at the top of the page.
-- **Update repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
+
+- **Update repo list filter**: The default filter shows repositories with a homepage URL. To customize which repos are displayed:
+
+  1. Copy `scripts/repo-filter.js.example` to `scripts/repo-filter.js` in your fork.
+  2. Edit the `getFilteredRepos` function in `repo-filter.js` to apply your desired filter (examples are commented in the file).
 
 ## Updating
 

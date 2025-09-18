@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { getFilteredRepos } from './repo-filter.js';
+// import { getFilteredRepos } from './repo-filter.js';
 import { join, dirname } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
@@ -16,6 +16,10 @@ if (!username) {
 
 const perPage = 100;
 
+function getFilteredReposDefault(data) {
+	return data.filter((repo) => repo.homepage);
+}
+
 async function fetchRepos() {
 	console.log('Fetching repo list for', username);
 	const token = process.env.GITHUB_TOKEN;
@@ -29,6 +33,15 @@ async function fetchRepos() {
 			throw new Error(`GitHub API error: ${res.status}`);
 		}
 		const data = await res.json();
+
+		let getFilteredRepos;
+
+		try {
+			const func = (await import('./repo-filter.js')).getFilteredRepos;
+			getFilteredRepos = func;
+		} catch (e) {
+			getFilteredRepos = getFilteredReposDefault;
+		}
 
 		const sites = getFilteredRepos(data);
 
