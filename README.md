@@ -26,6 +26,10 @@ To customize the app, proceed to the following sections.
 - **Change hero text and more**: `config.json` can point to a `.md` file to display something at the top of the page.
 - **Update repo list filter**: To change which repositories are listed, modify `scripts/fetch-data.js` (look for the label `// REPO LIST FILTER`).
 
+## Updating
+
+When GitCase updates upstream, you can easily bring in the changes to your copy of the app by going to **your repo** -> **Sync fork** -> **Update branch**, which will start the re-building process.
+
 ## Demo
 
 To see a working demo of GitCase in action, check out my copy at [parsehex.github.io](https://parsehex.github.io/).
