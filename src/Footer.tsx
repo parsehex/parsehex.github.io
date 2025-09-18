@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
 				Showcase your GitHub repositories with{' '}
 				{includeGitCaseLink ? (
 					<a
-						href="https://github.com/gitcase"
+						href="https://github.com/GitCase-app/GitCase"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="underline hover:text-blue-500"
