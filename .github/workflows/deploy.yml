@@ -23,6 +23,8 @@ jobs:
       - run: npm install
       - name: Fetch Repos
         run: npm run fetch-data ${{ github.actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: npm run build
         env:
