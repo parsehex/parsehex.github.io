@@ -10,5 +10,6 @@
   "footer": {
     "text": "",
     "includeGitCaseLink": true
-  }
+  },
+  "extraRepos": ["GitCase-app/GitCase"]
 }
