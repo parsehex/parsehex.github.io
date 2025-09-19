@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-// import { getFilteredRepos } from './repo-filter.js';
-import { join, dirname } from 'path';
+import { mkdirSync, existsSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { downloadFile } from './utils.js';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
 import sharp from 'sharp';
@@ -22,17 +22,55 @@ function getFilteredReposDefault(data) {
 
 async function fetchRepos() {
 	console.log('Fetching repo list for', username);
-	const token = process.env.GITHUB_TOKEN;
-	const headers = token
-		? { Authorization: `token ${token}` }
-		: {};
-
 	try {
-		const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=${perPage}`, { headers });
-		if (!res.ok) {
-			throw new Error(`GitHub API error: ${res.status}`);
+		const reposUrl = `https://api.github.com/users/${username}/repos?per_page=${perPage}`;
+		const dataStr = await downloadFile(reposUrl, null);
+		const data = JSON.parse(dataStr);
+
+		// Load extra repos from config.user.json if exists
+		let extraReposData = [];
+		const userConfigPath = join(__dirname, '..', 'config.user.json');
+		if (existsSync(userConfigPath)) {
+			try {
+				const userConfigStr = await import('fs').then(fs => fs.readFileSync(userConfigPath, 'utf8'));
+				const userConfig = JSON.parse(userConfigStr);
+				extraReposData = userConfig.extraRepos || [];
+			} catch (error) {
+				console.log('Error loading config.user.json:', error);
+			}
 		}
-		const data = await res.json();
+
+		// Fetch data for extra repos
+		let extraRepos = [];
+		for (const fullName of extraReposData) {
+			if (!fullName || typeof fullName !== 'string') continue;
+			try {
+				const [owner, repoName] = fullName.split('/');
+				if (!owner || !repoName) continue;
+				const extraRepoUrl = `https://api.github.com/repos/${owner}/${repoName}`;
+				const extraDataStr = await downloadFile(extraRepoUrl, null);
+				const extraRepo = JSON.parse(extraDataStr);
+				// external repos should use the full name
+				extraRepo.name = fullName;
+				// Add latest_update
+				const updated = new Date(extraRepo.updated_at);
+				const pushed = new Date(extraRepo.pushed_at);
+				if (isBefore(updated, pushed)) {
+					extraRepo.latest_update = {
+						label: 'Pushed',
+						value: extraRepo.pushed_at,
+					};
+				} else {
+					extraRepo.latest_update = {
+						label: 'Updated',
+						value: extraRepo.updated_at,
+					};
+				}
+				extraRepos.push(extraRepo);
+			} catch (error) {
+				console.log(`Error fetching extra repo ${fullName}:`, error.message);
+			}
+		}
 
 		let getFilteredRepos;
 
@@ -40,10 +78,23 @@ async function fetchRepos() {
 			const func = (await import('./repo-filter.js')).getFilteredRepos;
 			getFilteredRepos = func;
 		} catch (e) {
+			if (!e.toString().includes('ERR_MODULE_NOT_FOUND'))
+				console.log('Did not find repo-filter.js and using default function - Error:', e);
 			getFilteredRepos = getFilteredReposDefault;
 		}
 
-		const sites = getFilteredRepos(data);
+		let sites = getFilteredRepos(data).concat(extraRepos);
+
+		// Remove duplicates by name (prefer main user repos if conflict)
+		const seenNames = new Set();
+		const uniqueSites = [];
+		for (const repo of sites) {
+			if (!seenNames.has(repo.name)) {
+				seenNames.add(repo.name);
+				uniqueSites.push(repo);
+			}
+		}
+		sites = uniqueSites;
 
 		for (const repo of sites) {
 			const updated = new Date(repo.updated_at);
@@ -74,15 +125,6 @@ async function fetchRepos() {
 
 async function fetchReadmes(repos) {
 	console.log('Fetching READMEs for repositories');
-	const token = process.env.GITHUB_TOKEN;
-	const headers = token
-		? {
-			Authorization: `token ${token}`,
-			Accept: 'application/vnd.github.v3.raw'
-		}
-		: { Accept: 'application/vnd.github.v3.raw' };
-
-	const readmeManifest = [];
 	const publicDir = join(__dirname, '..', 'public', 'readmes');
 
 	// Ensure the public/readmes directory exists
@@ -90,41 +132,30 @@ async function fetchReadmes(repos) {
 		mkdirSync(publicDir, { recursive: true });
 	}
 
+	const readmeManifest = [];
+
 	for (const repo of repos) {
 		try {
-			const readmeRes = await fetch(`https://api.github.com/repos/${username}/${repo.name}/readme`, { headers });
+			const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
+			const readmeFilePath = join(publicDir, `${repo.name}.md`);
+			await downloadFile(readmeUrl, readmeFilePath, {
+				accept: 'application/vnd.github.v3.raw'
+			});
 
-			const readmeContent = await readmeRes.text();
-
-			if (readmeRes.ok && !readmeContent.startsWith('<!DOCTYPE html>')) {
-				const readmeFilePath = join(publicDir, `${repo.name}.md`);
-
-				writeFileSync(readmeFilePath, readmeContent);
-				console.log(`Saved README for ${repo.name}`);
-
-				readmeManifest.push({
-					repo: repo.name,
-					path: `/readmes/${repo.name}.md`,
-					success: true,
-					timestamp: new Date().toISOString()
-				});
-			} else {
-				console.log(`No README found for ${repo.name} (${readmeRes.status})`);
-				readmeManifest.push({
-					repo: repo.name,
-					path: null,
-					success: false,
-					timestamp: new Date().toISOString()
-				});
-			}
+			readmeManifest.push({
+				repo: repo.name,
+				path: `/readmes/${repo.name}.md`,
+				success: true,
+				timestamp: new Date().toISOString()
+			});
 		} catch (error) {
-			console.error(`Error fetching README for ${repo.name}:`, error.message);
+			console.log(`No README found for ${repo.name}`);
 			readmeManifest.push({
 				repo: repo.name,
 				path: null,
 				success: false,
 				timestamp: new Date().toISOString(),
-				error: error.message
+				...(error.message && { error: error.message })
 			});
 		}
 	}
@@ -137,19 +168,10 @@ async function fetchReadmes(repos) {
 
 async function fetchColors() {
 	console.log('Fetching lang-colors.json');
-	const token = process.env.GITHUB_TOKEN;
-	const headers = token
-		? { Authorization: `token ${token}` }
-		: {};
+	const colorsUrl = 'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json';
+	const outputPath = join(__dirname, '..', 'src', 'lang-colors.json');
 	try {
-		const res = await fetch('https://raw.githubusercontent.com/ozh/github-colors/master/colors.json', { headers });
-		if (!res.ok) {
-			throw new Error(`GitHub error: ${res.status}`);
-		}
-		const data = await res.json();
-		const outputPath = join(__dirname, '..', 'src', 'lang-colors.json');
-		writeFileSync(outputPath, JSON.stringify(data, null, 2));
-		console.log('Fetched lang-colors.json');
+		await downloadFile(colorsUrl, outputPath);
 	} catch (error) {
 		console.error('Error fetching lang-colors.json', error);
 		process.exit(1);
@@ -169,16 +191,7 @@ async function fetchAvatar() {
 	}
 
 	try {
-		const response = await fetch(avatarUrl);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch avatar: ${response.status}`);
-		}
-
-		const arrayBuffer = await response.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-
-		// Save full avatar
-		writeFileSync(avatarPath, buffer);
+		const buffer = await downloadFile(avatarUrl, avatarPath, { isBinary: true });
 
 		// Generate favicon.png (32x32)
 		const faviconBuffer = await sharp(buffer)
@@ -192,7 +205,6 @@ async function fetchAvatar() {
 
 		writeFileSync(faviconPath, faviconBuffer);
 
-		console.log(`Avatar saved to ${avatarPath}`);
 		console.log(`Favicon saved to ${faviconPath}`);
 	} catch (error) {
 		console.error('Error fetching avatar:', error.message);
