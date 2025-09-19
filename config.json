@@ -1,0 +1,14 @@
+{
+  "header": true,
+  "hero": {
+    "src": "/hero.md",
+    "center": true
+  },
+  "display": {
+    "view": "grid"
+  },
+  "footer": {
+    "text": "",
+    "includeGitCaseLink": true
+  }
+}
