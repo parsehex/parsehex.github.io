@@ -16,21 +16,12 @@ const footerConfig = ref<any>({})
 const loadConfig = async () => {
 	let configData: any = null
 	try {
-		// Try to load config.user.json first
-		const userConfigResponse = await fetch('/config.user.json')
-		if (userConfigResponse.ok) {
-			configData = await userConfigResponse.json()
+		const configResponse = await fetch('/config.json')
+		if (configResponse.ok) {
+			configData = await configResponse.json()
 		}
 	} catch (error) {
-		// Fall back to config.json
-		try {
-			const configResponse = await fetch('/config.json')
-			if (configResponse.ok) {
-				configData = await configResponse.json()
-			}
-		} catch (error) {
-			console.error('Error loading config:', error)
-		}
+		console.error('Error loading config:', error)
 	}
 	footerConfig.value = configData?.footer || {}
 }

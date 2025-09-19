@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdirSync, existsSync, writeFileSync } from 'fs';
+import { mkdirSync, existsSync, writeFileSync, copyFileSync } from 'fs';
 import { join } from 'path';
 import { downloadFile } from './utils.js';
 import * as url from 'url';
@@ -38,6 +38,24 @@ async function fetchRepos() {
 			} catch (error) {
 				console.log('Error loading config.user.json:', error);
 			}
+		}
+
+		// Copy config to public directory
+		const publicDir = join(__dirname, '..', 'public');
+		if (!existsSync(publicDir)) {
+			mkdirSync(publicDir, { recursive: true });
+		}
+		let configToCopy = 'config.json';
+		if (existsSync(userConfigPath)) {
+			configToCopy = 'config.user.json';
+		}
+		const sourceConfigPath = join(__dirname, '..', configToCopy);
+		const destConfigPath = join(publicDir, 'config.json');
+		try {
+			copyFileSync(sourceConfigPath, destConfigPath);
+			console.log(`Copied ${configToCopy} to ${destConfigPath}`);
+		} catch (error) {
+			console.log(`Error copying config:`, error.message);
 		}
 
 		// Fetch data for extra repos

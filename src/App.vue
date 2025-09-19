@@ -57,20 +57,6 @@ const readmeContent = ref<string | null>(null)
 
 const loadConfig = async () => {
 	try {
-		// Try to load config.user.json first
-		const userConfigResponse = await fetch('/config.user.json')
-		if (userConfigResponse.ok) {
-			config.value = await userConfigResponse.json()
-			return
-		}
-	} catch (error: any) {
-		if (!error.toString().includes('ERR_MODULE_NOT_FOUND')) {
-			console.log('config.user.json not found or error, falling back to config.json - Error:', error)
-		}
-	}
-
-	// Fallback to config.json
-	try {
 		const configResponse = await fetch('/config.json')
 		if (configResponse.ok) {
 			config.value = await configResponse.json()
