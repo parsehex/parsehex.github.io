@@ -1,5 +1,6 @@
 {
   "header": true,
+  "headerText": "A list of my projects that have a GitHub Pages site.",
   "hero": {
     "src": "/hero.md",
     "center": true

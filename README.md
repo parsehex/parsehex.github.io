@@ -35,6 +35,7 @@ To customize the app, create your own configuration file:
 **Available customizations in config.user.json:**
 
 - **Header**: Enable/Disable the app's Header.
+- **Header Text**: Enable/Disable or change the text to the right of your profile image (set to a blank string to disable).
 - **Hero**: Configure the hero section, e.g., `"hero": { "src": "/path/to/your-hero.md", "center": true }` to display custom markdown at the top.
 - **Display mode**: Set the default view, e.g., `"display": { "view": "list" }`.
 - **Footer**: Customize footer text and link, e.g., `"footer": { "text": "Your custom text", "includeGitCaseLink": false }`.
