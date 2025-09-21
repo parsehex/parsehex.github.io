@@ -9,9 +9,9 @@ Project Depot Gallery is a ready-to-use template that deploys a zero-maintenance
 ## Key Features
 
 - Automatic daily updates via GitHub Actions – set-and-forget
-- Displays only repositories with a homepage URL or using your own filter
+- Displays only repositories with a homepage URL or [using your own filter](#customization)
 - Interactive UI with layout and sorting options
-- Built with React, TypeScript, and Vite for a modern development experience
+- Built with Vue, TypeScript, and Vite for a modern development experience
 
 ## Getting Started
 
