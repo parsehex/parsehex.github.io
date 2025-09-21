@@ -12,7 +12,6 @@
 	</header>
 </template>
 <script setup lang="ts">
-import 'tippy.js/dist/tippy.css'
 import { useConfigStore } from './stores/config'
 import { computed } from 'vue'
 
