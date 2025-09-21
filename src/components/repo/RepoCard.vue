@@ -11,12 +11,12 @@
 		<div class="text-sm text-gray-500 dark:text-gray-400 mb-4 space-y-1">
 			<div class="flex items-center gap-2 flex-wrap">
 				<Clock class="w-4 h-4" />
-				<span :data-tooltip="formatDate(repo.pushed_at, true)" class="relative"> {{ repo.latest_update?.label }}: {{
+				<span v-tippy="formatDate(repo.pushed_at, true)" class="relative"> {{ repo.latest_update?.label }}: {{
 					repo.latest_update && showRelativeTime(repo.latest_update.value) }} </span>
 			</div>
 			<div v-if="repo.created_at" class="flex items-center gap-2 flex-wrap">
 				<Calendar class="w-4 h-4" />
-				<span :data-tooltip="formatDate(repo.created_at, true)" class="relative"> Created: {{
+				<span v-tippy="formatDate(repo.created_at, true)" class="relative"> Created: {{
 					showRelativeTime(repo.created_at) }} </span>
 			</div>
 		</div>
@@ -36,9 +36,9 @@
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
 				class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-				title="View README">
+				v-tippy="'View README'">
 				<BookOpen class="w-4 h-4" />
-				<span>README</span>
+				<span class="hidden xl:inline">README</span>
 			</button>
 		</div>
 	</div>
@@ -68,9 +68,9 @@
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
 				class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-				title="View README">
+				v-tippy="'View README'">
 				<BookOpen class="w-4 h-4" />
-				<span>README</span>
+				<span class="hidden sm:inline">README</span>
 			</button>
 		</div>
 	</div>

@@ -18,8 +18,6 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, toRefs } from 'vue'
-import tippy from 'tippy.js'
-import 'tippy.js/dist/tippy.css'
 import Hero from './Hero.vue'
 import repos from './repos.json'
 import Header from './Header.vue'
@@ -59,10 +57,6 @@ const { config } = toRefs(configStore)
 
 onMounted(async () => {
 	await configStore.loadConfig()
-
-	tippy('[data-tooltip]', {
-		content: (el) => el.getAttribute('data-tooltip') as string,
-	})
 
 	if (config.value?.hero.src) {
 		fetch(config.value.hero.src)
