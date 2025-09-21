@@ -1,10 +1,9 @@
 <template>
 	<footer class="mt-8 text-center text-gray-600 dark:text-gray-400">
 		<p v-if="footerText">{{ footerText }}</p>
-		<p class="text-xs"> Showcase your GitHub repositories with <a v-if="includeGitCaseLink"
-				href="https://github.com/GitCase-app/GitCase" target="_blank" rel="noopener noreferrer"
-				class="underline hover:text-blue-500"> GitCase </a>
-			<span v-else>GitCase</span>
+		<p v-if="includeGitCaseLink" class="text-xs"> Showcase your GitHub repositories with <a
+				href="https://github.com/ProjectDepot/Gallery" target="_blank" rel="noopener noreferrer"
+				class="underline hover:text-blue-500"> Project Depot Gallery </a>
 		</p>
 	</footer>
 </template>

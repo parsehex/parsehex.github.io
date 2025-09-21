@@ -1,12 +1,10 @@
-# GitCase
-
-> [!NOTE] Name change incoming
+# Project Depot Gallery
 
 ---
 
 > You've already created your projects -- show them off without spending more time.
 
-GitCase is a ready-to-use template that deploys a zero-maintenance landing page to your [USERNAME].github.io repository. With a single click, your GitHub repositories are showcased and updated everyday via GitHub Actions. No manual updates needed—just point it at your GitHub account and let it run.
+Project Depot Gallery is a ready-to-use template that deploys a zero-maintenance landing page to your [USERNAME].github.io repository. With a single click, your GitHub repositories are showcased and updated everyday via GitHub Actions. No manual updates needed—just point it at your GitHub account and let it run.
 
 ## Key Features
 
@@ -48,11 +46,11 @@ To customize the app, create your own configuration file:
 
 ## Updating
 
-When GitCase updates upstream, you can easily bring in the changes to your copy of the app by going to **your repo** -> **Sync fork** -> **Update branch**, which will start the re-building process.
+When Gallery updates upstream, you can easily bring in the changes to your copy of the app by going to **your repo** -> **Sync fork** -> **Update branch**, which will start the re-building process.
 
 ## Demo
 
-To see a working demo of GitCase in action, check out my copy at [parsehex.github.io](https://parsehex.github.io/).
+To see a working demo of Gallery in action, check out my copy at [parsehex.github.io](https://parsehex.github.io/).
 
 ## Local Development Setup
 
@@ -60,8 +58,8 @@ If you want to run the project locally:
 
 1. Clone the repo:
 
-   git clone <https://github.com/GitCase-app/GitCase>
-   cd GitCase
+   git clone <https://github.com/ProjectDepot/Gallery>
+   cd Gallery
 
 2. Copy `.env.example` to `.env` and update the GitHub username:
    • Example:
