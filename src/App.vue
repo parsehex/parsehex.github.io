@@ -17,7 +17,7 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, toRefs } from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 import Hero from './Hero.vue'
@@ -29,6 +29,7 @@ import { ReadmeManifestItem, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
+import { useConfigStore } from './stores/config'
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -40,8 +41,6 @@ const githubUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username'
 
 const sortBy = ref<string>(localStorage.getItem('sortBy') || 'latest_update')
 const sortOrder = ref<'' | 'asc' | 'desc'>((localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || '')
-
-const config = ref<any>(null)
 
 const view = ref<'grid' | 'list'>((localStorage.getItem('view') as 'grid' | 'list') || 'grid')
 
@@ -55,25 +54,17 @@ const isReadmeModalOpen = ref<boolean>(false)
 const selectedRepo = ref<Repo | null>(null)
 const readmeContent = ref<string | null>(null)
 
-const loadConfig = async () => {
-	try {
-		const configResponse = await fetch('/config.json')
-		if (configResponse.ok) {
-			config.value = await configResponse.json()
-		}
-	} catch (error) {
-		console.error('Error loading config.json:', error)
-	}
-}
+const configStore = useConfigStore()
+const { config } = toRefs(configStore)
 
 onMounted(async () => {
-	await loadConfig()
+	await configStore.loadConfig()
 
 	tippy('[data-tooltip]', {
 		content: (el) => el.getAttribute('data-tooltip') as string,
 	})
 
-	if (config.value?.hero?.src) {
+	if (config.value?.hero.src) {
 		fetch(config.value.hero.src)
 			.then((res) => res.text())
 			.then((text) => {

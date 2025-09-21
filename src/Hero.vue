@@ -5,18 +5,18 @@
 	</section>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, toRefs } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import config from '../config.json'
+import { useConfigStore } from './stores/config'
 
 interface Props {
 	source: string
 }
 
 const props = defineProps<Props>()
-
-const configHero = config.hero || {}
+const configStore = useConfigStore()
+const { config } = toRefs(configStore)
 
 const parsedMarkdown = ref('')
 

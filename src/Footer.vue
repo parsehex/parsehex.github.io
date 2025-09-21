@@ -9,27 +9,12 @@
 	</footer>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { computed, toRefs } from 'vue'
+import { useConfigStore } from './stores/config'
 
-const footerConfig = ref<any>({})
+const configStore = useConfigStore()
+const { config } = toRefs(configStore)
 
-const loadConfig = async () => {
-	let configData: any = null
-	try {
-		const configResponse = await fetch('/config.json')
-		if (configResponse.ok) {
-			configData = await configResponse.json()
-		}
-	} catch (error) {
-		console.error('Error loading config:', error)
-	}
-	footerConfig.value = configData?.footer || {}
-}
-
-onMounted(() => {
-	loadConfig()
-})
-
-const footerText = computed(() => footerConfig.value.text || '')
-const includeGitCaseLink = computed(() => footerConfig.value.includeGitCaseLink !== false)
+const footerText = computed(() => config.value?.footer.text || '')
+const includeGitCaseLink = computed(() => config.value?.footer.includeGitCaseLink !== false)
 </script>
