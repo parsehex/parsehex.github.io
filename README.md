@@ -1,6 +1,6 @@
 # Project Depot Gallery
 
----
+<!-- TODO add option clearDeadLinks to clear  the .homepage value of inactive links (which should remove when using the default filter) -->
 
 > You've already created your projects -- show them off without spending more time.
 
@@ -8,10 +8,10 @@ Project Depot Gallery is a ready-to-use template that deploys a zero-maintenance
 
 ## Key Features
 
-• Automatic daily updates via GitHub Actions – set-and-forget
-• Displays only repositories with a homepage URL or using your own filter
-• Interactive UI with layout and sorting options
-• Built with React, TypeScript, and Vite for a modern development experience
+- Automatic daily updates via GitHub Actions – set-and-forget
+- Displays only repositories with a homepage URL or using your own filter
+- Interactive UI with layout and sorting options
+- Built with React, TypeScript, and Vite for a modern development experience
 
 ## Getting Started
 

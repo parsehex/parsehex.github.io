@@ -154,15 +154,17 @@ async function fetchReadmes(repos) {
 
 	for (const repo of repos) {
 		try {
-			const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
-			const readmeFilePath = join(publicDir, `${repo.name}.md`);
+			let repoId = !repo.name.includes('/') ? `${username}/${repo.name}` : repo.name;
+			const readmeUrl = `https://api.github.com/repos/${repoId}/readme`;
+			repoId = repoId.replace(/\//g, '-');
+			const readmeFilePath = join(publicDir, `${repoId}.md`);
 			await downloadFile(readmeUrl, readmeFilePath, {
 				accept: 'application/vnd.github.v3.raw'
 			});
 
 			readmeManifest.push({
 				repo: repo.name,
-				path: `/readmes/${repo.name}.md`,
+				path: `/readmes/${repoId}.md`,
 				success: true,
 				timestamp: new Date().toISOString()
 			});
