@@ -14,7 +14,7 @@ Done! Your portfolio will be live and updating automatically.
 
 ## 📚 Documentation
 
-For detailed setup instructions, configuration options, and development information, visit our [documentation site](https://projectdepot.github.io/Gallery).
+For detailed setup instructions, configuration options, and development information, visit our [documentation site](https://projectdepot.github.io/Gallery-docs/).
 
 ## ✨ Key Features
 
