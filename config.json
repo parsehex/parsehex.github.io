@@ -1,5 +1,6 @@
 {
   "header": true,
+  "headerText": "List of some my projects on GitHub.",
   "hero": {
     "src": "/hero.md",
     "center": true
