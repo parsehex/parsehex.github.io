@@ -12,5 +12,5 @@
     "text": "",
     "includeGitCaseLink": true
   },
-  "extraRepos": ["ProjectDepot/Gallery"]
+  "extraRepos": ["ProjectDepot/Gallery", "ProjectDepot/vue-node-sqlite-starter"]
 }
