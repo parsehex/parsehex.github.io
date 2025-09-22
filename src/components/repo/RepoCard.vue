@@ -20,7 +20,7 @@
 					showRelativeTime(repo.created_at) }} </span>
 			</div>
 		</div>
-		<div ref="cardFooterRef" class="flex items-center gap-4 text-gray-700 dark:text-gray-300 text-sm mt-auto">
+		<div class="flex items-center gap-4 text-gray-700 dark:text-gray-300 text-sm mt-auto">
 			<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1">
 				<Star class="w-4 h-4 text-yellow-500" />
 				<span>{{ repo.stargazers_count }}</span>
@@ -34,10 +34,10 @@
 				<span>{{ repo.homepage }}</span>
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
-				class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+				class="readme flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
 				v-tippy="'View README'">
 				<BookOpen class="w-4 h-4" />
-				<span :class="isNarrow ? 'hidden' : 'inline'">README</span>
+				<span>README</span>
 			</button>
 		</div>
 	</div>
@@ -51,7 +51,7 @@
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
 		</div>
-		<div ref="cardFooterRef" class="flex items-center gap-4 text-sm text-gray-700 dark:text-gray-300">
+		<div class="flex items-center gap-4 text-sm text-gray-700 dark:text-gray-300">
 			<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1">
 				<Star class="w-4 h-4 text-yellow-500" />
 				<span>{{ repo.stargazers_count }}</span>
@@ -65,10 +65,10 @@
 				<span>{{ repo.homepage }}</span>
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
-				class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+				class="readme flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
 				v-tippy="'View README'">
 				<BookOpen class="w-4 h-4" />
-				<span :class="isNarrow ? 'hidden' : 'inline'">README</span>
+				<span>README</span>
 			</button>
 		</div>
 	</div>
@@ -91,19 +91,5 @@ const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
 
-const cardFooterRef = ref<HTMLDivElement>()
-const isNarrow = ref(false)
-
-const threshold = computed(() => 36)
-
 const hasReadme = computed(() => props.readmeManifest.some(item => item.repo === props.repo.name && item.success))
-
-const resizeReadmeBtn = () => {
-	if (!cardFooterRef.value) return
-	const rect = cardFooterRef.value.getBoundingClientRect();
-	isNarrow.value = rect.height > threshold.value
-}
-
-onMounted(resizeReadmeBtn)
-watch(() => props.view, () => setTimeout(resizeReadmeBtn, 10))
 </script>
