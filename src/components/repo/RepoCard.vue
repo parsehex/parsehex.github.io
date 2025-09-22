@@ -31,7 +31,6 @@
 			</div>
 			<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
 				class="flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:border-b">
-				<ExternalLink class="w-4 h-4" />
 				<span>{{ repo.homepage }}</span>
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
@@ -50,7 +49,7 @@
 					class="hover:text-blue-500 dark:hover:text-blue-400"> {{ repo.name }} </a>
 				<LangBadge v-if="repo.language" :language="repo.language" />
 			</h2>
-			<p class="text-gray-700 dark:text-gray-300"> {{ repo.description || '' }} </p>
+			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
 		</div>
 		<div class="flex items-center gap-4 text-sm text-gray-700 dark:text-gray-300">
 			<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1">
@@ -63,7 +62,6 @@
 			</div>
 			<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
 				class="flex items-center gap-2 text-blue-500 dark:text-blue-400 hover:underline">
-				<ExternalLink class="w-4 h-4" />
 				<span>{{ repo.homepage }}</span>
 			</a>
 			<button v-if="hasReadme" @click="$emit('readme-click', repo)"
@@ -77,7 +75,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Clock, Calendar, Star, GitBranch, ExternalLink, BookOpen } from 'lucide-vue-next'
+import { Clock, Calendar, Star, GitBranch, BookOpen } from 'lucide-vue-next'
 import type { Repo, ReadmeManifestItem } from '../../types'
 import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
