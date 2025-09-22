@@ -1,7 +1,7 @@
 {
   "header": true,
   "siteTitle": "{username}",
-  "headerText": "Some of my projects hosted on GitHub, info updated daily.",
+  "headerText": "Some of my GitHub projects. Daily list updates.",
   "hero": {
     "src": "/hero.md",
     "center": true
