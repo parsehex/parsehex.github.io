@@ -1,5 +1,6 @@
 {
   "header": true,
+  "siteTitle": "{username}",
   "headerText": "List of some my projects on GitHub, updated daily.",
   "hero": {
     "src": "/hero.md",
