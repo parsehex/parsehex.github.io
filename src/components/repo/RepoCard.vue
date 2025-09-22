@@ -104,7 +104,6 @@ const resizeReadmeBtn = () => {
 	isNarrow.value = rect.height > threshold.value
 }
 
-onMounted(() => resizeReadmeBtn)
-
+onMounted(resizeReadmeBtn)
 watch(() => props.view, () => setTimeout(resizeReadmeBtn, 10))
 </script>
