@@ -35,8 +35,6 @@ const sortOptions = [
 	{ key: 'created_at', label: 'Created' },
 ] as SortOption[]
 
-const githubUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username'
-
 const sortBy = ref<string>(localStorage.getItem('sortBy') || 'latest_update')
 const sortOrder = ref<'' | 'asc' | 'desc'>((localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || '')
 
@@ -53,12 +51,14 @@ const selectedRepo = ref<Repo | null>(null)
 const readmeContent = ref<string | null>(null)
 
 const configStore = useConfigStore()
-const { config } = toRefs(configStore)
+const { config, siteTitle } = toRefs(configStore)
 
 onMounted(async () => {
 	await configStore.loadConfig()
 
-	if (config.value?.hero.src) {
+	if (!config.value) return;
+
+	if (config.value.hero.src) {
 		fetch(config.value.hero.src)
 			.then((res) => res.text())
 			.then((text) => {
@@ -73,7 +73,7 @@ onMounted(async () => {
 		.then((data) => readmeManifest.value = data)
 		.catch((err) => console.error('Failed to load README manifest:', err))
 
-	document.title = `${githubUsername}'s Sites`
+	document.title = siteTitle.value
 })
 
 watch([sortBy, sortOrder, view], () => {

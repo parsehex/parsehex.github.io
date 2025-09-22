@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export interface Config {
 	header: boolean;
+	siteTitle: string;
 	headerText: string;
 	hero: {
 		src: string;
@@ -18,10 +19,51 @@ export interface Config {
 	extraRepos?: string[];
 }
 
+const DefaultConfig = {
+	header: true,
+	siteTitle: "{username}'s Sites",
+	headerText: 'A list of my projects that have a GitHub Pages site.',
+	hero: {
+		src: '/hero.md',
+		center: true,
+	},
+	display: {
+		view: 'grid',
+	},
+	footer: {
+		text: '',
+		includeGitCaseLink: true,
+	},
+} as Config;
+
 export const useConfigStore = defineStore('config', () => {
 	const config = ref<Config | null>(null);
 	const loading = ref(false);
 	const error = ref<string | null>(null);
+	const ghUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username';
+
+	const siteTitle = computed(() => {
+		if (!config.value) return '';
+
+		let title = '';
+
+		// if the key hasn't been set, use old value
+		if (config.value.siteTitle === undefined) title = DefaultConfig.siteTitle;
+		else title = config.value.siteTitle;
+
+		// replace {username} with actual username
+		return title.replace(/\{username\}/g, ghUsername);
+	});
+	const headerText = computed(() => {
+		if (!config.value) return '';
+
+		// if the key hasn't been set, use old value
+		if (config.value.headerText === undefined)
+			return 'A list of my projects that have a GitHub Pages site.';
+
+		// can set to "" / blank string to disable
+		return config.value.headerText;
+	});
 
 	const loadConfig = async () => {
 		loading.value = true;
@@ -41,21 +83,7 @@ export const useConfigStore = defineStore('config', () => {
 			console.error('Error loading config:', err);
 
 			// Fallback to default config
-			config.value = {
-				header: true,
-				headerText: 'A list of my projects that have a GitHub Pages site.',
-				hero: {
-					src: '/hero.md',
-					center: true,
-				},
-				display: {
-					view: 'grid',
-				},
-				footer: {
-					text: '',
-					includeGitCaseLink: true,
-				},
-			};
+			config.value = DefaultConfig;
 		} finally {
 			loading.value = false;
 		}
@@ -71,5 +99,8 @@ export const useConfigStore = defineStore('config', () => {
 		error,
 		loadConfig,
 		setConfig,
+		ghUsername,
+		siteTitle,
+		headerText,
 	};
 });
