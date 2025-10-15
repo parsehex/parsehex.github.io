@@ -4,7 +4,7 @@
 		<h2 class="flex items-center text-2xl font-semibold mb-2">
 			<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
 				class="hover:text-blue-500 dark:hover:text-blue-400"> {{ repo.name }} </a>
-			<LangBadge v-if="repo.language" :language="repo.language" />
+			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 		</h2>
 		<p class="text-gray-700 dark:text-gray-300 mb-2 flex-grow"> {{ repo.description || 'No description provided.' }}
 		</p>
@@ -47,7 +47,7 @@
 			<h2 class="text-xl font-semibold">
 				<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
 					class="hover:text-blue-500 dark:hover:text-blue-400"> {{ repo.name }} </a>
-				<LangBadge v-if="repo.language" :language="repo.language" />
+				<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
 		</div>
