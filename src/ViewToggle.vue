@@ -4,7 +4,7 @@
 			view === 'grid'
 				? 'bg-blue-500 text-white'
 				: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-		]">
+		]" :aria-label="view === 'grid' ? 'Grid view selected' : 'Switch to grid view'">
 			<span>
 				<Grid :class="iconSize" />
 			</span>
@@ -13,7 +13,7 @@
 			view === 'list'
 				? 'bg-blue-500 text-white'
 				: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-		]">
+		]" :aria-label="view === 'list' ? 'List view selected' : 'Switch to list view'">
 			<List :class="iconSize" />
 		</button>
 	</div>

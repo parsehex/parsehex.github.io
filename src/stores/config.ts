@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import cfg from '../config.json'
 import { Link } from '../types';
 
 export interface Config {
@@ -40,7 +41,7 @@ const DefaultConfig = {
 } as Config;
 
 export const useConfigStore = defineStore('config', () => {
-	const config = ref<Config | null>(null);
+	const config = ref<Config | null>(cfg);
 	const loading = ref(false);
 	const error = ref<string | null>(null);
 	const ghUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username';
@@ -68,30 +69,6 @@ export const useConfigStore = defineStore('config', () => {
 		return config.value.headerText;
 	});
 
-	const loadConfig = async () => {
-		loading.value = true;
-		error.value = null;
-
-		try {
-			const response = await fetch('/config.json');
-			if (response.ok) {
-				const configData = await response.json();
-				config.value = configData;
-			} else {
-				throw new Error(`Failed to load config: ${response.status}`);
-			}
-		} catch (err) {
-			error.value =
-				err instanceof Error ? err.message : 'Failed to load config';
-			console.error('Error loading config:', err);
-
-			// Fallback to default config
-			config.value = DefaultConfig;
-		} finally {
-			loading.value = false;
-		}
-	};
-
 	const setConfig = (newConfig: Config) => {
 		config.value = newConfig;
 	};
@@ -100,7 +77,6 @@ export const useConfigStore = defineStore('config', () => {
 		config: config,
 		loading,
 		error,
-		loadConfig,
 		setConfig,
 		ghUsername,
 		siteTitle,
