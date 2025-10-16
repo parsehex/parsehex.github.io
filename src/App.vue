@@ -1,7 +1,9 @@
 <template>
 	<div class="mx-auto p-4">
-		<Header v-if="config?.header" />
-		<Hero v-if="heroMd" :source="heroMd" />
+		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
+			<Header v-if="config?.header" class="md:w-1/4 md:mt-4" />
+			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
+		</div>
 		<div class="container mx-auto flex justify-between mb-4">
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />

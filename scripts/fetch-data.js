@@ -255,6 +255,25 @@ async function fetchAvatar() {
 	}
 }
 
-fetchRepos();
-fetchColors();
-fetchAvatar();
+async function fetchUserReadme() {
+	console.log('Fetching user profile README for', username);
+	const userReadmeUrl = `https://api.github.com/repos/${username}/${username}/readme`;
+	const outputPath = join(__dirname, '..', 'public', 'hero.md');
+
+	try {
+		await downloadFile(userReadmeUrl, outputPath, {
+			accept: 'application/vnd.github.v3.raw'
+		});
+		console.log(`User profile README saved to ${outputPath}`);
+	} catch (error) {
+		console.log(`No user profile README found for ${username}. Using a blank one.`);
+		writeFileSync(outputPath, '');
+	}
+}
+
+(async () => {
+	await fetchRepos();
+	await fetchColors();
+	await fetchAvatar();
+	await fetchUserReadme();
+})();

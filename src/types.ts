@@ -25,7 +25,7 @@ export interface Repo {
 		label: string;
 		value: string;
 	};
-	languages?: { [key: string]: number };
+	languages?: { [key: string]: any };
 	[key: string]: unknown;
 }
 
