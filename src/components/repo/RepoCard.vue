@@ -20,7 +20,7 @@
 					showRelativeTime(repo.created_at) }} </span>
 			</div>
 		</div>
-		<CardFooter :repo="repo" :readme-manifest="readmeManifest" />
+		<CardFooter :repo="repo" :readme-manifest="readmeManifest" @readme-click="$emit('readme-click', repo)" />
 	</div>
 	<div v-else
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 hover:shadow-xl dark:hover:shadow-lg transition space-y-2">
@@ -32,7 +32,7 @@
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
 		</div>
-		<CardFooter :repo="repo" :readme-manifest="readmeManifest" />
+		<CardFooter :repo="repo" :readme-manifest="readmeManifest" @readme-click="$emit('readme-click', repo)" />
 	</div>
 </template>
 <script setup lang="ts">
@@ -49,10 +49,8 @@ interface Props {
 	readmeManifest: ReadmeManifestItem[]
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
-
-const hasReadme = computed(() => props.readmeManifest.some(item => item.repo === props.repo.name && item.success))
 </script>

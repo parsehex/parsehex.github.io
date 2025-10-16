@@ -141,24 +141,6 @@ const sortedRepos = computed(() => {
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')
-
-const H_THRESHOLD = 36
-const TIMEOUT = 25
-
-const resizeReadmeBtns = () => {
-	const btns = Array.from(document.querySelectorAll('button.readme')) as HTMLButtonElement[]
-	for (const btn of btns) {
-		const footer = btn.parentElement;
-		if (!footer) continue;
-		const rect = footer.getBoundingClientRect();
-		const isNarrow = rect.height > H_THRESHOLD;
-		if (isNarrow) btn.classList.add('narrow');
-		else btn.classList.remove('narrow');
-	}
-}
-
-onMounted(() => setTimeout(resizeReadmeBtns, TIMEOUT))
-watch(() => view.value, () => setTimeout(resizeReadmeBtns, TIMEOUT))
 </script>
 <style>
 button.readme.narrow span {
