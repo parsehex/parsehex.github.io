@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { Link } from '../types';
 
 export interface Config {
 	header: boolean;
@@ -17,6 +18,7 @@ export interface Config {
 		includeGitCaseLink: boolean;
 	};
 	extraRepos?: string[];
+	links?: Link[];
 }
 
 const DefaultConfig = {
@@ -34,6 +36,7 @@ const DefaultConfig = {
 		text: '',
 		includeGitCaseLink: true,
 	},
+	links: [],
 } as Config;
 
 export const useConfigStore = defineStore('config', () => {
@@ -102,5 +105,6 @@ export const useConfigStore = defineStore('config', () => {
 		ghUsername,
 		siteTitle,
 		headerText,
+		links: computed(() => config.value?.links || []),
 	};
 });

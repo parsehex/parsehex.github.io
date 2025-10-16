@@ -36,3 +36,9 @@ export interface ReadmeManifestItem {
 	timestamp: string;
 	error?: string;
 }
+
+export interface Link {
+	name?: string;
+	url: string;
+	icon?: string;
+}
