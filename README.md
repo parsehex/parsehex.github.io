@@ -2,6 +2,8 @@
 
 > You've already created your projects -- show them off without spending more time.
 
+![Project Depot Gallery preview](/pd_gallery-preview.png)
+
 A ready-to-fork project that deploys a zero-maintenance landing page to your GitHub Pages site. Your repositories are showcased and updated automatically via GitHub Actions.
 
 ## Quick Start
