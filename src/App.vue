@@ -142,7 +142,7 @@ const sortedRepos = computed(() => {
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')
 
-const THRESHOLD = 36
+const H_THRESHOLD = 36
 const TIMEOUT = 25
 
 const resizeReadmeBtns = () => {
@@ -151,7 +151,7 @@ const resizeReadmeBtns = () => {
 		const footer = btn.parentElement;
 		if (!footer) continue;
 		const rect = footer.getBoundingClientRect();
-		const isNarrow = rect.height > THRESHOLD;
+		const isNarrow = rect.height > H_THRESHOLD;
 		if (isNarrow) btn.classList.add('narrow');
 		else btn.classList.remove('narrow');
 	}

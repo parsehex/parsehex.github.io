@@ -13,8 +13,10 @@
 		<div v-if="cfg.links && cfg.links.length > 0" class="flex justify-center space-x-4 py-2">
 			<a v-for="link in cfg.links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer"
 				class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 flex items-center space-x-1">
-				<Icon v-if="link.icon" :name="link.icon" />
-				<span v-if="link.name">{{ link.name }}</span>
+				<Tippy :content="link.icon ? link.name : ''" placement="bottom">
+					<Icon v-if="link.icon" :name="link.icon" />
+					<span v-else>{{ link.name }}</span>
+				</Tippy>
 			</a>
 		</div>
 	</header>
@@ -23,6 +25,7 @@
 import { useConfigStore } from './stores/config'
 import { computed } from 'vue'
 import Icon from './components/Icon.vue';
+import { Tippy } from 'vue-tippy';
 
 const cfg = useConfigStore()
 
