@@ -27,11 +27,11 @@ lang-colors.json
 repos.json
 .env
 public/readmes
-public/readme-manifest.json
+src/readme-manifest.json
 public/avatar.png
 public/favicon.png
 public/hero.md
-public/config.json
+src/config.json
 scripts/repo-filter.js
 config.user.json
 /docs/.vitepress/cache

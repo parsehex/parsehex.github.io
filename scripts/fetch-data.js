@@ -40,17 +40,17 @@ async function fetchRepos() {
 			}
 		}
 
-		// Copy config to public directory
-		const publicDir = join(__dirname, '..', 'public');
-		if (!existsSync(publicDir)) {
-			mkdirSync(publicDir, { recursive: true });
+		// Copy config to src directory
+		const srcDir = join(__dirname, '..', 'src');
+		if (!existsSync(srcDir)) {
+			mkdirSync(srcDir, { recursive: true });
 		}
 		let configToCopy = 'config.json';
 		if (existsSync(userConfigPath)) {
 			configToCopy = 'config.user.json';
 		}
 		const sourceConfigPath = join(__dirname, '..', configToCopy);
-		const destConfigPath = join(publicDir, 'config.json');
+		const destConfigPath = join(srcDir, 'config.json');
 		try {
 			copyFileSync(sourceConfigPath, destConfigPath);
 			console.log(`Copied ${configToCopy} to ${destConfigPath}`);
@@ -204,7 +204,7 @@ async function fetchReadmes(repos) {
 	}
 
 	// Write manifest file
-	const manifestPath = join(__dirname, '..', 'public', 'readme-manifest.json');
+	const manifestPath = join(__dirname, '..', 'src', 'readme-manifest.json');
 	writeFileSync(manifestPath, JSON.stringify(readmeManifest, null, 2));
 	console.log(`README manifest written to ${manifestPath}`);
 }
@@ -258,7 +258,7 @@ async function fetchAvatar() {
 async function fetchUserReadme() {
 	console.log('Fetching user profile README for', username);
 	const userReadmeUrl = `https://api.github.com/repos/${username}/${username}/readme`;
-	const outputPath = join(__dirname, '..', 'public', 'hero.md');
+	const outputPath = join(__dirname, '..', 'src', 'hero.md');
 
 	try {
 		await downloadFile(userReadmeUrl, outputPath, {

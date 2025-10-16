@@ -20,8 +20,11 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, toRefs } from 'vue'
+import { useHead } from '@unhead/vue'
 import Hero from './Hero.vue'
+import heroMd from './hero.md?raw'
 import repos from './repos.json'
+import readmeManifest  from './readme-manifest.json'
 import Header from './Header.vue'
 import Footer from './Footer.vue'
 import ReadmeModal from './components/repo/ReadmeModal.vue'
@@ -46,8 +49,6 @@ const setView = (newView: 'grid' | 'list') => {
 	view.value = newView
 }
 
-const heroMd = ref<string>('')
-const readmeManifest = ref<ReadmeManifestItem[]>([])
 const isReadmeModalOpen = ref<boolean>(false)
 const selectedRepo = ref<Repo | null>(null)
 const readmeContent = ref<string | null>(null)
@@ -55,27 +56,8 @@ const readmeContent = ref<string | null>(null)
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
 
-onMounted(async () => {
-	await configStore.loadConfig()
-
-	if (!config.value) return;
-
-	if (config.value.hero.src) {
-		fetch(config.value.hero.src)
-			.then((res) => res.text())
-			.then((text) => {
-				heroMd.value = text
-			})
-			.catch((err) => console.error('Failed to load hero markdown:', err))
-	}
-
-	// Load README manifest
-	fetch('/readme-manifest.json')
-		.then((res) => res.json())
-		.then((data) => readmeManifest.value = data)
-		.catch((err) => console.error('Failed to load README manifest:', err))
-
-	document.title = siteTitle.value
+useHead({
+  title: siteTitle.value
 })
 
 watch([sortBy, sortOrder, view], () => {
@@ -99,7 +81,7 @@ const handleSortChange = (key: string) => {
 
 const openReadmeModal = async (repo: Repo) => {
 	selectedRepo.value = repo
-	const manifestItem = readmeManifest.value.find((item) => item.repo === repo.name)
+	const manifestItem = readmeManifest.find((item) => item.repo === repo.name)
 
 	if (manifestItem?.path) {
 		try {
