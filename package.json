@@ -14,7 +14,9 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
+    "@tabler/icons-vue": "^3.35.0",
     "@tailwindcss/vite": "^4.0.8",
+    "@vueuse/core": "^13.9.0",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.7",
     "dotenv": "^16.4.7",

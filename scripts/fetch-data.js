@@ -130,6 +130,29 @@ async function fetchRepos() {
 			}
 		}
 
+		// Fetch languages for each repo
+		for (const repo of sites) {
+			try {
+				const [owner, repoName] = repo.name.includes('/') ? repo.name.split('/') : [username, repo.name];
+				const languagesUrl = `https://api.github.com/repos/${owner}/${repoName}/languages`;
+				const languagesStr = await downloadFile(languagesUrl, null);
+				const rawLanguages = JSON.parse(languagesStr);
+
+				const totalSize = Object.values(rawLanguages).reduce((acc, size) => acc + size, 0);
+				if (totalSize > 0) {
+					repo.languages = Object.entries(rawLanguages).reduce((acc, [lang, size]) => {
+						acc[lang] = (size / totalSize) * 100;
+						return acc;
+					}, {});
+				} else {
+					repo.languages = {};
+				}
+			} catch (error) {
+				console.log(`Error fetching languages for ${repo.name}:`, error.message);
+				repo.languages = {};
+			}
+		}
+
 		const outputPath = join(__dirname, '..', 'src', 'repos.json');
 		writeFileSync(outputPath, JSON.stringify(sites, null, 2));
 		console.log(`Fetched ${sites.length} repos and wrote to ${outputPath}`);
@@ -232,6 +255,25 @@ async function fetchAvatar() {
 	}
 }
 
-fetchRepos();
-fetchColors();
-fetchAvatar();
+async function fetchUserReadme() {
+	console.log('Fetching user profile README for', username);
+	const userReadmeUrl = `https://api.github.com/repos/${username}/${username}/readme`;
+	const outputPath = join(__dirname, '..', 'public', 'hero.md');
+
+	try {
+		await downloadFile(userReadmeUrl, outputPath, {
+			accept: 'application/vnd.github.v3.raw'
+		});
+		console.log(`User profile README saved to ${outputPath}`);
+	} catch (error) {
+		console.log(`No user profile README found for ${username}. Using a blank one.`);
+		writeFileSync(outputPath, '');
+	}
+}
+
+(async () => {
+	await fetchRepos();
+	await fetchColors();
+	await fetchAvatar();
+	await fetchUserReadme();
+})();

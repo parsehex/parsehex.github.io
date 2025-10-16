@@ -4,7 +4,7 @@
   "headerText": "A list of my projects that have a GitHub Pages site.",
   "hero": {
     "src": "/hero.md",
-    "center": true
+    "center": false
   },
   "display": {
     "view": "grid"
@@ -12,5 +12,6 @@
   "footer": {
     "text": "",
     "includeGitCaseLink": true
-  }
+  },
+  "links": []
 }

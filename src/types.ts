@@ -25,6 +25,7 @@ export interface Repo {
 		label: string;
 		value: string;
 	};
+	languages?: { [key: string]: any };
 	[key: string]: unknown;
 }
 
@@ -34,4 +35,10 @@ export interface ReadmeManifestItem {
 	success: boolean;
 	timestamp: string;
 	error?: string;
+}
+
+export interface Link {
+	name?: string;
+	url: string;
+	icon?: string;
 }

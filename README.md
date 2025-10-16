@@ -2,6 +2,8 @@
 
 > You've already created your projects -- show them off without spending more time.
 
+![Project Depot Gallery preview](/pd_gallery-preview.png)
+
 A ready-to-fork project that deploys a zero-maintenance landing page to your GitHub Pages site. Your repositories are showcased and updated automatically via GitHub Actions.
 
 ## Quick Start
@@ -11,6 +13,10 @@ A ready-to-fork project that deploys a zero-maintenance landing page to your Git
 3. Configure GitHub Pages to deploy from the `gh-pages` branch
 
 Done! Your portfolio will be live and updating automatically.
+
+## Demo
+
+I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>
 
 ## Documentation
 
@@ -22,10 +28,6 @@ For detailed setup instructions, configuration options, and development informat
 - **Smart filtering** – displays repositories with homepage URLs by default
 - **Fully customizable** – control which repos to show and how they appear
 - **Modern UI** – built with Vue, TypeScript, and Vite
-
-## Demo
-
-See it in action: [parsehex.github.io](https://parsehex.github.io/)
 
 ## License
 

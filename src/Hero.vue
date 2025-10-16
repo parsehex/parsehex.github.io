@@ -1,14 +1,41 @@
 <template>
-	<section class="hero p-6 mx-4 mb-6 bg-gray-100 dark:bg-gray-800 rounded"
-		:class="{ 'text-center': config?.hero.center }">
-		<div v-html="parsedMarkdown"></div>
+	<section
+		class="hero prose dark:prose-invert p-6 pb-2 bg-white dark:bg-gray-800  shadow-md transition rounded flex flex-col items-center"
+		:class="{}">
+		<div ref="heroContent" v-html="parsedMarkdown"
+			:class="{ 'truncated-content': isTruncated && needsTruncation, 'text-center': config?.hero.center, 'text-left': !config?.hero.center }"
+			@click="isTruncated && needsTruncation && toggleTruncate()">
+		</div>
+		<div v-if="needsTruncation" @click="toggleTruncate" class="w-full py-2 cursor-pointer">
+			<svg :class="{ 'rotate-180': !isTruncated }" class="mx-auto w-6 h-6 text-gray-500 dark:text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+			</svg>
+		</div>
 	</section>
 </template>
 <script setup lang="ts">
-import { ref, watch, toRefs } from 'vue'
+import { ref, watch, toRefs, nextTick, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useConfigStore } from './stores/config'
+
+const TRUNCATE_HEIGHT = 250;
+const isTruncated = ref(true);
+const heroContent = ref<HTMLElement | null>(null);
+
+const toggleTruncate = () => {
+	isTruncated.value = !isTruncated.value;
+};
+
+const needsTruncation = ref(false);
+
+const checkTruncation = () => {
+	if (heroContent.value) {
+		needsTruncation.value = heroContent.value.scrollHeight > TRUNCATE_HEIGHT;
+	} else {
+		needsTruncation.value = false;
+	}
+};
 
 interface Props {
 	source: string
@@ -18,7 +45,7 @@ const props = defineProps<Props>()
 const configStore = useConfigStore()
 const { config } = toRefs(configStore)
 
-const parsedMarkdown = ref('')
+const parsedMarkdown = ref('');
 
 watch(() => props.source, async (newSource) => {
 	if (!newSource) {
@@ -27,45 +54,70 @@ watch(() => props.source, async (newSource) => {
 	}
 	const html = await marked.parse(newSource)
 	parsedMarkdown.value = DOMPurify.sanitize(html)
+	await nextTick(); // Ensure DOM is updated before checking scrollHeight
+	checkTruncation();
 }, { immediate: true })
+
+onMounted(() => {
+	checkTruncation();
+});
 </script>
-<style scoped>
+<style>
+/* Custom styles for markdown elements */
 @reference './index.css';
 
-/* Custom styles for markdown elements */
-h1 {
-	@apply text-4xl font-bold my-4;
+.truncated-content {
+	max-height: 250px;
+	/* This should match TRUNCATE_HEIGHT */
+	overflow: hidden;
+	position: relative;
 }
 
+.truncated-content::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	/* Height of the fade effect */
+	background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	pointer-events: none;
+	/* Allow clicks to pass through to the indicator */
+}
+
+.dark .truncated-content::after {
+	background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(31, 41, 55, 0));
+	/* Dark mode background */
+}
+
+h1,
 h2 {
-	@apply text-3xl font-semibold my-3;
+	margin-top: 0 !important;
 }
 
-h3 {
-	@apply text-2xl font-semibold my-2;
+.hero h2 {
+	border-bottom: 1px solid lightgray;
+	padding-bottom: .3em;
 }
 
-p {
-	@apply my-2 text-base;
+.prose {
+	max-width: inherit;
 }
 
-ul {
-	@apply list-disc list-inside my-2;
+.prose :where(h1, h2, h3):not(:where([class~="not-prose"] *)) {
+	@apply text-gray-900 dark:text-white;
 }
 
-ol {
-	@apply list-decimal list-inside my-2;
+.prose :where(p):not(:where([class~="not-prose"] *)) {
+	@apply text-gray-700 dark:text-gray-300;
 }
 
-li {
-	@apply ml-6;
-}
-
-a {
+.prose :where(a):not(:where([class~="not-prose"] *)) {
 	@apply text-blue-600 dark:text-blue-400 hover:underline;
 }
 
-blockquote {
-	@apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 my-4 italic text-gray-600 dark:text-gray-400;
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+	@apply border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400;
 }
 </style>
