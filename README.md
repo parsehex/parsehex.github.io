@@ -12,6 +12,10 @@ A ready-to-fork project that deploys a zero-maintenance landing page to your Git
 
 Done! Your portfolio will be live and updating automatically.
 
+## Demo
+
+I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>
+
 ## Documentation
 
 For detailed setup instructions, configuration options, and development information, visit the [documentation site](https://projectdepot.github.io/Gallery-docs/).
@@ -22,10 +26,6 @@ For detailed setup instructions, configuration options, and development informat
 - **Smart filtering** – displays repositories with homepage URLs by default
 - **Fully customizable** – control which repos to show and how they appear
 - **Modern UI** – built with Vue, TypeScript, and Vite
-
-## Demo
-
-See it in action: [parsehex.github.io](https://parsehex.github.io/)
 
 ## License
 
