@@ -30,7 +30,7 @@ public/readmes
 src/readme-manifest.json
 public/avatar.png
 public/favicon.png
-public/hero.md
+src/hero.md
 src/config.json
 scripts/repo-filter.js
 config.user.json
