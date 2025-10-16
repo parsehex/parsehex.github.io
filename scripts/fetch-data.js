@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { mkdirSync, existsSync, writeFileSync, copyFileSync } from 'fs';
-import { join } from 'path';
+import { mkdirSync, existsSync, writeFileSync, copyFileSync, readFileSync } from 'fs';
+import { join, basename, dirname } from 'path';
 import { downloadFile } from './utils.js';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
@@ -164,6 +164,35 @@ async function fetchRepos() {
 	}
 }
 
+async function processReadmeImages(repoFullName, readmeContent) {
+	const imageDir = join(__dirname, '..', 'public', 'readme-images');
+	if (!existsSync(imageDir)) {
+		mkdirSync(imageDir, { recursive: true });
+	}
+
+	const baseUrl = `https://raw.githubusercontent.com/${repoFullName}/HEAD/`;
+	let updatedReadmeContent = readmeContent;
+
+	// Regex to find markdown images: ![alt text](image/path.png)
+	const markdownImageRegex = /!\[.*?\]\((.*?)\)/g;
+	let match;
+	while ((match = markdownImageRegex.exec(readmeContent)) !== null) {
+		const relativePath = match[1];
+		if (relativePath.includes('http')) continue;
+		const imageUrl = new URL(relativePath, baseUrl).href;
+		const imageName = basename(relativePath);
+		const imageFilePath = join(imageDir, imageName);
+
+		try {
+			await downloadFile(imageUrl, imageFilePath, { isBinary: true });
+			updatedReadmeContent = updatedReadmeContent.replace(relativePath, `/readme-images/${imageName}`);
+		} catch (error) {
+			console.log(`Error downloading image ${imageUrl} for ${repoFullName}:`, error.message);
+		}
+	}
+	return updatedReadmeContent;
+}
+
 async function fetchReadmes(repos) {
 	console.log('Fetching READMEs for repositories');
 	const publicDir = join(__dirname, '..', 'public', 'readmes');
@@ -179,11 +208,18 @@ async function fetchReadmes(repos) {
 		try {
 			let repoId = !repo.name.includes('/') ? `${username}/${repo.name}` : repo.name;
 			const readmeUrl = `https://api.github.com/repos/${repoId}/readme`;
-			repoId = repoId.replace(/\//g, '-');
-			const readmeFilePath = join(publicDir, `${repoId}.md`);
-			await downloadFile(readmeUrl, readmeFilePath, {
+
+			// Download README content as a string first
+			const readmeRawContent = await downloadFile(readmeUrl, null, {
 				accept: 'application/vnd.github.v3.raw'
 			});
+
+			const repoFullName = repo.name.includes('/') ? repo.name : `${username}/${repo.name}`;
+			const processedReadmeContent = await processReadmeImages(repoFullName, readmeRawContent);
+
+			repoId = repoId.replace(/\//g, '-');
+			const readmeFilePath = join(publicDir, `${repoId}.md`);
+			writeFileSync(readmeFilePath, processedReadmeContent);
 
 			readmeManifest.push({
 				repo: repo.name,
