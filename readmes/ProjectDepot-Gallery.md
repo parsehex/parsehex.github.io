@@ -2,7 +2,7 @@
 
 > You've already created your projects -- show them off without spending more time.
 
-![Project Depot Gallery preview](https://github.com/ProjectDepot/Gallery/blob/main/pd_gallery-preview.png)
+![Project Depot Gallery preview](/readme-images/pd_gallery-preview.png)
 
 A ready-to-fork project that deploys a zero-maintenance landing page to your GitHub Pages site. Your repositories are showcased and updated automatically via GitHub Actions.
 
@@ -22,7 +22,7 @@ I use this project for my own GitHub site, check it out here - <https://parsehex
 
 There's always improvements to make, but we have a decent score already:
 
-![Lighthouse score for parsehex.github.io](https://github.com/ProjectDepot/Gallery/blob/main/lighthouse-score.png)
+![Lighthouse score for parsehex.github.io](/readme-images/lighthouse-score.png)
 
 ## Documentation
 
