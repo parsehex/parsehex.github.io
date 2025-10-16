@@ -1,17 +1,43 @@
 {
   "header": true,
   "siteTitle": "{username}",
-  "headerText": "Some of my GitHub projects. Daily list updates.",
+  "headerText": "These are some of my project on GitHub.",
   "hero": {
     "src": "/hero.md",
-    "center": true
+    "center": false
   },
   "display": {
     "view": "grid"
   },
   "footer": {
-    "text": "",
+    "text": "&copy; 2025 Thomas Mays",
     "includeGitCaseLink": true
   },
-  "extraRepos": ["ProjectDepot/Gallery", "ProjectDepot/vue-node-sqlite-starter"]
+  "extraRepos": ["ProjectDepot/Gallery", "ProjectDepot/vue-node-sqlite-starter"],
+  "links": [
+    { 
+      "name": "LinkedIn",
+      "icon": "brand-linkedin",
+      "url": "https://www.linkedin.com/in/thomas-mays-2036b643/"
+    },
+    { 
+      "name": "GitHub",
+      "icon": "brand-github",
+      "url": "https://github.com/parsehex"
+    },
+    { 
+      "name": "Buy Me A Coffee",
+      "icon": "mug",
+      "url": "https://buymeacoffee.com/parsehex"
+    },
+    { 
+      "name": "Patreon",
+      "icon": "brand-patreon",
+      "url": "https://patreon.com/parsehex"
+    },
+    { 
+      "name": "Ko-Fi",
+      "url": "https://ko-fi.com/parsehex"
+    }
+  ]
 }
