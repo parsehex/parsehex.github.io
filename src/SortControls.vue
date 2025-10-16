@@ -6,7 +6,7 @@
 			</select>
 		</label>
 		<button @click="onSortChange(sortBy)"
-			class="flex items-center p-1 rounded bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+			class="flex items-center p-1 rounded bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition" :aria-label="sortLabel">
 			<ArrowUpDown v-if="!sortOrder" class="w-4 h-4" />
 			<ArrowUp v-else-if="sortOrder === 'asc'" class="w-4 h-4" />
 			<ArrowDown v-else class="w-4 h-4" />
@@ -39,5 +39,17 @@ const onSortChange = (key: string | Event) => {
 const localSortBy = computed({
 	get: () => props.sortBy || 'latest_update',
 	set: (value) => onSortChange(value)
+})
+
+const sortLabel = computed(() => {
+	const selectedOption = props.sortOptions.find(option => option.key === props.sortBy);
+	const sortByKey = selectedOption ? selectedOption.label : props.sortBy;
+	if (props.sortOrder === 'asc') {
+		return `Sort by ${sortByKey} ascending`;
+	} else if (props.sortOrder === 'desc') {
+		return `Sort by ${sortByKey} descending`;
+	} else {
+		return `Sort by ${sortByKey}`;
+	}
 })
 </script>

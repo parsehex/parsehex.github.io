@@ -3,7 +3,7 @@
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 hover:shadow-xl dark:hover:shadow-lg transition flex flex-col">
 		<h2 class="flex items-center text-2xl font-semibold mb-2">
 			<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-				class="hover:text-blue-500 dark:hover:text-blue-400"> {{ repo.name }} </a>
+				class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
 			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 		</h2>
 		<p class="text-gray-700 dark:text-gray-300 mb-2"> {{ repo.description || 'No description provided.' }}
@@ -27,7 +27,7 @@
 		<div class="space-y-2">
 			<h2 class="text-xl font-semibold">
 				<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-					class="hover:text-blue-500 dark:hover:text-blue-400"> {{ repo.name }} </a>
+					class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
 				<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
@@ -36,12 +36,15 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
 import { Clock, Calendar } from 'lucide-vue-next'
+import { useConfigStore } from '../../stores/config'
 import type { Repo, ReadmeManifestItem } from '../../types'
 import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
 import CardFooter from './CardFooter.vue'
+import { computed } from 'vue'
+
+const cfg = useConfigStore()
 
 interface Props {
 	repo: Repo
@@ -49,8 +52,10 @@ interface Props {
 	readmeManifest: ReadmeManifestItem[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
+
+const linkLabel = computed(() => `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`)
 </script>

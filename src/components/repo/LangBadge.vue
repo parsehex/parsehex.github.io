@@ -9,7 +9,7 @@
 			theme: 'light-border',
 			maxWidth: 'none',
 		}" class="inline-flex items-center px-2 py-1 ml-4 text-xs font-semibold select-none rounded"
-			:style="{ backgroundColor: color, color: contrast }"> {{ language }} </span>
+			:style="{ backgroundColor: color, color: contrast }" role="status" :aria-label="`This repo primarily uses ${language}. Hover to see all language usage.`"> {{ language }} </span>
 	</div>
 </template>
 <script setup lang="ts">
