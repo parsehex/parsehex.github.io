@@ -20,7 +20,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, toRefs } from 'vue'
-import { useHead } from '@unhead/vue'
+import { useHead, useSeoMeta } from '@unhead/vue'
 import Hero from './Hero.vue'
 import heroMd from './hero.md?raw'
 import repos from './repos.json'
@@ -57,7 +57,14 @@ const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
 
 useHead({
-  title: siteTitle.value
+  title: siteTitle.value,
+})
+const description = `List of ${configStore.ghUsername}'s GitHub projects`
+useSeoMeta({
+  title: siteTitle.value,
+  description,
+  ogDescription: description,
+  ogTitle: siteTitle.value,
 })
 
 watch([sortBy, sortOrder, view], () => {
