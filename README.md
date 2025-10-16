@@ -18,6 +18,12 @@ Done! Your portfolio will be live and updating automatically.
 
 I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>
 
+### Lighthouse Score
+
+There's always improvements to make, but we have a decent score already:
+
+![Lighthouse score for parsehex.github.io](/lighthouse-score.png)
+
 ## Documentation
 
 For detailed setup instructions, configuration options, and development information, visit the [documentation site](https://projectdepot.github.io/Gallery-docs/).
