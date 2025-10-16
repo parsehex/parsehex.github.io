@@ -19,7 +19,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useConfigStore } from './stores/config'
 
-const TRUNCATE_HEIGHT = 250;
+const TRUNCATE_HEIGHT = 300;
 const isTruncated = ref(true);
 const heroContent = ref<HTMLElement | null>(null);
 
@@ -67,7 +67,7 @@ onMounted(() => {
 @reference './index.css';
 
 .truncated-content {
-	max-height: 250px;
+	max-height: 300px;
 	/* This should match TRUNCATE_HEIGHT */
 	overflow: hidden;
 	position: relative;
