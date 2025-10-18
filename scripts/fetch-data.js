@@ -58,6 +58,12 @@ async function fetchRepos() {
 			console.log(`Error copying config:`, error.message);
 		}
 
+		// Read the config file to update it
+		let configContent = JSON.parse(readFileSync(destConfigPath, 'utf8'));
+		configContent.lastUpdated = new Date().toISOString();
+		writeFileSync(destConfigPath, JSON.stringify(configContent, null, 2));
+		console.log(`Updated lastUpdated in ${destConfigPath}`);
+
 		// Fetch data for extra repos
 		let extraRepos = [];
 		for (const fullName of extraReposData) {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import cfg from '../config.json'
+import cfg from '../config.json';
 import { Link } from '../types';
 
 export interface Config {
@@ -20,6 +20,7 @@ export interface Config {
 	};
 	extraRepos?: string[];
 	links?: Link[];
+	lastUpdated?: string;
 }
 
 const DefaultConfig = {
