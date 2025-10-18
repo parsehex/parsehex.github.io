@@ -5,12 +5,13 @@
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
 		<div class="container mx-auto flex justify-between mb-4">
-			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
-				@sort-change="handleSortChange" />
 			<div class="flex items-center space-x-4">
-				<ViewToggle :view="view" @view-change="setView" />
-				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm">Last updated {{ lastUpdatedDisplay }}</span>
+				<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
+					@sort-change="handleSortChange" />
+				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm">Last updated {{
+					lastUpdatedDisplay }}</span>
 			</div>
+			<ViewToggle :view="view" @view-change="setView" />
 		</div>
 		<main :class="viewClassCommon + ' ' + viewClass">
 			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
