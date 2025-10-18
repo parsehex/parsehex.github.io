@@ -7,7 +7,10 @@
 		<div class="container mx-auto flex justify-between mb-4">
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />
-			<ViewToggle :view="view" @view-change="setView" />
+			<div class="flex items-center space-x-4">
+				<ViewToggle :view="view" @view-change="setView" />
+				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm">Last updated {{ lastUpdatedDisplay }}</span>
+			</div>
 		</div>
 		<main :class="viewClassCommon + ' ' + viewClass">
 			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
@@ -24,7 +27,7 @@ import { useHead, useSeoMeta } from '@unhead/vue'
 import Hero from './Hero.vue'
 import heroMd from './hero.md?raw'
 import repos from './repos.json'
-import readmeManifest  from './readme-manifest.json'
+import readmeManifest from './readme-manifest.json'
 import Header from './Header.vue'
 import Footer from './Footer.vue'
 import ReadmeModal from './components/repo/ReadmeModal.vue'
@@ -33,6 +36,7 @@ import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
 import { useConfigStore } from './stores/config'
+import { showRelativeTime } from './utils';
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -56,15 +60,20 @@ const readmeContent = ref<string | null>(null)
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
 
+const lastUpdatedDisplay = computed(() => {
+	if (!config.value?.lastUpdated) return '';
+	return showRelativeTime(config.value.lastUpdated);
+});
+
 useHead({
-  title: siteTitle.value,
+	title: siteTitle.value,
 })
 const description = `List of ${configStore.ghUsername}'s GitHub projects`
 useSeoMeta({
-  title: siteTitle.value,
-  description,
-  ogDescription: description,
-  ogTitle: siteTitle.value,
+	title: siteTitle.value,
+	description,
+	ogDescription: description,
+	ogTitle: siteTitle.value,
 })
 
 watch([sortBy, sortOrder, view], () => {
