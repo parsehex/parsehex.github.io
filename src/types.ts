@@ -21,6 +21,7 @@ export interface Repo {
 	html_url: string;
 	stargazers_count: number;
 	forks_count: number;
+	topics: string[];
 	latest_update?: {
 		label: string;
 		value: string;

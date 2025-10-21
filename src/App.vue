@@ -8,7 +8,7 @@
 			<div class="flex items-center space-x-4">
 				<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 					@sort-change="handleSortChange" />
-				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm">Last updated {{
+				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm" v-tippy="{ content: `${lastUpdatedTooltip}`, delay: 250 }">Last updated {{
 					lastUpdatedDisplay }}</span>
 			</div>
 			<ViewToggle :view="view" @view-change="setView" />
@@ -18,7 +18,7 @@
 				@readme-click="openReadmeModal" />
 		</main>
 		<Footer />
-		<ReadmeModal :is-open="isReadmeModalOpen" @close="closeReadmeModal" :repo-name="selectedRepo?.name || ''"
+		<ReadmeModal v-if="view === 'grid'" :is-open="isReadmeModalOpen" @close="closeReadmeModal" :repo-name="selectedRepo?.name || ''"
 			:readme-content="readmeContent" />
 	</div>
 </template>
@@ -37,7 +37,7 @@ import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
 import { useConfigStore } from './stores/config'
-import { showRelativeTime } from './utils';
+import { formatDate, showRelativeTime } from './utils';
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -61,6 +61,10 @@ const readmeContent = ref<string | null>(null)
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
 
+const lastUpdatedTooltip = computed(() => {
+	if (!config.value?.lastUpdated) return '';
+	return formatDate(config.value.lastUpdated, true);
+});
 const lastUpdatedDisplay = computed(() => {
 	if (!config.value?.lastUpdated) return '';
 	return showRelativeTime(config.value.lastUpdated);
@@ -139,7 +143,7 @@ const sortedRepos = computed(() => {
 })
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
-const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2')
+const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
 </script>
 <style>
 button.readme.narrow span {
