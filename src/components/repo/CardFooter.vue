@@ -15,7 +15,7 @@
 			<span>README</span>
 		</button>
 		<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-			class="text-blue-500 dark:text-blue-400 hover:border-b">
+			class="grow w-full text-blue-500 dark:text-blue-400 hover:border-b">
 			<span>{{ repo.homepage }}</span>
 		</a>
 	</div>
