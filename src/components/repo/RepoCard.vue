@@ -6,8 +6,7 @@
 				class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
 			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 		</h2>
-		<p class="text-gray-700 dark:text-gray-300 mb-2"> {{ repo.description || 'No description provided.' }}
-		</p>
+		<p class="text-gray-700 dark:text-gray-300 mb-2"> {{ repo.description || 'No description provided.' }} </p>
 		<div class="text-sm text-gray-500 dark:text-gray-400 mb-4 space-y-1">
 			<div class="flex items-center gap-2 flex-wrap">
 				<Clock class="w-4 h-4" />
@@ -20,7 +19,11 @@
 					showRelativeTime(repo.created_at) }} </span>
 			</div>
 		</div>
-		<CardFooter :repo="repo" :readme-manifest="readmeManifest" @readme-click="$emit('readme-click', repo)" />
+		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-4">
+			<TopicBadge v-for="topic in repo.topics" :key="topic" :topic="topic" />
+		</div>
+		<CardFooter :view="view" :repo="repo" :readme-manifest="readmeManifest"
+			@readme-click="$emit('readme-click', repo)" />
 	</div>
 	<div v-else
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 hover:shadow-xl dark:hover:shadow-lg transition space-y-2">
@@ -32,7 +35,12 @@
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
 		</div>
-		<CardFooter :repo="repo" :readme-manifest="readmeManifest" @readme-click="$emit('readme-click', repo)" />
+		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-4">
+			<TopicBadge v-for="topic in repo.topics" :key="topic" :topic="topic" />
+		</div>
+		<CardFooter :view="view" :repo="repo" :readme-manifest="readmeManifest" @readme-click="toggleReadme" />
+		<ExpandableReadme :is-expanded="isReadmeExanded" @toggle="toggleReadme" :repo-name="repo?.name || ''"
+			:readme-content="readmeContent" />
 	</div>
 </template>
 <script setup lang="ts">
@@ -41,8 +49,10 @@ import { useConfigStore } from '../../stores/config'
 import type { Repo, ReadmeManifestItem } from '../../types'
 import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
+import TopicBadge from './TopicBadge.vue'
 import CardFooter from './CardFooter.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import ExpandableReadme from './ExpandableReadme.vue'
 
 const cfg = useConfigStore()
 
@@ -56,6 +66,34 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
+
+const isReadmeExanded = ref(false)
+const readmeContent = ref<string | null>(null)
+const expandReadme = async () => {
+	const manifestItem = props.readmeManifest.find((item) => item.repo === props.repo.name)
+
+	if (manifestItem?.path) {
+		try {
+			const response = await fetch(manifestItem.path)
+			if (response.ok) {
+				readmeContent.value = await response.text()
+			} else {
+				readmeContent.value = null
+			}
+		} catch (error) {
+			console.error('Error loading README:', error)
+			readmeContent.value = null
+		}
+	} else {
+		readmeContent.value = null
+	}
+
+	isReadmeExanded.value = true
+}
+const toggleReadme = () => {
+	isReadmeExanded.value = !isReadmeExanded.value
+	if (isReadmeExanded.value) expandReadme()
+}
 
 const linkLabel = computed(() => `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`)
 </script>

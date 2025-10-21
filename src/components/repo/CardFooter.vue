@@ -1,21 +1,21 @@
 <template>
 	<div class="flex flex-wrap items-center gap-4 text-gray-700 dark:text-gray-300 text-sm mt-auto">
-		<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1" v-tippy="starsTooltip">
-			<Star class="w-4 h-4 text-yellow-500" />
-			<span>{{ repo.stargazers_count }}</span>
-		</div>
-		<div v-if="repo.forks_count > 0" class="flex items-center gap-1"  v-tippy="forksTooltip">
-			<GitBranch class="w-4 h-4" />
-			<span>{{ repo.forks_count }}</span>
-		</div>
-		<button v-if="hasReadme" @click="$emit('readme-click', repo)"
+		<button v-if="hasReadme && view === 'grid'" @click="$emit('readme-click', repo)"
 			class="readme flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm"
 			title="View README">
 			<BookOpen class="w-4 h-4" />
 			<span>README</span>
 		</button>
+		<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1" v-tippy="starsTooltip">
+			<Star class="w-4 h-4 text-yellow-500" />
+			<span>{{ repo.stargazers_count }}</span>
+		</div>
+		<div v-if="repo.forks_count > 0" class="flex items-center gap-1" v-tippy="forksTooltip">
+			<GitBranch class="w-4 h-4" />
+			<span>{{ repo.forks_count }}</span>
+		</div>
 		<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-			class="text-blue-500 dark:text-blue-400 hover:border-b">
+			class="grow w-full text-blue-500 dark:text-blue-400 hover:border-b">
 			<span>{{ repo.homepage }}</span>
 		</a>
 	</div>
@@ -28,6 +28,7 @@ import type { Repo, ReadmeManifestItem } from '../../types'
 interface Props {
 	repo: Repo
 	readmeManifest: ReadmeManifestItem[]
+	view: 'grid' | 'list'
 }
 
 const props = defineProps<Props>()
