@@ -3,7 +3,7 @@
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 hover:shadow-xl dark:hover:shadow-lg transition flex flex-col">
 		<h2 class="flex items-center text-2xl font-semibold mb-2">
 			<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-				class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
+				class="hover:text-blue-500 dark:hover:text-blue-400" v-tippy="linkTooltipCfg" :aria-label="linkLabel"> {{ repo.name }} </a>
 			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 		</h2>
 		<p class="text-gray-700 dark:text-gray-300 mb-2"> {{ repo.description || 'No description provided.' }} </p>
@@ -30,7 +30,7 @@
 		<div class="space-y-2">
 			<h2 class="text-xl font-semibold">
 				<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-					class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
+					class="hover:text-blue-500 dark:hover:text-blue-400" v-tippy="linkTooltipCfg" :aria-label="linkLabel"> {{ repo.name }}</a>
 				<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
@@ -96,4 +96,8 @@ const toggleReadme = () => {
 }
 
 const linkLabel = computed(() => `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`)
+const linkTooltipCfg = computed(() => ({
+	content: `Go to ${props.repo.name} on GitHub`,
+	delay: 150
+}))
 </script>
