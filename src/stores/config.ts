@@ -45,7 +45,7 @@ export const useConfigStore = defineStore('config', () => {
 	const config = ref<Config | null>(cfg);
 	const loading = ref(false);
 	const error = ref<string | null>(null);
-	const ghUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username';
+	const ghUsername: string = import.meta.env.VITE_GITHUB_ACTOR || 'your_username';
 
 	const siteTitle = computed(() => {
 		if (!config.value) return '';

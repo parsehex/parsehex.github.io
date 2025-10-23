@@ -19,17 +19,22 @@
 				</Tippy>
 			</a>
 		</div>
+		<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm select-none" v-tippy="{ content: lastUpdatedTooltip, delay: 250, placement: 'bottom' }">Last updated {{
+					lastUpdatedDisplay }}</span>
 	</header>
 </template>
 <script setup lang="ts">
-import { useConfigStore } from './stores/config'
-import { computed } from 'vue'
-import Icon from './components/Icon.vue';
+import { computed, toRefs } from 'vue'
 import { Tippy } from 'vue-tippy';
+import { useConfigStore } from './stores/config'
+import Icon from './components/Icon.vue';
+import { formatDate, showRelativeTime } from './utils';
 
 const cfg = useConfigStore()
+const { config } = toRefs(cfg)
 
 const titleParts = computed(() => {
+	if (!config.value) return '';
 	const title = cfg.siteTitle;
 	const username = cfg.ghUsername;
 	if (title.includes(username)) {
@@ -37,4 +42,13 @@ const titleParts = computed(() => {
 	}
 	return [title];
 })
+
+const lastUpdatedTooltip = computed(() => {
+	if (!config.value?.lastUpdated) return '';
+	return formatDate(config.value.lastUpdated, true);
+});
+const lastUpdatedDisplay = computed(() => {
+	if (!config.value?.lastUpdated) return '';
+	return showRelativeTime(config.value.lastUpdated);
+});
 </script>
