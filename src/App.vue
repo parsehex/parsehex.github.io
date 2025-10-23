@@ -8,8 +8,6 @@
 			<div class="flex items-center space-x-4">
 				<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 					@sort-change="handleSortChange" />
-				<span v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm" v-tippy="{ content: `${lastUpdatedTooltip}`, delay: 250 }">Last updated {{
-					lastUpdatedDisplay }}</span>
 			</div>
 			<ViewToggle :view="view" @view-change="setView" />
 		</div>
@@ -37,7 +35,6 @@ import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
 import { useConfigStore } from './stores/config'
-import { formatDate, showRelativeTime } from './utils';
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -60,15 +57,6 @@ const readmeContent = ref<string | null>(null)
 
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
-
-const lastUpdatedTooltip = computed(() => {
-	if (!config.value?.lastUpdated) return '';
-	return formatDate(config.value.lastUpdated, true);
-});
-const lastUpdatedDisplay = computed(() => {
-	if (!config.value?.lastUpdated) return '';
-	return showRelativeTime(config.value.lastUpdated);
-});
 
 useHead({
 	title: siteTitle.value,
