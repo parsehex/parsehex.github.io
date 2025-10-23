@@ -4,15 +4,17 @@
 			<Header v-if="config?.header" class="md:w-1/4 md:mt-4" />
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
-		<div class="container mx-auto flex justify-between items-center mb-4">
+		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
 			<!-- <div class="flex items-center space-x-4"> -->
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />
 			<!-- </div> -->
-				<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
-					@update:selectedTopics="selectedTopics = $event" />
-			<ViewToggle :view="view" @view-change="setView" />
+			<LanguageFilter :selected-language="selectedLanguage" :all-languages="allLanguages"
+				@update:selectedLanguage="selectedLanguage = $event" />
+				<ViewToggle :view="view" @view-change="setView" />
 		</div>
+		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
+		@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
 			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
 				@readme-click="openReadmeModal" />
@@ -38,6 +40,7 @@ import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
 import { useConfigStore } from './stores/config'
 import TopicFilter from './components/TopicFilter.vue'
+import LanguageFilter from './components/LanguageFilter.vue'
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -58,6 +61,7 @@ const isReadmeModalOpen = ref<boolean>(false)
 const selectedRepo = ref<Repo | null>(null)
 const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
+const selectedLanguage = ref<string>('')
 
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
@@ -130,6 +134,10 @@ const sortedRepos = computed(() => {
 		);
 	}
 
+	if (selectedLanguage.value) {
+		repoList = repoList.filter((repo) => repo.language === selectedLanguage.value);
+	}
+
 	repoList.sort((a, b) => {
 		const key = sortBy.value as keyof Repo;
 		let aVal: any = key === 'latest_update' ? a.latest_update?.value : a[key];
@@ -148,6 +156,17 @@ const allTopics = computed(() => {
 		repo.topics?.forEach((topic) => topics.add(topic));
 	});
 	return Array.from(topics).sort();
+});
+
+const allLanguages = computed(() => {
+	if (!repos.length) return [];
+	const languages = new Set<string>();
+	repos.forEach((repo) => {
+		if (repo.language) {
+			languages.add(repo.language);
+		}
+	});
+	return Array.from(languages).sort();
 });
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'

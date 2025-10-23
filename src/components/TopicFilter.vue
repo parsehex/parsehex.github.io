@@ -1,7 +1,9 @@
 <template>
-	<div class="topic-filter-container mx-4 flex-1 max-w-1/3" ref="containerRef">
+	<div class="container mx-auto mb-4 topic-filter-container basis-auto text-gray-700 dark:text-gray-300 flex-1 rounded shadow" ref="containerRef">
 		<button v-for="topic in topics" :key="topic" @click="selectTopic(topic)"
-			:class="['topic-button', selectedTopics.includes(topic) ? 'selected' : '']"> {{ topic }} </button>
+			:class="['topic-button bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-600', selectedTopics.includes(topic) ? 'selected' : '']" :aria-label="`Filter by ${topic}`">
+			<span class="text-xs text-gray-400 dark:text-gray-500">#</span>{{ topic }}
+		</button>
 	</div>
 </template>
 <script setup lang="ts">
@@ -72,7 +74,7 @@ onUnmounted(() => {
 	scroll-behavior: smooth;
 	scrollbar-width: none;
 	gap: 4px;
-	padding: 4px 0;
+	padding: 4px 8px;
 	position: relative;
 }
 
@@ -82,16 +84,10 @@ onUnmounted(() => {
 
 .topic-button {
 	padding: 4px 12px;
-	border: 1px solid #ccc;
 	border-radius: 20px;
-	background: white;
 	cursor: pointer;
 	white-space: nowrap;
 	transition: all 0.2s ease;
-}
-
-.topic-button:hover {
-	background: #f0f0f0;
 }
 
 .topic-button.selected {
