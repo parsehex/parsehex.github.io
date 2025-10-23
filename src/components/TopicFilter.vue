@@ -1,5 +1,9 @@
 <template>
 	<div class="container mx-auto mb-4 topic-filter-container basis-auto text-gray-700 dark:text-gray-300 flex-1 rounded shadow" ref="containerRef">
+		<button @click="selectTopic(null)"
+			class="topic-button x bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-red-700 dark:text-red-300" :class="selectedTopics.length ? 'visible' : 'invisible'" aria-label="Clear filtered topics">
+			<X />
+		</button>
 		<button v-for="topic in topics" :key="topic" @click="selectTopic(topic)"
 			:class="['topic-button bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-600', selectedTopics.includes(topic) ? 'selected' : '']" :aria-label="`Filter by ${topic}`">
 			<span class="text-xs text-gray-400 dark:text-gray-500">#</span>{{ topic }}
@@ -7,6 +11,7 @@
 	</div>
 </template>
 <script setup lang="ts">
+import { X } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps<{
@@ -33,7 +38,8 @@ const scrollRight = () => {
 	}
 };
 
-const selectTopic = (topic: string) => {
+const selectTopic = (topic: string | null) => {
+	if (!topic) return emit('update:selectedTopics', []);
 	const newSelectedTopics = [...props.selectedTopics];
 	const index = newSelectedTopics.indexOf(topic);
 	if (index > -1) {
@@ -87,7 +93,9 @@ onUnmounted(() => {
 	border-radius: 20px;
 	cursor: pointer;
 	white-space: nowrap;
-	transition: all 0.2s ease;
+}
+.topic-button.x {
+	padding: 4px;
 }
 
 .topic-button.selected {
