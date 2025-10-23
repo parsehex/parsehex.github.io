@@ -4,11 +4,13 @@
 			<Header v-if="config?.header" class="md:w-1/4 md:mt-4" />
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
-		<div class="container mx-auto flex justify-between mb-4">
-			<div class="flex items-center space-x-4">
-				<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
-					@sort-change="handleSortChange" />
-			</div>
+		<div class="container mx-auto flex justify-between items-center mb-4">
+			<!-- <div class="flex items-center space-x-4"> -->
+			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
+				@sort-change="handleSortChange" />
+			<!-- </div> -->
+				<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
+					@update:selectedTopics="selectedTopics = $event" />
 			<ViewToggle :view="view" @view-change="setView" />
 		</div>
 		<main :class="viewClassCommon + ' ' + viewClass">
@@ -16,8 +18,8 @@
 				@readme-click="openReadmeModal" />
 		</main>
 		<Footer />
-		<ReadmeModal v-if="view === 'grid'" :is-open="isReadmeModalOpen" @close="closeReadmeModal" :repo-name="selectedRepo?.name || ''"
-			:readme-content="readmeContent" />
+		<ReadmeModal v-if="view === 'grid'" :is-open="isReadmeModalOpen" @close="closeReadmeModal"
+			:repo-name="selectedRepo?.name || ''" :readme-content="readmeContent" />
 	</div>
 </template>
 <script setup lang="ts">
@@ -35,6 +37,7 @@ import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
 import { useConfigStore } from './stores/config'
+import TopicFilter from './components/TopicFilter.vue'
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -54,6 +57,7 @@ const setView = (newView: 'grid' | 'list') => {
 const isReadmeModalOpen = ref<boolean>(false)
 const selectedRepo = ref<Repo | null>(null)
 const readmeContent = ref<string | null>(null)
+const selectedTopics = ref<string[]>([])
 
 const configStore = useConfigStore()
 const { config, siteTitle } = toRefs(configStore)
@@ -118,17 +122,33 @@ const closeReadmeModal = () => {
 }
 
 const sortedRepos = computed(() => {
-	const repoList = [...(repos as Repo[])]
+	let repoList = [...(repos as Repo[])];
+
+	if (selectedTopics.value.length > 0) {
+		repoList = repoList.filter((repo) =>
+			selectedTopics.value.every((topic) => repo.topics?.includes(topic))
+		);
+	}
+
 	repoList.sort((a, b) => {
-		const key = sortBy.value as keyof Repo
-		let aVal: any = key === 'latest_update' ? a.latest_update?.value : a[key]
-		let bVal: any = key === 'latest_update' ? b.latest_update?.value : b[key]
-		const timeA = new Date(aVal || '').getTime()
-		const timeB = new Date(bVal || '').getTime()
-		return sortOrder.value === 'asc' ? timeA - timeB : timeB - timeA
-	})
-	return repoList
-})
+		const key = sortBy.value as keyof Repo;
+		let aVal: any = key === 'latest_update' ? a.latest_update?.value : a[key];
+		let bVal: any = key === 'latest_update' ? b.latest_update?.value : b[key];
+		const timeA = new Date(aVal || '').getTime();
+		const timeB = new Date(bVal || '').getTime();
+		return sortOrder.value === 'asc' ? timeA - timeB : timeB - timeA;
+	});
+	return repoList;
+});
+
+const allTopics = computed(() => {
+	if (!repos.length) return [];
+	const topics = new Set<string>();
+	repos.forEach((repo) => {
+		repo.topics?.forEach((topic) => topics.add(topic));
+	});
+	return Array.from(topics).sort();
+});
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
