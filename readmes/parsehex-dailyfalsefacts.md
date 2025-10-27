@@ -6,6 +6,11 @@ Daily False Facts is a joke website that I originally made c. 2012 and have now 
 
 ![screenshot of Daily False Facts](/readme-images/dailyfalsefacts-screenshot.png)
 
+> [!NOTE]
+> **See any potential here? Let me know / Spread the word!**
+>
+> I've been restoring + refurbishing my projects but I need users and feedback. If you have any interest in using this project, please get in touch via the _**Issues**_ tab or one of the links under _**Sponsor this project**_ to the right. [My profile](https://github.com/parsehex) may have updated contact info.
+
 ## Tech Stack
 
 - [Astro][astro]
