@@ -8,14 +8,16 @@ This project aims to provide links and information about the game Airmash as wel
 
 To be clear: **I did not create Airmash**, I'm simply enthusiastic about it and wish to build upon the awesome set of projects that the game is made of nowadays.
 
-## [airmash-extensions](https://github.com/parsehex/airmash-extensions)
+## Stuff I've made for Airmash
+
+### [airmash-extensions](https://github.com/parsehex/airmash-extensions)
 
 This is a collection of userscripts and Starmash extensions, some of which are forked from work by [fabiospampinato](https://github.com/fabiospampinato) and [Detect](https://github.com/Detect).
 
 - [**Respawn Hotkey**](https://github.com/parsehex/airmash-extensions#respawn-hotkey) - Press **Shift** and one of the **numbers 1 thru 5** to respawn into a different aircraft.
 - [**Laser Pointer**](https://github.com/parsehex/airmash-extensions#laser-pointer) (original by [fabiospampinato](https://github.com/fabiospampinato)) - Press **P** to toggle a straight line extending from the front of your aircraft.
 
-## [airbattle-hosting](https://github.com/parsehex/airbattle-hosting)
+### [airbattle-hosting](https://github.com/parsehex/airbattle-hosting)
 
 This is a mono-repository which combines the [**frontend**](https://github.com/airmash-refugees/airmash-frontend) by [airmash-refugees](https://github.com/airmash-refugees), [wight](https://github.com/wight-airmash)'s [**ab-server**](https://github.com/wight-airmash/ab-server) and [Spatie](https://github.com/spatiebot)'s [**ab-bot**](https://github.com/spatiebot/ab-bot) into a single place where they all work together
 
@@ -24,11 +26,15 @@ This is a mono-repository which combines the [**frontend**](https://github.com/a
 - (Experimental) An Electron wrapper is available which offers some UI controls like changing the game mode and number of bots.
   - You must [setup](https://github.com/parsehex/airbattle-hosting#setup) the project to run this. Since this whole thing is [unlicened](https://github.com/parsehex/airbattle-hosting#license), I will not be offering pre-built copies of this application.
 
-### Why airbattle?
+#### Why airbattle?
 
 The server and the bots were already prefixed `ab-`, short for Airbattle, which sounds much less official than using the name Airmash. I think this is good because the project is **not official** despite the purpose of the project being to make it easier to _run Airmash_.
 
 Considering that, using the name airbattle sounded like a good idea as as not to sound like I'm taking over the game -- which I don't even know how I'd do anyway.
+
+### [airmash-player-count-webext](https://github.com/parsehex/airmash-player-count-webext)
+
+This is a web extension to see how many players are online at the moment. It's not currently listed on any extension stores so you have to build and install it manually.
 
 ## Airmash Links
 
