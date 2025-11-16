@@ -35,11 +35,11 @@ jobs:
         if: github.repository != 'ProjectDepot/Gallery'
         env:
           VITE_GITHUB_ACTOR: ${{ github.actor }}
-      # - name: Build Docs
-      #   run: npm run docs:build
-      #   if: github.repository == 'ProjectDepot/Gallery'
+      - name: Build Docs
+        run: npm run docs:build
+        if: github.repository == 'ProjectDepot/Gallery'
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.repository == 'ProjectDepot/Gallery' && './docs' || './dist' }}
+          publish_dir: ${{ github.repository == 'ProjectDepot/Gallery' && './docs/.vitepress/dist' || './dist' }}
