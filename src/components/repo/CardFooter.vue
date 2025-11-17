@@ -6,14 +6,14 @@
 			<BookOpen class="w-4 h-4" />
 			<span>README</span>
 		</button>
-		<div v-if="repo.stargazers_count > 0" class="flex items-center gap-1" v-tippy="starsTooltip">
+		<Tippy v-if="repo.stargazers_count > 0" class="flex items-center gap-1" :content="starsTooltip">
 			<Star class="w-4 h-4 text-yellow-500" />
 			<span>{{ repo.stargazers_count }}</span>
-		</div>
-		<div v-if="repo.forks_count > 0" class="flex items-center gap-1" v-tippy="forksTooltip">
+		</Tippy>
+		<Tippy v-if="repo.forks_count > 0" class="flex items-center gap-1" :content="forksTooltip">
 			<GitBranch class="w-4 h-4" />
 			<span>{{ repo.forks_count }}</span>
-		</div>
+		</Tippy>
 		<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
 			class="grow w-full text-blue-500 dark:text-blue-400 hover:border-b">
 			<span>{{ repo.homepage }}</span>
@@ -22,6 +22,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
+import { Tippy } from 'vue-tippy';
 import { Star, GitBranch, BookOpen } from 'lucide-vue-next'
 import type { Repo, ReadmeManifestItem } from '../../types'
 

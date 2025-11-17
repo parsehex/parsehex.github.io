@@ -1,3 +1,3 @@
-/// <reference types="vite/client" />
+/// <reference types="astro/client" />
 declare module '*.vue';
 declare module '*.md';

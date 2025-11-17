@@ -2,21 +2,22 @@
 	<div v-if="view === 'grid'"
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-5 hover:shadow-xl dark:hover:shadow-lg transition flex flex-col">
 		<h2 class="flex items-center text-2xl font-semibold mb-2">
-			<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-				class="hover:text-blue-500 dark:hover:text-blue-400" v-tippy="linkTooltipCfg" :aria-label="linkLabel"> {{ repo.name }} </a>
+			<Tippy :content="linkTooltipCfg.content" :delay="linkTooltipCfg.delay">
+				<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
+					class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }} </a>
+			</Tippy>
 			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 		</h2>
 		<p class="text-gray-700 dark:text-gray-300 mb-2"> {{ repo.description || 'No description provided.' }} </p>
 		<div class="text-sm text-gray-500 dark:text-gray-400 mb-4 space-y-1">
 			<div class="flex items-center gap-2 flex-wrap">
 				<Clock class="w-4 h-4" />
-				<span v-tippy="formatDate(repo.pushed_at, true)" class="relative"> {{ repo.latest_update?.label }}: {{
-					repo.latest_update && showRelativeTime(repo.latest_update.value) }} </span>
+				<Tippy :content="formatDate(repo.pushed_at, true)"> {{ repo.latest_update?.label }}: {{ repo.latest_update &&
+					showRelativeTime(repo.latest_update.value) }} </Tippy>
 			</div>
 			<div v-if="repo.created_at" class="flex items-center gap-2 flex-wrap">
 				<Calendar class="w-4 h-4" />
-				<span v-tippy="formatDate(repo.created_at, true)" class="relative"> Created: {{
-					showRelativeTime(repo.created_at) }} </span>
+				<Tippy :content="formatDate(repo.created_at, true)"> Created: {{ showRelativeTime(repo.created_at) }} </Tippy>
 			</div>
 		</div>
 		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-4">
@@ -29,8 +30,10 @@
 		class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 hover:shadow-xl dark:hover:shadow-lg transition space-y-2">
 		<div class="space-y-2">
 			<h2 class="text-xl font-semibold">
-				<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-					class="hover:text-blue-500 dark:hover:text-blue-400" v-tippy="linkTooltipCfg" :aria-label="linkLabel"> {{ repo.name }}</a>
+				<Tippy :content="linkTooltipCfg.content" :delay="linkTooltipCfg.delay">
+					<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
+						class="hover:text-blue-500 dark:hover:text-blue-400" :aria-label="linkLabel"> {{ repo.name }}</a>
+				</Tippy>
 				<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
 			</h2>
 			<p v-if="repo.description" class="text-gray-700 dark:text-gray-300"> {{ repo.description }} </p>
@@ -51,10 +54,15 @@ import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
 import TopicBadge from './TopicBadge.vue'
 import CardFooter from './CardFooter.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import ExpandableReadme from './ExpandableReadme.vue'
+import { Tippy } from 'vue-tippy'
 
-const cfg = useConfigStore()
+let cfg: ReturnType<typeof useConfigStore> | null = null
+
+onMounted(() => {
+	cfg = useConfigStore()
+})
 
 interface Props {
 	repo: Repo
@@ -95,7 +103,10 @@ const toggleReadme = () => {
 	if (isReadmeExanded.value) expandReadme()
 }
 
-const linkLabel = computed(() => `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`)
+const linkLabel = computed(() => {
+	if (!cfg) return `Link to project called ${props.repo.name}`
+	return `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`
+})
 const linkTooltipCfg = computed(() => ({
 	content: `Go to ${props.repo.name} on GitHub`,
 	delay: 150

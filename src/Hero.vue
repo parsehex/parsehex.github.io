@@ -7,7 +7,9 @@
 			@click="isTruncated && needsTruncation && toggleTruncate()">
 		</div>
 		<div v-if="needsTruncation" @click="toggleTruncate" class="w-full py-2 cursor-pointer">
-			<svg :class="{ 'rotate-180': !isTruncated }" class="mx-auto w-6 h-6 text-gray-500 dark:text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<svg :class="{ 'rotate-180': !isTruncated }"
+				class="mx-auto w-6 h-6 text-gray-500 dark:text-gray-400 transition-transform duration-200" fill="none"
+				stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
 			</svg>
 		</div>
@@ -17,7 +19,7 @@
 import { ref, watch, toRefs, nextTick, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import { useConfigStore } from './stores/config'
+import { useConfigStore, Config } from './stores/config'
 
 const TRUNCATE_HEIGHT = 300;
 const isTruncated = ref(true);
@@ -42,8 +44,14 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const configStore = useConfigStore()
-const { config } = toRefs(configStore)
+let configStore: ReturnType<typeof useConfigStore> | null = null
+const config = ref<Config | null>(null)
+
+onMounted(() => {
+	configStore = useConfigStore()
+	const { config: storeConfig } = toRefs(configStore)
+	config.value = storeConfig.value
+})
 
 const parsedMarkdown = ref('');
 

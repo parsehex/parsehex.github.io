@@ -11,10 +11,10 @@
 			<!-- </div> -->
 			<LanguageFilter :selected-language="selectedLanguage" :all-languages="allLanguages"
 				@update:selectedLanguage="selectedLanguage = $event" />
-				<ViewToggle :view="view" @view-change="setView" />
+			<ViewToggle :view="view" @view-change="setView" />
 		</div>
 		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
-		@update:selectedTopics="selectedTopics = $event" />
+			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
 			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
 				@readme-click="openReadmeModal" />
@@ -38,7 +38,7 @@ import { ReadmeManifestItem, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
-import { useConfigStore } from './stores/config'
+import { useConfigStore, Config } from './stores/config'
 import TopicFilter from './components/TopicFilter.vue'
 import LanguageFilter from './components/LanguageFilter.vue'
 
@@ -48,10 +48,39 @@ const sortOptions = [
 	{ key: 'created_at', label: 'Created' },
 ] as SortOption[]
 
-const sortBy = ref<string>(localStorage.getItem('sortBy') || 'latest_update')
-const sortOrder = ref<'' | 'asc' | 'desc'>((localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || '')
+const safeLocalStorage = {
+	getItem: (key: string) => {
+		if (typeof window !== 'undefined') {
+			return localStorage.getItem(key)
+		}
+		return null
+	},
+	setItem: (key: string, value: string) => {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem(key, value)
+		}
+	},
+	removeItem: (key: string) => {
+		if (typeof window !== 'undefined') {
+			localStorage.removeItem(key)
+		}
+	}
+}
 
-const view = ref<'grid' | 'list'>((localStorage.getItem('view') as 'grid' | 'list') || 'grid')
+const sortBy = ref<string>('latest_update')
+const sortOrder = ref<'' | 'asc' | 'desc'>('')
+const view = ref<'grid' | 'list'>('grid')
+
+onMounted(() => {
+	const storedSortBy = safeLocalStorage.getItem('sortBy')
+	if (storedSortBy) sortBy.value = storedSortBy
+
+	const storedSortOrder = safeLocalStorage.getItem('sortOrder') as '' | 'asc' | 'desc'
+	if (storedSortOrder) sortOrder.value = storedSortOrder
+
+	const storedView = safeLocalStorage.getItem('view') as 'grid' | 'list'
+	if (storedView) view.value = storedView
+})
 
 const setView = (newView: 'grid' | 'list') => {
 	view.value = newView
@@ -63,28 +92,36 @@ const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
 const selectedLanguage = ref<string>('')
 
-const configStore = useConfigStore()
-const { config, siteTitle } = toRefs(configStore)
+let configStore: ReturnType<typeof useConfigStore> | null = null
+const config = ref<Config | null>(null)
+const siteTitle = ref('')
 
-useHead({
-	title: siteTitle.value,
-})
-const description = `List of ${configStore.ghUsername}'s GitHub projects`
-useSeoMeta({
-	title: siteTitle.value,
-	description,
-	ogDescription: description,
-	ogTitle: siteTitle.value,
+onMounted(() => {
+	configStore = useConfigStore()
+	const storeRefs = toRefs(configStore)
+	config.value = storeRefs.config.value
+	siteTitle.value = storeRefs.siteTitle.value
+
+	useHead({
+		title: siteTitle.value,
+	})
+	const description = `List of ${configStore.ghUsername}'s GitHub projects`
+	useSeoMeta({
+		title: siteTitle.value,
+		description,
+		ogDescription: description,
+		ogTitle: siteTitle.value,
+	})
 })
 
 watch([sortBy, sortOrder, view], () => {
 	if (sortBy.value) {
-		localStorage.setItem('sortBy', sortBy.value)
+		safeLocalStorage.setItem('sortBy', sortBy.value)
 	} else {
-		localStorage.removeItem('sortBy')
+		safeLocalStorage.removeItem('sortBy')
 	}
-	localStorage.setItem('sortOrder', sortOrder.value)
-	localStorage.setItem('view', view.value)
+	safeLocalStorage.setItem('sortOrder', sortOrder.value)
+	safeLocalStorage.setItem('view', view.value)
 })
 
 const handleSortChange = (key: string) => {
