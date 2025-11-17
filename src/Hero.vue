@@ -3,7 +3,7 @@
 		class="hero prose dark:prose-invert p-6 pb-2 bg-white dark:bg-gray-800  shadow-md transition rounded flex flex-col items-center"
 		:class="{}">
 		<div ref="heroContent" v-html="parsedMarkdown"
-			:class="{ 'truncated-content': isTruncated && needsTruncation, 'text-center': config?.hero.center, 'text-left': !config?.hero.center }"
+			:class="{ 'truncated-content': isTruncated && needsTruncation, 'text-center': config.hero.center, 'text-left': !config.hero.center }"
 			@click="isTruncated && needsTruncation && toggleTruncate()">
 		</div>
 		<div v-if="needsTruncation" @click="toggleTruncate" class="w-full py-2 cursor-pointer">
@@ -16,10 +16,9 @@
 	</section>
 </template>
 <script setup lang="ts">
-import { ref, watch, toRefs, nextTick, onMounted } from 'vue'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
-import { useConfigStore, Config } from './stores/config'
+import { ref, watch, nextTick, onMounted, inject } from 'vue'
+import { Config } from './types';
+import { sanitizeMd } from './utils';
 
 const TRUNCATE_HEIGHT = 300;
 const isTruncated = ref(true);
@@ -44,14 +43,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-let configStore: ReturnType<typeof useConfigStore> | null = null
-const config = ref<Config | null>(null)
-
-onMounted(() => {
-	configStore = useConfigStore()
-	const { config: storeConfig } = toRefs(configStore)
-	config.value = storeConfig.value
-})
+const config = inject('config') as Config
 
 const parsedMarkdown = ref('');
 
@@ -60,8 +52,7 @@ watch(() => props.source, async (newSource) => {
 		parsedMarkdown.value = ''
 		return
 	}
-	const html = await marked.parse(newSource)
-	parsedMarkdown.value = DOMPurify.sanitize(html)
+	parsedMarkdown.value = await sanitizeMd(newSource)
 	await nextTick(); // Ensure DOM is updated before checking scrollHeight
 	checkTruncation();
 }, { immediate: true })

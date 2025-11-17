@@ -48,21 +48,14 @@
 </template>
 <script setup lang="ts">
 import { Clock, Calendar } from 'lucide-vue-next'
-import { useConfigStore } from '../../stores/config'
-import type { Repo, ReadmeManifestItem } from '../../types'
+import type { Repo, ReadmeManifestItem, Config } from '../../types'
 import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
 import TopicBadge from './TopicBadge.vue'
 import CardFooter from './CardFooter.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import ExpandableReadme from './ExpandableReadme.vue'
 import { Tippy } from 'vue-tippy'
-
-let cfg: ReturnType<typeof useConfigStore> | null = null
-
-onMounted(() => {
-	cfg = useConfigStore()
-})
 
 interface Props {
 	repo: Repo
@@ -74,6 +67,9 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
+
+const config = inject('config') as Config
+const ghUsername = inject('ghUsername') as string
 
 const isReadmeExanded = ref(false)
 const readmeContent = ref<string | null>(null)
@@ -104,8 +100,7 @@ const toggleReadme = () => {
 }
 
 const linkLabel = computed(() => {
-	if (!cfg) return `Link to project called ${props.repo.name}`
-	return `Link to ${cfg.ghUsername}'s project called ${props.repo.name}`
+	return `Link to ${ghUsername}'s project called ${props.repo.name}`
 })
 const linkTooltipCfg = computed(() => ({
 	content: `Go to ${props.repo.name} on GitHub`,

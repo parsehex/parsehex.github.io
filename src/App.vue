@@ -5,10 +5,8 @@
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
 		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
-			<!-- <div class="flex items-center space-x-4"> -->
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />
-			<!-- </div> -->
 			<LanguageFilter :selected-language="selectedLanguage" :all-languages="allLanguages"
 				@update:selectedLanguage="selectedLanguage = $event" />
 			<ViewToggle :view="view" @view-change="setView" />
@@ -25,22 +23,28 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, toRefs } from 'vue'
-import { useHead, useSeoMeta } from '@unhead/vue'
+import './index.css';
+import { ref, onMounted, watch, computed, provide } from 'vue'
+import Header from './Header.vue'
 import Hero from './Hero.vue'
 import heroMd from './hero.md?raw'
 import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
-import Header from './Header.vue'
 import Footer from './Footer.vue'
 import ReadmeModal from './components/repo/ReadmeModal.vue'
-import { ReadmeManifestItem, Repo, SortOption } from './types'
+import { Config, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
-import { useConfigStore, Config } from './stores/config'
 import TopicFilter from './components/TopicFilter.vue'
 import LanguageFilter from './components/LanguageFilter.vue'
+
+interface Props {
+	config: Config
+	ghUsername: string
+}
+
+const props = defineProps<Props>()
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -92,27 +96,18 @@ const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
 const selectedLanguage = ref<string>('')
 
-let configStore: ReturnType<typeof useConfigStore> | null = null
-const config = ref<Config | null>(null)
-const siteTitle = ref('')
+const siteTitle = computed(() => {
+	if (!props.config) return '';
 
-onMounted(() => {
-	configStore = useConfigStore()
-	const storeRefs = toRefs(configStore)
-	config.value = storeRefs.config.value
-	siteTitle.value = storeRefs.siteTitle.value
+	let title = '';
 
-	useHead({
-		title: siteTitle.value,
-	})
-	const description = `List of ${configStore.ghUsername}'s GitHub projects`
-	useSeoMeta({
-		title: siteTitle.value,
-		description,
-		ogDescription: description,
-		ogTitle: siteTitle.value,
-	})
-})
+	// if the key hasn't been set, use old value
+	if (props.config.siteTitle === undefined) title = "{username}'s Sites";
+	else title = props.config.siteTitle;
+
+	// replace {username} with actual username
+	return title.replace(/\{username\}/g, props.ghUsername);
+});
 
 watch([sortBy, sortOrder, view], () => {
 	if (sortBy.value) {
@@ -208,6 +203,11 @@ const allLanguages = computed(() => {
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
+
+// Provide config and ghUsername to all child components
+provide('config', props.config)
+provide('ghUsername', props.ghUsername)
+provide('siteTitle', siteTitle)
 </script>
 <style>
 button.readme.narrow span {
