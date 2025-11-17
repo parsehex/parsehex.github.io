@@ -4,15 +4,16 @@ import tailwindcss from '@tailwindcss/vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
+	define: {
+		__DEV__: process.env.NODE_ENV === 'development',
+		VITE_GITHUB_ACTOR: process.env.VITE_GITHUB_ACTOR,
+	},
 	integrations: [
 		vue({
 			appEntrypoint: '/src/main.ts',
 		}),
 	],
 	vite: {
-		define: {
-			__DEV__: process.env.NODE_ENV === 'development',
-		},
 		plugins: [tailwindcss(), nodePolyfills()],
 		build: {
 			rollupOptions: {
