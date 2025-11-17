@@ -14,9 +14,12 @@ async function getDOMPurify() {
 	}
 }
 
+export async function sanitizeHtml(html: string) {
+	return (await getDOMPurify()).sanitize(html);
+}
 export async function sanitizeMd(md: string) {
 	const html = await marked.parse(md);
-	return (await getDOMPurify()).sanitize(html);
+	return sanitizeHtml(html);
 }
 
 export function getColor(lang: string) {

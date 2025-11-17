@@ -8,12 +8,18 @@
 	</footer>
 </template>
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, inject, onMounted, ref, watch } from 'vue'
 import DOMPurify from 'dompurify'
 import type { Config } from './types'
+import { sanitizeHtml } from './utils';
 
 const config = inject('config') as Config
 
-const footerText = computed(() => config.footer.text ? DOMPurify.sanitize(config.footer.text) : '')
+const footerText = ref('');
 const includeGitCaseLink = computed(() => config.footer.includeGitCaseLink !== false)
+
+onMounted(async () => {
+	const val = await sanitizeHtml(config.footer.text)
+	footerText.value = val || ''
+});
 </script>

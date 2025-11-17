@@ -25,6 +25,7 @@
 import { ref, watch } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
+import { sanitizeMd } from 'src/utils'
 
 interface Props {
 	isExpanded: boolean
@@ -44,8 +45,7 @@ watch(() => props.readmeContent, async (newContent) => {
 		parsedReadmeContent.value = ''
 		return
 	}
-	const html = await marked.parse(newContent)
-	parsedReadmeContent.value = DOMPurify.sanitize(html)
+	parsedReadmeContent.value = await sanitizeMd(newContent)
 }, { immediate: true })
 </script>
 <style scoped>
