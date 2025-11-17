@@ -7,6 +7,7 @@
 A ready-to-fork project that deploys a zero-maintenance landing page to your GitHub Pages site. Your repositories are showcased and updated automatically via GitHub Actions.
 
 > [!NOTE]
+>
 > **See any potential here? Let me know / Spread the word!**
 >
 > I've been restoring + refurbishing my projects but I need users and feedback. If you have any interest in using this project, please get in touch via the _**Issues**_ tab or one of the links under _**Sponsor this project**_ to the right. [My profile](https://github.com/parsehex) may have updated contact info.
@@ -31,7 +32,7 @@ There's always improvements to make, but we have a decent score already:
 
 ## Documentation
 
-For detailed setup instructions, configuration options, and development information, visit the [documentation site](https://projectdepot.github.io/Gallery-docs/).
+For detailed setup instructions, configuration options, and development information, visit the [documentation site](https://projectdepot.github.io/Gallery/).
 
 ## Key Features
 

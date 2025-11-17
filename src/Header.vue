@@ -11,7 +11,7 @@
 			</div>
 		</div>
 		<div v-if="cfg.links && cfg.links.length > 0" class="flex justify-center space-x-4 py-2">
-			<a v-for="link in cfg.links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer"
+			<a v-for="link in cfg.links" :key="link.url" :href="link.url" target="_blank" rel="me noopener noreferrer"
 				class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 flex items-center space-x-1" :aria-label="`Link to ${cfg.ghUsername}${link.name ? ' on ' + link.name : ''}`">
 				<Tippy :content="link.icon ? link.name : ''" placement="bottom">
 					<Icon v-if="link.icon" :name="link.icon" />
