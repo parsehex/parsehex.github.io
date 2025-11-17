@@ -3,7 +3,7 @@
 		<p v-if="footerText" v-html="footerText"></p>
 		<p v-if="includeGitCaseLink" class="text-xs"> Showcase your GitHub repositories with <a
 				href="https://github.com/ProjectDepot/Gallery" target="_blank" rel="noopener noreferrer"
-				class="underline hover:text-blue-500"> Project Depot Gallery </a>
+				class="underline hover:text-blue-500"> ProjectDepot Gallery </a>
 		</p>
 	</footer>
 </template>
