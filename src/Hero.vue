@@ -85,9 +85,11 @@ onMounted(() => {
 	/* Allow clicks to pass through to the indicator */
 }
 
-.dark .truncated-content::after {
-	background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(31, 41, 55, 0));
-	/* Dark mode background */
+@media (prefers-color-scheme: dark) {
+	.truncated-content::after {
+		background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(0, 0, 0, 0));
+		/* Dark mode background */
+	}
 }
 
 h1,
