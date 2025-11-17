@@ -8,6 +8,9 @@ on:
     - cron: '0 0 * * *' # Runs daily at midnight UTC
   workflow_dispatch: # Allow manual triggering
 
+permissions:
+  contents: write
+
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
@@ -20,17 +23,23 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '22'
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
       - name: Fetch Repos
         run: npm run fetch-data ${{ github.actor }}
+        if: github.repository != 'ProjectDepot/Gallery'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
+      - name: Build Gallery
         run: npm run build
+        if: github.repository != 'ProjectDepot/Gallery'
         env:
           VITE_GITHUB_ACTOR: ${{ github.actor }}
+      - name: Build Docs
+        run: npm run docs:build
+        if: github.repository == 'ProjectDepot/Gallery'
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ${{ github.repository == 'ProjectDepot/Gallery' && './docs/.vitepress/dist' || './dist' }}
