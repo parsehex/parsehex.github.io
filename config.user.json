@@ -15,6 +15,11 @@
   },
   "extraRepos": ["ProjectDepot/Gallery", "ProjectDepot/vue-node-sqlite-starter"],
   "links": [
+    {
+      "name": "Mastodon",
+      "icon": "brand-mastodon",
+      "url": "https://indieweb.social/@parsehex"
+    },
     { 
       "name": "GitHub",
       "icon": "brand-github",
