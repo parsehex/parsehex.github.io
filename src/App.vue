@@ -5,16 +5,14 @@
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
 		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
-			<!-- <div class="flex items-center space-x-4"> -->
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />
-			<!-- </div> -->
 			<LanguageFilter :selected-language="selectedLanguage" :all-languages="allLanguages"
 				@update:selectedLanguage="selectedLanguage = $event" />
-				<ViewToggle :view="view" @view-change="setView" />
+			<ViewToggle :view="view" @view-change="setView" />
 		</div>
 		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
-		@update:selectedTopics="selectedTopics = $event" />
+			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
 			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
 				@readme-click="openReadmeModal" />
@@ -25,22 +23,28 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, toRefs } from 'vue'
-import { useHead, useSeoMeta } from '@unhead/vue'
+import './index.css';
+import { ref, onMounted, watch, computed, provide } from 'vue'
+import Header from './Header.vue'
 import Hero from './Hero.vue'
 import heroMd from './hero.md?raw'
 import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
-import Header from './Header.vue'
 import Footer from './Footer.vue'
 import ReadmeModal from './components/repo/ReadmeModal.vue'
-import { ReadmeManifestItem, Repo, SortOption } from './types'
+import { Config, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
-import { useConfigStore } from './stores/config'
 import TopicFilter from './components/TopicFilter.vue'
 import LanguageFilter from './components/LanguageFilter.vue'
+
+interface Props {
+	config: Config
+	ghUsername: string
+}
+
+const props = defineProps<Props>()
 
 const sortOptions = [
 	{ key: 'pushed_at', label: 'Pushed' },
@@ -48,10 +52,39 @@ const sortOptions = [
 	{ key: 'created_at', label: 'Created' },
 ] as SortOption[]
 
-const sortBy = ref<string>(localStorage.getItem('sortBy') || 'latest_update')
-const sortOrder = ref<'' | 'asc' | 'desc'>((localStorage.getItem('sortOrder') as '' | 'asc' | 'desc') || '')
+const safeLocalStorage = {
+	getItem: (key: string) => {
+		if (typeof window !== 'undefined') {
+			return localStorage.getItem(key)
+		}
+		return null
+	},
+	setItem: (key: string, value: string) => {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem(key, value)
+		}
+	},
+	removeItem: (key: string) => {
+		if (typeof window !== 'undefined') {
+			localStorage.removeItem(key)
+		}
+	}
+}
 
-const view = ref<'grid' | 'list'>((localStorage.getItem('view') as 'grid' | 'list') || 'grid')
+const sortBy = ref<string>('latest_update')
+const sortOrder = ref<'' | 'asc' | 'desc'>('')
+const view = ref<'grid' | 'list'>('grid')
+
+onMounted(() => {
+	const storedSortBy = safeLocalStorage.getItem('sortBy')
+	if (storedSortBy) sortBy.value = storedSortBy
+
+	const storedSortOrder = safeLocalStorage.getItem('sortOrder') as '' | 'asc' | 'desc'
+	if (storedSortOrder) sortOrder.value = storedSortOrder
+
+	const storedView = safeLocalStorage.getItem('view') as 'grid' | 'list'
+	if (storedView) view.value = storedView
+})
 
 const setView = (newView: 'grid' | 'list') => {
 	view.value = newView
@@ -63,28 +96,27 @@ const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
 const selectedLanguage = ref<string>('')
 
-const configStore = useConfigStore()
-const { config, siteTitle } = toRefs(configStore)
+const siteTitle = computed(() => {
+	if (!props.config) return '';
 
-useHead({
-	title: siteTitle.value,
-})
-const description = `List of ${configStore.ghUsername}'s GitHub projects`
-useSeoMeta({
-	title: siteTitle.value,
-	description,
-	ogDescription: description,
-	ogTitle: siteTitle.value,
-})
+	let title = '';
+
+	// if the key hasn't been set, use old value
+	if (props.config.siteTitle === undefined) title = "{username}'s Sites";
+	else title = props.config.siteTitle;
+
+	// replace {username} with actual username
+	return title.replace(/\{username\}/g, props.ghUsername);
+});
 
 watch([sortBy, sortOrder, view], () => {
 	if (sortBy.value) {
-		localStorage.setItem('sortBy', sortBy.value)
+		safeLocalStorage.setItem('sortBy', sortBy.value)
 	} else {
-		localStorage.removeItem('sortBy')
+		safeLocalStorage.removeItem('sortBy')
 	}
-	localStorage.setItem('sortOrder', sortOrder.value)
-	localStorage.setItem('view', view.value)
+	safeLocalStorage.setItem('sortOrder', sortOrder.value)
+	safeLocalStorage.setItem('view', view.value)
 })
 
 const handleSortChange = (key: string) => {
@@ -171,6 +203,11 @@ const allLanguages = computed(() => {
 
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
+
+// Provide config and ghUsername to all child components
+provide('config', props.config)
+provide('ghUsername', props.ghUsername)
+provide('siteTitle', siteTitle)
 </script>
 <style>
 button.readme.narrow span {

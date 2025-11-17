@@ -8,13 +8,12 @@
 	</footer>
 </template>
 <script setup lang="ts">
-import { computed, toRefs } from 'vue'
+import { computed, inject } from 'vue'
 import DOMPurify from 'dompurify'
-import { useConfigStore } from './stores/config'
+import type { Config } from './types'
 
-const configStore = useConfigStore()
-const { config } = toRefs(configStore)
+const config = inject('config') as Config
 
-const footerText = computed(() => config.value?.footer.text ? DOMPurify.sanitize(config.value?.footer.text) : '')
-const includeGitCaseLink = computed(() => config.value?.footer.includeGitCaseLink !== false)
+const footerText = computed(() => config.footer.text ? DOMPurify.sanitize(config.footer.text) : '')
+const includeGitCaseLink = computed(() => config.footer.includeGitCaseLink !== false)
 </script>

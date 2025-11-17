@@ -1,5 +1,23 @@
 import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import langColors from './lang-colors.json';
+
+async function getDOMPurify() {
+	try {
+		DOMPurify.sanitize('<div>test</div>');
+		return DOMPurify;
+	} catch (e: any) {
+		const { JSDOM } = await import('jsdom');
+		const window = new JSDOM('').window;
+		return DOMPurify(window);
+	}
+}
+
+export async function sanitizeMd(md: string) {
+	const html = await marked.parse(md);
+	return (await getDOMPurify()).sanitize(html);
+}
 
 export function getColor(lang: string) {
 	// @ts-expect-error n/a

@@ -1,3 +1,23 @@
+export interface Config {
+	header: boolean;
+	siteTitle: string;
+	headerText: string;
+	hero: {
+		src: string;
+		center: boolean;
+	};
+	display: {
+		view: string;
+	};
+	footer: {
+		text: string;
+		includeGitCaseLink: boolean;
+	};
+	extraRepos?: string[];
+	links?: Link[];
+	lastUpdated?: string;
+}
+
 export interface LangColor {
 	color: string;
 	url: string;
@@ -26,6 +46,7 @@ export interface Repo {
 		label: string;
 		value: string;
 	};
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	languages?: { [key: string]: any };
 	[key: string]: unknown;
 }
