@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: Project Depot Gallery
+  name: ProjectDepot Gallery
   text: Zero-maintenance landing page for your GitHub repositories
   tagline: Show off your projects without spending more time
   actions:
