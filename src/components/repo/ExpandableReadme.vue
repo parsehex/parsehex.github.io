@@ -25,7 +25,7 @@
 import { ref, watch } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import { sanitizeMd } from 'src/utils'
+import { sanitizeMd } from '../../utils'
 
 interface Props {
 	isExpanded: boolean
