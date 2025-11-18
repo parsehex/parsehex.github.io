@@ -1,7 +1,7 @@
 <template>
 	<div class="mx-auto p-4">
 		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
-			<Header v-if="config?.header" class="md:w-1/4 md:mt-4" />
+			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
 			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
 		</div>
 		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
@@ -32,7 +32,7 @@ import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
 import Footer from './Footer.vue'
 import ReadmeModal from './components/repo/ReadmeModal.vue'
-import { Config, Repo, SortOption } from './types'
+import { Config, GHProfile, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
@@ -41,6 +41,7 @@ import LanguageFilter from './components/LanguageFilter.vue'
 
 interface Props {
 	config: Config
+	profile: GHProfile
 	ghUsername: string
 }
 
@@ -204,8 +205,9 @@ const allLanguages = computed(() => {
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
 
-// Provide config and ghUsername to all child components
+// Provide props to all child components
 provide('config', props.config)
+provide('profile', props.profile)
 provide('ghUsername', props.ghUsername)
 provide('siteTitle', siteTitle)
 </script>

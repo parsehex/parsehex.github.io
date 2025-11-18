@@ -25,6 +25,7 @@ dist-ssr
 
 lang-colors.json
 repos.json
+profile.json
 .env
 public/readmes
 public/readme-images
