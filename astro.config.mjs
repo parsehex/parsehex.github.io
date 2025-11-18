@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
 import vue from '@astrojs/vue';
 import tailwindcss from '@tailwindcss/vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-console.log('Using username', process.env.VITE_GITHUB_ACTOR);
+const env = loadEnv('', process.cwd());
+console.log('Using username', env.VITE_GITHUB_ACTOR);
 
 export default defineConfig({
 	integrations: [
@@ -14,7 +16,9 @@ export default defineConfig({
 	vite: {
 		define: {
 			__DEV__: process.env.NODE_ENV === 'development',
-			VITE_GITHUB_ACTOR: process.env.VITE_GITHUB_ACTOR,
+			GITHUB_ACTOR: JSON.stringify(
+				env.VITE_GITHUB_ACTOR || process.env.VITE_GITHUB_ACTOR || 'gh_username'
+			),
 		},
 		plugins: [tailwindcss(), nodePolyfills()],
 		build: {

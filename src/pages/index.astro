@@ -2,7 +2,7 @@
 import App from '../App.vue';
 import config from '../config.json';
 
-const ghUsername = import.meta.env.VITE_GITHUB_ACTOR || 'your_username';
+const ghUsername = GITHUB_ACTOR || 'your_username';
 
 let siteTitle = '';
 if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
@@ -24,7 +24,7 @@ const description = `List of ${ghUsername}'s GitHub projects`;
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
     <div id="app">
-      <App client:load config={config} ghUsername={import.meta.env.VITE_GITHUB_ACTOR || 'your_username'} />
+      <App client:load config={config} ghUsername={ghUsername} />
     </div>
   </body>
 </html>
