@@ -19,7 +19,7 @@ features:
   - title: Smart Filtering
     details: Displays repositories with homepage URLs by default, with full customization options.
   - title: Modern UI
-    details: Interactive layout with sorting options, built with Vue, TypeScript, and Vite.
+    details: Interactive layout with sorting options, built with Astro, Vue, TypeScript, and Tailwind.
 ---
 
 # Quick Start

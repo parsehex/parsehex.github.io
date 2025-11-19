@@ -45,7 +45,7 @@ If you want to run the project locally:
    npm run dev
    ```
 
-The application will be available at `http://localhost:5173`.
+The application will be available at `http://localhost:4321`.
 
 ## Available Scripts
 
@@ -63,12 +63,14 @@ The application will be available at `http://localhost:5173`.
 ```text
 ├── src/                    # Main application source
 │   ├── components/         # Vue components
+│   ├── pages/             # Astro pages
 │   ├── stores/            # Pinia stores
 │   ├── types/             # TypeScript type definitions
 │   └── utils/             # Utility functions
 ├── docs/                  # Documentation (VitePress)
 ├── scripts/               # Build and data fetching scripts
 ├── public/                # Static assets
+├── astro.config.mjs       # Astro configuration
 └── config.*.json          # Configuration files
 ```
 

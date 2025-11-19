@@ -39,7 +39,7 @@ For detailed setup instructions, configuration options, and development informat
 - **Automatic updates** via GitHub Actions – set-and-forget
 - **Smart filtering** – displays repositories with homepage URLs by default
 - **Fully customizable** – control which repos to show and how they appear
-- **Modern UI** – built with Vue, TypeScript, and Vite
+- **Modern UI** – built with Astro, Vue, TypeScript, and Tailwind
 
 ## License
 
