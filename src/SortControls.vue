@@ -2,11 +2,13 @@
 	<div class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
 		<label> Sort by: <select v-model="localSortBy" @change="onSortChange($event)"
 				class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded ml-2">
+				<option value=""> </option>
 				<option v-for="option in sortOptions" :key="option.key" :value="option.key"> {{ option.label }} </option>
 			</select>
 		</label>
 		<button @click="onSortChange(sortBy)"
-			class="flex items-center p-1 rounded bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition" :aria-label="sortLabel">
+			class="flex items-center p-1 rounded bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+			:aria-label="sortLabel">
 			<ArrowUpDown v-if="!sortOrder" class="w-4 h-4" />
 			<ArrowUp v-else-if="sortOrder === 'asc'" class="w-4 h-4" />
 			<ArrowDown v-else class="w-4 h-4" />
