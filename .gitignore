@@ -37,3 +37,10 @@ src/config.json
 scripts/repo-filter.js
 /docs/.vitepress/cache
 /.astro
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
