@@ -43,6 +43,7 @@ interface Props {
 	config: Config
 	profile: GHProfile
 	ghUsername: string
+	projectPages: string[]
 }
 
 const props = defineProps<Props>()

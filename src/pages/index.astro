@@ -3,6 +3,8 @@ import App from '../App.vue';
 import config from '../config.json';
 import profile from '../profile.json';
 
+import { getCollection } from 'astro:content';
+
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
 let siteTitle = '';
@@ -11,6 +13,9 @@ else siteTitle = config.siteTitle;
 siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
 
 const description = `List of ${ghUsername}'s GitHub projects`;
+
+const projects = await getCollection('projects');
+const projectPages = projects.map(p => p.slug) as string[];
 ---
 
 <html lang="en-US">
@@ -25,7 +30,7 @@ const description = `List of ${ghUsername}'s GitHub projects`;
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
     <div id="app">
-      <App client:load config={config} profile={profile} ghUsername={ghUsername} />
+      <App client:load config={config} profile={profile} ghUsername={ghUsername} projectPages={projectPages} />
     </div>
   </body>
 </html>

@@ -69,6 +69,7 @@ export interface SortOption {
 export interface Repo {
 	id: number;
 	name: string;
+	full_name: string;
 	description: string;
 	language: string;
 	created_at: string;

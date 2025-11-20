@@ -14,6 +14,8 @@
 			<GitBranch class="w-4 h-4" />
 			<span>{{ repo.forks_count }}</span>
 		</Tippy>
+		<a v-if="hasProjectPage" :href="`/projects/${projectPageSlug}`"
+			class="text-blue-500 dark:text-blue-400 hover:border-b" title="View Project Page"> Learn more </a>
 		<a v-if="repo.homepage" :href="repo.homepage" target="_blank" rel="noopener noreferrer"
 			class="grow w-full text-blue-500 dark:text-blue-400 hover:border-b">
 			<span>{{ repo.homepage }}</span>
@@ -21,9 +23,9 @@
 	</div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { Tippy } from 'vue-tippy';
-import { Star, GitBranch, BookOpen } from 'lucide-vue-next'
+import { Star, GitBranch, BookOpen, Layout } from 'lucide-vue-next'
 import type { Repo, ReadmeManifestItem } from '../../types'
 
 interface Props {
@@ -37,6 +39,23 @@ const emit = defineEmits<{
 	'readme-click': [repo: Repo]
 }>()
 
+const projectPages = inject('projectPages') as string[]
+
+const projectPageSlug = computed(() => {
+	if (!projectPages) return null
+	if (projectPages.includes(props.repo.name)) return props.repo.name
+
+	const fullNameSlug = props.repo.full_name.replace('/', '-').toLowerCase()
+	if (projectPages.includes(fullNameSlug)) return fullNameSlug
+
+	// Also try preserving case just in case
+	const fullNameSlugCase = props.repo.full_name.replace('/', '-')
+	if (projectPages.includes(fullNameSlugCase)) return fullNameSlugCase
+
+	return null
+})
+
+const hasProjectPage = computed(() => !!projectPageSlug.value)
 const hasReadme = computed(() => props.readmeManifest.some(item => item.repo === props.repo.name && item.success))
 const starsTooltip = computed(() => {
 	const s = props.repo.stargazers_count > 1 ? 's' : ''
