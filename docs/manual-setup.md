@@ -4,8 +4,7 @@ These instructions are for those who don't want to use GitHub's [Fork](https://d
 
 ## Prerequisites
 
-- You should have [Git](https://git-scm.com/install/) installed.
-- I'm also using [GitHub Desktop](https://desktop.github.com/download/) - optional.
+You should have [Git](https://git-scm.com/install/) and [nm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
 ## Initial Setup
 

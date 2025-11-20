@@ -22,7 +22,9 @@ features:
     details: Interactive layout with sorting options, built with Astro, Vue, TypeScript, and Tailwind.
 ---
 
-# Quick Start
+<br />
+
+## Quick Start
 
 1. Fork the repository with the name `USERNAME.github.io` using your GitHub username
 2. Enable GitHub Actions workflow

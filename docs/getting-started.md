@@ -1,6 +1,9 @@
-# Getting Started
+# Get Started with ProjectDepot Gallery
 
 ## Setup
+
+> [!TIP]
+> You can also [setup manually](./manual-setup).
 
 1. **Fork this repository** and use the name `USERNAME.github.io` -- replace USERNAME with your GitHub profile's name.
 

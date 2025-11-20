@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
 			'Documentation for ProjectDepot Gallery - a zero-maintenance landing page for your GitHub repositories',
 		themeConfig: {
 			nav: [
-				{ text: 'Getting Started', link: '/getting-started' },
+				{ text: 'Get Started', link: '/getting-started' },
 				{ text: 'Configuration', link: '/configuration' },
 				{ text: 'Development', link: '/development' },
 			],
