@@ -58,7 +58,13 @@ git remote add upstream https://github.com/ProjectDepot/Gallery.git
 git push -u origin main
 ```
 
-7. Enable GitHub Pages by going to your repo's **Settings -> Pages** and set the Branch to `gh-pages`.
+7.
+
+```bash
+git config pull.rebase false
+```
+
+8. Enable GitHub Pages by going to your repo's **Settings -> Pages** and set the Branch to `gh-pages`.
 
 ## Updating
 

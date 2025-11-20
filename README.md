@@ -22,7 +22,7 @@ Done! Your portfolio will be live and updating automatically.
 
 ## Demo
 
-I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>
+I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>. It's also used for [ProjectDepot.github.io](https://projectdepot.github.io/).
 
 ### Lighthouse Score
 
