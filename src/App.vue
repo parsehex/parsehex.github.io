@@ -2,7 +2,9 @@
 	<div class="mx-auto p-4">
 		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
 			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
-			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
+			<div class="md:w-1/2">
+				<slot name="hero"></slot>
+			</div>
 		</div>
 		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
@@ -26,8 +28,7 @@
 import './index.css';
 import { ref, onMounted, watch, computed, provide } from 'vue'
 import Header from './Header.vue'
-import Hero from './Hero.vue'
-import heroMd from './hero.md?raw'
+// Hero injected via slot
 import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
 import Footer from './Footer.vue'
@@ -122,6 +123,11 @@ watch([sortBy, sortOrder, view], () => {
 })
 
 const handleSortChange = (key: string) => {
+	if (key === '') {
+		sortBy.value = 'latest_update'
+		sortOrder.value = ''
+		return
+	}
 	if (sortBy.value === key) {
 		sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
 	} else {
@@ -208,6 +214,7 @@ const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid
 
 // Provide props to all child components
 provide('config', props.config)
+provide('projectPages', props.projectPages)
 provide('profile', props.profile)
 provide('ghUsername', props.ghUsername)
 provide('siteTitle', siteTitle)
