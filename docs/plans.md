@@ -2,7 +2,7 @@
 
 ## Project Name
 
-The name ProjectDepot Gallery kind of sucks / is long, so I want to come u with something better.
+The name ProjectDepot Gallery kind of sucks / is long, so I want to come up with something better.
 
 ## Main Page
 
@@ -19,6 +19,11 @@ I'd like the user to be able to add extra content to the main page, such as a bi
 This would be a feature where you can create a page for listed projects which will be linked to from the main page.
 
 You would simply add a `<project-name>.md` file to the `content/projects` directory. Projects with one of these files would have a link to that page on the main page.
+
+**Update**: Early Implementation
+
+If you add a Markdown file named after your repository (e.g., `my-repo.md`) to the `content/projects` directory, a "Learn more" link will automatically appear for that project on the main page, directing users to this dedicated project page.
+
 
 ## New Config File
 
