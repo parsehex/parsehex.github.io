@@ -22,46 +22,65 @@ const center = config.hero.center;
   </div>
 </section>
 
-<script>
-  const TRUNCATE_HEIGHT = 300;
-  const content = document.getElementById('hero-content');
-  const toggle = document.getElementById('hero-toggle');
-  const arrow = document.getElementById('hero-arrow');
-  let isTruncated = true;
+<script is:inline>
+  (function() {
+    const TRUNCATE_HEIGHT = 300;
 
-  function checkTruncation() {
-    if (content && content.scrollHeight > TRUNCATE_HEIGHT) {
-      toggle?.classList.remove('hidden');
-      content.classList.add('truncated-content');
-    } else {
-      toggle?.classList.add('hidden');
-      content?.classList.remove('truncated-content');
+    function getElements() {
+      return {
+        content: document.getElementById('hero-content'),
+        toggle: document.getElementById('hero-toggle'),
+        arrow: document.getElementById('hero-arrow')
+      };
     }
-  }
 
-  function toggleTruncate() {
-    isTruncated = !isTruncated;
-    if (isTruncated) {
-      content?.classList.add('truncated-content');
-      arrow?.classList.remove('rotate-180');
-    } else {
-      content?.classList.remove('truncated-content');
-      arrow?.classList.add('rotate-180');
-    }
-  }
+    let isTruncated = true;
 
-  toggle?.addEventListener('click', toggleTruncate);
-  content?.addEventListener('click', () => {
-      if (isTruncated && content.scrollHeight > TRUNCATE_HEIGHT) {
-          toggleTruncate();
+    function checkTruncation() {
+      const { content, toggle } = getElements();
+      if (content && content.scrollHeight > TRUNCATE_HEIGHT) {
+        toggle?.classList.remove('hidden');
+        content.classList.add('truncated-content');
+      } else {
+        toggle?.classList.add('hidden');
+        content?.classList.remove('truncated-content');
       }
-  });
+    }
 
-  // Initial check
-  checkTruncation();
+    function toggleTruncate() {
+      const { content, arrow } = getElements();
+      isTruncated = !isTruncated;
+      if (isTruncated) {
+        content?.classList.add('truncated-content');
+        arrow?.classList.remove('rotate-180');
+      } else {
+        content?.classList.remove('truncated-content');
+        arrow?.classList.add('rotate-180');
+      }
+    }
 
-  // Re-check on window resize
-  window.addEventListener('resize', checkTruncation);
+    // Use event delegation to handle clicks even if DOM is updated by Vue
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.closest('#hero-toggle')) {
+        toggleTruncate();
+      } else if (target.closest('#hero-content')) {
+        const { content } = getElements();
+        // Only toggle if truncated and content is actually overflowing
+        if (isTruncated && content && content.scrollHeight > TRUNCATE_HEIGHT) {
+             toggleTruncate();
+        }
+      }
+    });
+
+    // Initial check
+    checkTruncation();
+
+    // Re-check when DOM is ready and on resize
+    window.addEventListener('DOMContentLoaded', checkTruncation);
+    window.addEventListener('load', checkTruncation);
+    window.addEventListener('resize', checkTruncation);
+  })();
 </script>
 
 <style>
