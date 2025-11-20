@@ -35,6 +35,5 @@ public/favicon.png
 src/hero.md
 src/config.json
 scripts/repo-filter.js
-config.user.json
 /docs/.vitepress/cache
 /.astro
