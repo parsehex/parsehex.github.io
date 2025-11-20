@@ -45,10 +45,12 @@ const props = defineProps<Props>()
 const config = props.config || inject('config') as Config
 const profile = props.profile || inject('profile') as GHProfile
 const ghUsername = props.ghUsername || inject('ghUsername') as string
-const siteTitleInj = inject('siteTitle') as Ref<string> | undefined
+const siteTitleInj = props.siteTitle || inject('siteTitle') as Ref<string> | string | undefined
 const siteTitle = computed(() => {
 	if (props.siteTitle) return typeof props.siteTitle === 'string' ? props.siteTitle : props.siteTitle.value
-	return siteTitleInj?.value || ''
+	if (typeof siteTitleInj === 'string') return siteTitleInj
+	if (siteTitleInj) return siteTitleInj.value
+	return ''
 })
 
 const linkHref = computed(() => {
