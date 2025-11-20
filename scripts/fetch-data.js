@@ -68,8 +68,7 @@ async function fetchRepos() {
 
 		// download profile json
 		const profileUrl = `https://api.github.com/users/${username}`;
-		const profileData = JSON.parse(await downloadFile(profileUrl, null));
-		writeFileSync(join(srcDir, 'profile.json'), profileData);
+		await downloadFile(profileUrl, join(srcDir, 'profile.json'));
 
 		// Read the config file to update it
 		let configContent = JSON.parse(readFileSync(destConfigPath, 'utf8'));
