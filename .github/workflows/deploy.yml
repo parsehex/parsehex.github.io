@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Fetch Repos
-        run: npm run fetch-data ${{ github.actor }}
+        run: npm run fetch-data ${{ github.repository_owner }}
         if: github.repository != 'ProjectDepot/Gallery'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,7 +34,7 @@ jobs:
         run: npm run build
         if: github.repository != 'ProjectDepot/Gallery'
         env:
-          VITE_GITHUB_ACTOR: ${{ github.actor }}
+          VITE_GITHUB_ACTOR: ${{ github.repository_owner }}
       - name: Build Docs
         run: npm run docs:build
         if: github.repository == 'ProjectDepot/Gallery'
