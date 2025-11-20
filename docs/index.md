@@ -38,3 +38,7 @@ That's it! Your repository gallery will be live and updating automatically. See 
 -   **Customizable**: Full control over which repositories to display.
 -   **Fast**: Built with modern web technologies for optimal performance.
 -   **Free**: Hosted on GitHub Pages with no additional costs.
+
+## Motivation
+
+Creating and maintaining a portfolio website can be a time-consuming task -- one that I personally push to the back burner often. I built PD Gallery to solve that problem by using a GitHub profile to populate the site.

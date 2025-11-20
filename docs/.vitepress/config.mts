@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
 				{ text: 'Get Started', link: '/getting-started' },
 				{ text: 'Configuration', link: '/configuration' },
 				{ text: 'Development', link: '/development' },
+				{ text: 'Plans', link: '/plans' },
 			],
 
 			socialLinks: [
