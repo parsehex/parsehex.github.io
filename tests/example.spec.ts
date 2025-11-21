@@ -9,13 +9,13 @@ test('has correct title', async ({ page }) => {
   await expect(page).toHaveTitle(expectedTitle);
 });
 
-test('hero section is visible and contains username', async ({ page }) => {
+test('header section is visible and contains username', async ({ page }) => {
   await page.goto('/');
 
-  // Expect the hero section to be visible
-  await expect(page.locator('.hero')).toBeVisible();
+  // Expect the header section to be visible
+  await expect(page.locator('header')).toBeVisible();
 
-  // Expect the hero to contain the username
+  // Expect the header to contain the username
   const username = getUsername();
-  await expect(page.locator('.hero')).toContainText(username);
+  await expect(page.locator('header')).toContainText(username);
 });
