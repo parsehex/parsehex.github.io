@@ -30,7 +30,8 @@ profile.json
 public/readmes
 public/readme-images
 src/readme-manifest.json
-public/avatar.png
+public/avatar*.png
+public/avatar*.webp
 public/favicon.png
 src/hero.md
 src/config.json

@@ -307,7 +307,7 @@ async function fetchAvatar() {
 	console.log('Fetching avatar for', username);
 	const avatarUrl = `https://github.com/${username}.png`;
 	const publicDir = join(__dirname, '..', 'public');
-	const avatarPath = join(publicDir, 'avatar.png');
+	const avatarPath = join(publicDir, 'avatar.webp');
 	const faviconPath = join(publicDir, 'favicon.png');
 
 	// Ensure the public directory exists
@@ -316,9 +316,23 @@ async function fetchAvatar() {
 	}
 
 	try {
-		const buffer = await downloadFile(avatarUrl, avatarPath, {
+		const buffer = await downloadFile(avatarUrl, null, {
 			isBinary: true,
 		});
+
+		// Save avatar as WebP (original size)
+		await sharp(buffer)
+			.webp()
+			.toFile(avatarPath);
+		console.log(`Avatar saved to ${avatarPath}`);
+
+		// Save avatar as WebP (150px)
+		const avatar150Path = join(publicDir, 'avatar-150.webp');
+		await sharp(buffer)
+			.resize(150)
+			.webp()
+			.toFile(avatar150Path);
+		console.log(`Avatar (150px) saved to ${avatar150Path}`);
 
 		// Generate favicon.png (32x32)
 		const faviconBuffer = await sharp(buffer)
