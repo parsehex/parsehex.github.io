@@ -24,7 +24,7 @@ If you want to run the project locally:
    - Set your GitHub username: `VITE_GITHUB_ACTOR=your_username`
 
    ::: info Note
-   When deployed via GitHub Actions, the workflow handles the configuration automatically.
+   When deployed via GitHub Actions, the workflow handles this configuration automatically.
    :::
 
 3. **Install dependencies**:
@@ -61,15 +61,18 @@ The application will be available at `http://localhost:4321`.
 ## Project Structure
 
 ```text
+├── .github/workflows/      # GitHub Actions workflows
+├── docs/                   # Documentation (VitePress)
+├── public/                # Static assets
+├── scripts/                # Build and data fetching scripts
 ├── src/                    # Main application source
 │   ├── components/         # Vue components
-│   ├── pages/             # Astro pages
-│   ├── stores/            # Pinia stores
-│   ├── types/             # TypeScript type definitions
-│   └── utils/             # Utility functions
-├── docs/                  # Documentation (VitePress)
-├── scripts/               # Build and data fetching scripts
-├── public/                # Static assets
+│   ├── content/projects/   # Project pages (markdown files)
+│   ├── pages/              # Astro pages
+│   ├── types/              # TypeScript type definitions
+│   ├── App.vue             # Vue main page entry point
+│   ├── main.ts             # Vue main page entry point script
+│   └── utils.ts            # Utility functions
 ├── astro.config.mjs       # Astro configuration
 └── config.*.json          # Configuration files
 ```
