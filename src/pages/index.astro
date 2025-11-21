@@ -21,6 +21,9 @@ const description = `List of ${ghUsername}'s GitHub projects`;
 
 const projects = await getCollection('projects');
 const projectPages = projects.map(p => p.slug) as string[];
+
+const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(56, 189, 248, 0.15)';
+const topRight = config.theme?.gradientColors?.topRight || 'rgba(168, 85, 247, 0.15)';
 ---
 
 <html lang="en-US">
@@ -32,6 +35,12 @@ const projectPages = projects.map(p => p.slug) as string[];
     <meta name="description" content={description} />
     <meta property="og:description" content={description} />
     <meta property="og:title" content={siteTitle} />
+    <style is:global define:vars={{topLeft, topRight}}>
+      :root {
+        --gradient-top-left: var(--topLeft);
+        --gradient-top-right: var(--topRight);
+      }
+    </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
     <div id="app">
