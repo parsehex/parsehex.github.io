@@ -14,6 +14,11 @@ export default defineConfig({
 		}),
 	],
 	vite: {
+		server: {
+			watch: {
+				ignored: ['**/docs/**'],
+			},
+		},
 		define: {
 			__DEV__: process.env.NODE_ENV === 'development',
 			GITHUB_ACTOR: JSON.stringify(

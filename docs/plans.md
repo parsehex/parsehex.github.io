@@ -14,6 +14,10 @@ I'd like to be able to group projects together in an optionally-collapsible sect
 
 I'd like the user to be able to add extra content to the main page, such as a bio or a list of links to other sites.
 
+## Demo Command/Mode
+
+It makes sense to me to have a script to generate an example set of content. This would be useful to see what can be done with the project.
+
 ## Project Pages
 
 This would be a feature where you can create a page for listed projects which will be linked to from the main page.

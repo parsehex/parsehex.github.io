@@ -18,5 +18,10 @@ export default defineConfig(({ mode }) => {
 				{ icon: 'github', link: 'https://github.com/ProjectDepot/Gallery' },
 			],
 		},
+		server: {
+			watch: {
+				ignored: ['**/src/**'],
+			},
+		},
 	};
 });
