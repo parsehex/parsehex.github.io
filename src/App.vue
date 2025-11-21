@@ -2,7 +2,7 @@
 	<div class="mx-auto p-4">
 		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
 			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
-			<div class="md:w-1/2">
+			<div v-if="hasHero" class="md:w-1/2">
 				<slot name="hero"></slot>
 			</div>
 		</div>
@@ -45,6 +45,7 @@ interface Props {
 	profile: GHProfile
 	ghUsername: string
 	projectPages: string[]
+	hasHero: boolean
 }
 
 const props = defineProps<Props>()

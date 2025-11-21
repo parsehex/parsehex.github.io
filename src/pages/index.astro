@@ -32,7 +32,7 @@ const projectPages = projects.map(p => p.slug) as string[];
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
     <div id="app">
-      <App client:load config={config} profile={profile} ghUsername={ghUsername} projectPages={projectPages}>
+      <App client:load config={config} profile={profile} ghUsername={ghUsername} projectPages={projectPages} hasHero={!!heroMd}>
         <Hero slot="hero" source={heroMd} />
       </App>
     </div>

@@ -12,6 +12,7 @@ const html = await sanitizeHtml(await marked.parse(source));
 const center = config.hero.center;
 ---
 
+{html && (
 <section class="hero prose dark:prose-invert p-6 pb-2 bg-white dark:bg-gray-800 shadow-md transition rounded flex flex-col items-center">
   <div id="hero-content" class:list={["truncated-content", { "text-center": center, "text-left": !center }]} set:html={html} />
 
@@ -21,6 +22,7 @@ const center = config.hero.center;
     </svg>
   </div>
 </section>
+)}
 
 <script is:inline>
   (function() {
