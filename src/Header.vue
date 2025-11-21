@@ -1,7 +1,7 @@
 <template>
 	<header class="text-center py-4 space-y-2">
 		<div class="flex items-center justify-center">
-			<img src="/avatar.png" alt="GitHub Avatar"
+			<img src="/avatar-150.webp" alt="GitHub Avatar"
 				class="w-20 h-20 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center"
 				:aria-label="'Profile avatar image for ' + ghUsername" />
 			<div class="flex flex-col text-left pl-4">
