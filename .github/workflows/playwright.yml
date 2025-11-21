@@ -19,7 +19,9 @@ jobs:
       run: npx playwright install --with-deps
 
     - name: Build for E2E Tests
-      run: npm run build
+      run: |
+        npm run fetch-data ${{ github.repository_owner }}
+        npm run build
 
     - name: Run Unit Tests
       run: npm test
