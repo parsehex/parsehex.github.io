@@ -1,10 +1,10 @@
 # ProjectDepot Gallery
 
-> You've already created your projects -- show them off without spending more time.
+> **Your GitHub Portfolio, On Autopilot.**
 
 ![ProjectDepot Gallery preview](/readme-images/pd_gallery-preview.png)
 
-A ready-to-fork project that deploys a zero-maintenance landing page to your GitHub Pages site. Your repositories are showcased and updated automatically via GitHub Actions.
+A zero-maintenance landing page that updates itself. Fork this repo, and it will automatically showcase your projects using GitHub Actions.
 
 > [!NOTE]
 >
@@ -14,15 +14,16 @@ A ready-to-fork project that deploys a zero-maintenance landing page to your Git
 
 ## Quick Start
 
-1. Fork this repository using the name `USERNAME.github.io`
-2. Enable the GitHub Actions workflow
-3. Configure GitHub Pages to deploy from the `gh-pages` branch
+1.  **Fork** this repository as `USERNAME.github.io`
+2.  **Enable** the GitHub Actions workflow
+3.  **Deploy** via GitHub Pages (source: `gh-pages` branch)
 
-Done! Your portfolio will be live and updating automatically.
+Done! Your portfolio is now live and will auto-update daily.
 
-## Demo
+## Examples
 
-I use this project for my own GitHub site, check it out here - <https://parsehex.github.io/>
+I use this project for my own GitHub site: <https://parsehex.github.io/>.
+It's also used for [ProjectDepot.github.io](https://projectdepot.github.io/).
 
 ### Lighthouse Score
 
@@ -32,14 +33,14 @@ There's always improvements to make, but we have a decent score already:
 
 ## Documentation
 
-For detailed setup instructions, configuration options, and development information, visit the [documentation site](https://projectdepot.github.io/Gallery/).
+For detailed setup instructions and customization options, visit the [documentation site](https://projectdepot.github.io/Gallery/).
 
 ## Key Features
 
-- **Automatic updates** via GitHub Actions – set-and-forget
-- **Smart filtering** – displays repositories with homepage URLs by default
-- **Fully customizable** – control which repos to show and how they appear
-- **Modern UI** – built with Astro, Vue, TypeScript, and Tailwind
+*   **Zero Maintenance:** Updates automatically via GitHub Actions.
+*   **Smart Filtering:** Showcases your best work (repos with homepage URLs) by default.
+*   **Fully Customizable:** Control exactly what gets displayed.
+*   **Modern Stack:** Built with Astro, Vue, TypeScript, and Tailwind.
 
 ## License
 
