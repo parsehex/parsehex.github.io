@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-import { mkdirSync, existsSync, writeFileSync, copyFileSync, readFileSync } from 'fs';
+import {
+	mkdirSync,
+	existsSync,
+	writeFileSync,
+	copyFileSync,
+	readFileSync,
+} from 'fs';
 import { join, basename, dirname } from 'path';
 import { downloadFile } from './utils.js';
 import * as url from 'url';
@@ -32,7 +38,9 @@ async function fetchRepos() {
 		const userConfigPath = join(__dirname, '..', 'config.user.json');
 		if (existsSync(userConfigPath)) {
 			try {
-				const userConfigStr = await import('fs').then(fs => fs.readFileSync(userConfigPath, 'utf8'));
+				const userConfigStr = await import('fs').then((fs) =>
+					fs.readFileSync(userConfigPath, 'utf8')
+				);
 				const userConfig = JSON.parse(userConfigStr);
 				extraReposData = userConfig.extraRepos || [];
 			} catch (error) {
@@ -57,6 +65,10 @@ async function fetchRepos() {
 		} catch (error) {
 			console.log(`Error copying config:`, error.message);
 		}
+
+		// download profile json
+		const profileUrl = `https://api.github.com/users/${username}`;
+		await downloadFile(profileUrl, join(srcDir, 'profile.json'));
 
 		// Read the config file to update it
 		let configContent = JSON.parse(readFileSync(destConfigPath, 'utf8'));
@@ -103,7 +115,10 @@ async function fetchRepos() {
 			getFilteredRepos = func;
 		} catch (e) {
 			if (!e.toString().includes('ERR_MODULE_NOT_FOUND'))
-				console.log('Did not find repo-filter.js and using default function - Error:', e);
+				console.log(
+					'Did not find repo-filter.js and using default function - Error:',
+					e
+				);
 			getFilteredRepos = getFilteredReposDefault;
 		}
 
@@ -139,22 +154,33 @@ async function fetchRepos() {
 		// Fetch languages for each repo
 		for (const repo of sites) {
 			try {
-				const [owner, repoName] = repo.name.includes('/') ? repo.name.split('/') : [username, repo.name];
+				const [owner, repoName] = repo.name.includes('/')
+					? repo.name.split('/')
+					: [username, repo.name];
 				const languagesUrl = `https://api.github.com/repos/${owner}/${repoName}/languages`;
 				const languagesStr = await downloadFile(languagesUrl, null);
 				const rawLanguages = JSON.parse(languagesStr);
 
-				const totalSize = Object.values(rawLanguages).reduce((acc, size) => acc + size, 0);
+				const totalSize = Object.values(rawLanguages).reduce(
+					(acc, size) => acc + size,
+					0
+				);
 				if (totalSize > 0) {
-					repo.languages = Object.entries(rawLanguages).reduce((acc, [lang, size]) => {
-						acc[lang] = (size / totalSize) * 100;
-						return acc;
-					}, {});
+					repo.languages = Object.entries(rawLanguages).reduce(
+						(acc, [lang, size]) => {
+							acc[lang] = (size / totalSize) * 100;
+							return acc;
+						},
+						{}
+					);
 				} else {
 					repo.languages = {};
 				}
 			} catch (error) {
-				console.log(`Error fetching languages for ${repo.name}:`, error.message);
+				console.log(
+					`Error fetching languages for ${repo.name}:`,
+					error.message
+				);
 				repo.languages = {};
 			}
 		}
@@ -191,9 +217,15 @@ async function processReadmeImages(repoFullName, readmeContent) {
 
 		try {
 			await downloadFile(imageUrl, imageFilePath, { isBinary: true });
-			updatedReadmeContent = updatedReadmeContent.replace(relativePath, `/readme-images/${imageName}`);
+			updatedReadmeContent = updatedReadmeContent.replace(
+				relativePath,
+				`/readme-images/${imageName}`
+			);
 		} catch (error) {
-			console.log(`Error downloading image ${imageUrl} for ${repoFullName}:`, error.message);
+			console.log(
+				`Error downloading image ${imageUrl} for ${repoFullName}:`,
+				error.message
+			);
 		}
 	}
 	return updatedReadmeContent;
@@ -212,16 +244,23 @@ async function fetchReadmes(repos) {
 
 	for (const repo of repos) {
 		try {
-			let repoId = !repo.name.includes('/') ? `${username}/${repo.name}` : repo.name;
+			let repoId = !repo.name.includes('/')
+				? `${username}/${repo.name}`
+				: repo.name;
 			const readmeUrl = `https://api.github.com/repos/${repoId}/readme`;
 
 			// Download README content as a string first
 			const readmeRawContent = await downloadFile(readmeUrl, null, {
-				accept: 'application/vnd.github.v3.raw'
+				accept: 'application/vnd.github.v3.raw',
 			});
 
-			const repoFullName = repo.name.includes('/') ? repo.name : `${username}/${repo.name}`;
-			const processedReadmeContent = await processReadmeImages(repoFullName, readmeRawContent);
+			const repoFullName = repo.name.includes('/')
+				? repo.name
+				: `${username}/${repo.name}`;
+			const processedReadmeContent = await processReadmeImages(
+				repoFullName,
+				readmeRawContent
+			);
 
 			repoId = repoId.replace(/\//g, '-');
 			const readmeFilePath = join(publicDir, `${repoId}.md`);
@@ -231,7 +270,7 @@ async function fetchReadmes(repos) {
 				repo: repo.name,
 				path: `/readmes/${repoId}.md`,
 				success: true,
-				timestamp: new Date().toISOString()
+				timestamp: new Date().toISOString(),
 			});
 		} catch (error) {
 			console.log(`No README found for ${repo.name}`);
@@ -240,7 +279,7 @@ async function fetchReadmes(repos) {
 				path: null,
 				success: false,
 				timestamp: new Date().toISOString(),
-				...(error.message && { error: error.message })
+				...(error.message && { error: error.message }),
 			});
 		}
 	}
@@ -253,7 +292,8 @@ async function fetchReadmes(repos) {
 
 async function fetchColors() {
 	console.log('Fetching lang-colors.json');
-	const colorsUrl = 'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json';
+	const colorsUrl =
+		'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json';
 	const outputPath = join(__dirname, '..', 'src', 'lang-colors.json');
 	try {
 		await downloadFile(colorsUrl, outputPath);
@@ -276,14 +316,16 @@ async function fetchAvatar() {
 	}
 
 	try {
-		const buffer = await downloadFile(avatarUrl, avatarPath, { isBinary: true });
+		const buffer = await downloadFile(avatarUrl, avatarPath, {
+			isBinary: true,
+		});
 
 		// Generate favicon.png (32x32)
 		const faviconBuffer = await sharp(buffer)
 			.resize(32, 32, {
 				kernel: sharp.kernel.nearest,
 				fit: 'contain',
-				background: { r: 255, g: 255, b: 255, alpha: 1 }
+				background: { r: 255, g: 255, b: 255, alpha: 1 },
 			})
 			.png()
 			.toBuffer();
@@ -304,11 +346,13 @@ async function fetchUserReadme() {
 
 	try {
 		await downloadFile(userReadmeUrl, outputPath, {
-			accept: 'application/vnd.github.v3.raw'
+			accept: 'application/vnd.github.v3.raw',
 		});
 		console.log(`User profile README saved to ${outputPath}`);
 	} catch (error) {
-		console.log(`No user profile README found for ${username}. Using a blank one.`);
+		console.log(
+			`No user profile README found for ${username}. Using a blank one.`
+		);
 		writeFileSync(outputPath, '');
 	}
 }

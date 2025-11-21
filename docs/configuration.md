@@ -19,7 +19,33 @@ To customize the app, create your own configuration file:
 {
 	"header": true,
 	"siteTitle": "{username}'s Sites",
-	"headerText": "A list of my projects that have a GitHub Pages site."
+	"headerText": "A list of my projects that have a GitHub Pages site.",
+	"links": [
+		{
+			"name": "Twitter",
+			"url": "https://twitter.com/username",
+			"icon": "brand-twitter"
+		}
+	]
+}
+```
+
+### Header Links
+
+You can add custom links to the header (e.g., social media profiles).
+
+- **name**: Tooltip text for the link.
+- **url**: The URL to link to.
+- **icon**: Optional icon name (from [Tabler Icons](https://tabler-icons.io/)). If omitted, the name is displayed.
+
+```json
+{
+	"links": [
+		{
+			"name": "Blog",
+			"url": "https://example.com"
+		}
+	]
 }
 ```
 
@@ -30,6 +56,16 @@ You can use your [GitHub profile README][GH-p-r] as your hero text by creating a
 For example I named mine `parsehex`, i.e. I have a repository called [`parsehex/parsehex`](https://github.com/parsehex/parsehex) that's just the README.
 
 [GH-p-r]: https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme
+
+You can also configure the alignment of the hero text:
+
+```json
+{
+	"hero": {
+		"center": true
+	}
+}
+```
 
 ### Display Mode
 

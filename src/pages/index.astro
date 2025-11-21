@@ -1,6 +1,14 @@
 ---
 import App from '../App.vue';
 import config from '../config.json';
+import profile from '../profile.json';
+
+import { getCollection } from 'astro:content';
+import Hero from '../components/Hero.astro';
+import heroMd from '../hero.md?raw';
+
+import '@fontsource/inter';
+import '@fontsource/outfit';
 
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
@@ -10,6 +18,12 @@ else siteTitle = config.siteTitle;
 siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
 
 const description = `List of ${ghUsername}'s GitHub projects`;
+
+const projects = await getCollection('projects');
+const projectPages = projects.map(p => p.slug) as string[];
+
+const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(56, 189, 248, 0.15)';
+const topRight = config.theme?.gradientColors?.topRight || 'rgba(168, 85, 247, 0.15)';
 ---
 
 <html lang="en-US">
@@ -21,10 +35,18 @@ const description = `List of ${ghUsername}'s GitHub projects`;
     <meta name="description" content={description} />
     <meta property="og:description" content={description} />
     <meta property="og:title" content={siteTitle} />
+    <style is:global define:vars={{topLeft, topRight}}>
+      :root {
+        --gradient-top-left: var(--topLeft);
+        --gradient-top-right: var(--topRight);
+      }
+    </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
     <div id="app">
-      <App client:load config={config} ghUsername={ghUsername} />
+      <App client:load config={config} profile={profile} ghUsername={ghUsername} projectPages={projectPages} hasHero={!!heroMd}>
+        <Hero slot="hero" source={heroMd} />
+      </App>
     </div>
   </body>
 </html>

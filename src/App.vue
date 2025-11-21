@@ -1,8 +1,10 @@
 <template>
 	<div class="mx-auto p-4">
 		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
-			<Header v-if="config?.header" class="md:w-1/4 md:mt-4" />
-			<Hero v-if="heroMd" :source="heroMd" class="md:w-1/2" />
+			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
+			<div v-if="hasHero" class="md:w-1/2">
+				<slot name="hero"></slot>
+			</div>
 		</div>
 		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
@@ -14,25 +16,21 @@
 		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
 			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
-			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
-				@readme-click="openReadmeModal" />
+			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view"
+				:readme-manifest="readmeManifest" />
 		</main>
 		<Footer />
-		<ReadmeModal v-if="view === 'grid'" :is-open="isReadmeModalOpen" @close="closeReadmeModal"
-			:repo-name="selectedRepo?.name || ''" :readme-content="readmeContent" />
 	</div>
 </template>
 <script setup lang="ts">
 import './index.css';
 import { ref, onMounted, watch, computed, provide } from 'vue'
 import Header from './Header.vue'
-import Hero from './Hero.vue'
-import heroMd from './hero.md?raw'
+// Hero injected via slot
 import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
 import Footer from './Footer.vue'
-import ReadmeModal from './components/repo/ReadmeModal.vue'
-import { Config, Repo, SortOption } from './types'
+import { Config, GHProfile, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
 import { RepoCard } from './components/repo'
@@ -41,7 +39,10 @@ import LanguageFilter from './components/LanguageFilter.vue'
 
 interface Props {
 	config: Config
+	profile: GHProfile
 	ghUsername: string
+	projectPages: string[]
+	hasHero: boolean
 }
 
 const props = defineProps<Props>()
@@ -90,9 +91,6 @@ const setView = (newView: 'grid' | 'list') => {
 	view.value = newView
 }
 
-const isReadmeModalOpen = ref<boolean>(false)
-const selectedRepo = ref<Repo | null>(null)
-const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
 const selectedLanguage = ref<string>('')
 
@@ -120,41 +118,17 @@ watch([sortBy, sortOrder, view], () => {
 })
 
 const handleSortChange = (key: string) => {
+	if (key === '') {
+		sortBy.value = 'latest_update'
+		sortOrder.value = ''
+		return
+	}
 	if (sortBy.value === key) {
 		sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
 	} else {
 		sortBy.value = key
 		sortOrder.value = sortOrder.value === '' ? 'desc' : sortOrder.value
 	}
-}
-
-const openReadmeModal = async (repo: Repo) => {
-	selectedRepo.value = repo
-	const manifestItem = readmeManifest.find((item) => item.repo === repo.name)
-
-	if (manifestItem?.path) {
-		try {
-			const response = await fetch(manifestItem.path)
-			if (response.ok) {
-				readmeContent.value = await response.text()
-			} else {
-				readmeContent.value = null
-			}
-		} catch (error) {
-			console.error('Error loading README:', error)
-			readmeContent.value = null
-		}
-	} else {
-		readmeContent.value = null
-	}
-
-	isReadmeModalOpen.value = true
-}
-
-const closeReadmeModal = () => {
-	isReadmeModalOpen.value = false
-	selectedRepo.value = null
-	readmeContent.value = null
 }
 
 const sortedRepos = computed(() => {
@@ -204,8 +178,10 @@ const allLanguages = computed(() => {
 const viewClassCommon = 'container mx-auto gap-4 grid grid-cols-1'
 const viewClass = computed(() => view.value === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')
 
-// Provide config and ghUsername to all child components
+// Provide props to all child components
 provide('config', props.config)
+provide('projectPages', props.projectPages)
+provide('profile', props.profile)
 provide('ghUsername', props.ghUsername)
 provide('siteTitle', siteTitle)
 </script>

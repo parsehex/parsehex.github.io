@@ -1,6 +1,9 @@
-# Getting Started
+# Get Started with ProjectDepot Gallery
 
 ## Setup
+
+> [!TIP]
+> You can also [setup manually](./manual-setup).
 
 1. **Fork this repository** and use the name `USERNAME.github.io` -- replace USERNAME with your GitHub profile's name.
 
@@ -25,7 +28,7 @@ Done! The site will start building and should be online soon at `USERNAME.github
 - **Automatic daily updates** via GitHub Actions – set-and-forget
 - **Displays only repositories with a homepage URL** or [using your own filter](./configuration#custom-filters)
 - **Interactive UI** with layout and sorting options
-- **Built with modern technologies**: Vue, TypeScript, and Vite
+- **Built with modern technologies**: Astro, Vue, TypeScript, and Tailwind
 
 ## Demo
 

@@ -25,6 +25,7 @@ dist-ssr
 
 lang-colors.json
 repos.json
+profile.json
 .env
 public/readmes
 public/readme-images
@@ -34,6 +35,12 @@ public/favicon.png
 src/hero.md
 src/config.json
 scripts/repo-filter.js
-config.user.json
 /docs/.vitepress/cache
 /.astro
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

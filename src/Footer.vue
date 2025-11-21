@@ -13,7 +13,12 @@ import DOMPurify from 'dompurify'
 import type { Config } from './types'
 import { sanitizeHtml } from './utils';
 
-const config = inject('config') as Config
+interface Props {
+	config?: Config
+}
+
+const props = defineProps<Props>()
+const config = props.config || inject('config') as Config
 
 const footerText = ref('');
 const includeGitCaseLink = computed(() => config.footer.includeGitCaseLink !== false)

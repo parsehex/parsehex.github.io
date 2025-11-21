@@ -1,6 +1,6 @@
 <template>
-	<div v-if="language" class="inline-flex items-center">
-		<Tippy class="inline-flex items-center px-2 py-1 ml-4 text-xs font-semibold select-none rounded"
+	<div v-if="language" class="inline-flex items-center pt-2">
+		<Tippy class="inline-flex items-center px-2 py-1 text-xs font-semibold select-none rounded"
 			:style="{ backgroundColor: color, color: contrast }" role="status"
 			:aria-label="`This repo primarily uses ${language}. Hover to see all language usage.`"
 			:content="languageDistributionHtml" :delay="[100, 50]" :allow-h-t-m-l="true" placement="top" :interactive="true"
