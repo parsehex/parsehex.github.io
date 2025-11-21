@@ -8,18 +8,18 @@
 				<span v-else>{{ repo.name }}</span>
 			</h2>
 			<div class="flex items-center gap-2 flex-shrink-0">
-				<Tippy content="View on GitHub">
-					<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-						class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-						:aria-label="`View ${repo.name} on GitHub`">
-						<Github class="w-5 h-5" />
-					</a>
-				</Tippy>
 				<Tippy v-if="repo.homepage" content="Visit homepage">
 					<a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-						class="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+						class="flex items-center justify-center p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
 						:aria-label="`Visit ${repo.name} homepage`">
 						<ExternalLink class="w-5 h-5" />
+					</a>
+				</Tippy>
+				<Tippy content="View on GitHub">
+					<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
+						class="flex items-center justify-center p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+						:aria-label="`View ${repo.name} on GitHub`">
+						<Github class="w-5 h-5" />
 					</a>
 				</Tippy>
 			</div>
@@ -56,18 +56,18 @@
 				<p v-if="repo.description" class="text-gray-600 dark:text-gray-300 leading-relaxed"> {{ repo.description }} </p>
 			</div>
 			<div class="flex items-center gap-2 flex-shrink-0">
-				<Tippy content="View on GitHub">
-					<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
-						class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-						:aria-label="`View ${repo.name} on GitHub`">
-						<Github class="w-5 h-5" />
-					</a>
-				</Tippy>
 				<Tippy v-if="repo.homepage" content="Visit homepage">
 					<a :href="repo.homepage" target="_blank" rel="noopener noreferrer"
-						class="text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+						class="flex items-center justify-center p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
 						:aria-label="`Visit ${repo.name} homepage`">
 						<ExternalLink class="w-5 h-5" />
+					</a>
+				</Tippy>
+				<Tippy content="View on GitHub">
+					<a :href="repo.html_url" target="_blank" rel="noopener noreferrer"
+						class="flex items-center justify-center p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+						:aria-label="`View ${repo.name} on GitHub`">
+						<Github class="w-5 h-5" />
 					</a>
 				</Tippy>
 			</div>
