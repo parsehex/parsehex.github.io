@@ -12,15 +12,19 @@ const html = await sanitizeHtml(await marked.parse(source));
 const center = config.hero.center;
 ---
 
-<section class="hero prose dark:prose-invert p-6 pb-2 bg-white dark:bg-gray-800 shadow-md transition rounded flex flex-col items-center">
+{html && (
+<section class="hero prose dark:prose-invert p-8 pb-4 bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl flex flex-col items-center border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
   <div id="hero-content" class:list={["truncated-content", { "text-center": center, "text-left": !center }]} set:html={html} />
 
-  <div id="hero-toggle" class="w-full py-2 cursor-pointer hidden">
-    <svg id="hero-arrow" class="mx-auto w-6 h-6 text-gray-500 dark:text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
+  <div id="hero-toggle" class="w-full py-4 cursor-pointer hidden group flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-b-xl transition-colors mt-2">
+    <div class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+      <svg id="hero-arrow" class="w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
   </div>
 </section>
+)}
 
 <script is:inline>
   (function() {
@@ -98,14 +102,15 @@ const center = config.hero.center;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50px;
+    height: 80px;
     background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
     pointer-events: none;
   }
 
   @media (prefers-color-scheme: dark) {
     .truncated-content::after {
-      background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(0, 0, 0, 0));
+      /* Match the dark mode bg color roughly, but since it's transparent/glass, we use a solid approximation or the base color */
+      background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(31, 41, 55, 0));
     }
   }
 

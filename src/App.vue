@@ -2,7 +2,7 @@
 	<div class="mx-auto p-4">
 		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
 			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
-			<div class="md:w-1/2">
+			<div v-if="hasHero" class="md:w-1/2">
 				<slot name="hero"></slot>
 			</div>
 		</div>
@@ -16,12 +16,10 @@
 		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
 			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
-			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
-				@readme-click="openReadmeModal" />
+			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view"
+				:readme-manifest="readmeManifest" />
 		</main>
 		<Footer />
-		<ReadmeModal v-if="view === 'grid'" :is-open="isReadmeModalOpen" @close="closeReadmeModal"
-			:repo-name="selectedRepo?.name || ''" :readme-content="readmeContent" />
 	</div>
 </template>
 <script setup lang="ts">
@@ -32,7 +30,6 @@ import Header from './Header.vue'
 import repos from './repos.json'
 import readmeManifest from './readme-manifest.json'
 import Footer from './Footer.vue'
-import ReadmeModal from './components/repo/ReadmeModal.vue'
 import { Config, GHProfile, Repo, SortOption } from './types'
 import SortControls from './SortControls.vue'
 import ViewToggle from './ViewToggle.vue'
@@ -45,6 +42,7 @@ interface Props {
 	profile: GHProfile
 	ghUsername: string
 	projectPages: string[]
+	hasHero: boolean
 }
 
 const props = defineProps<Props>()
@@ -93,9 +91,6 @@ const setView = (newView: 'grid' | 'list') => {
 	view.value = newView
 }
 
-const isReadmeModalOpen = ref<boolean>(false)
-const selectedRepo = ref<Repo | null>(null)
-const readmeContent = ref<string | null>(null)
 const selectedTopics = ref<string[]>([])
 const selectedLanguage = ref<string>('')
 
@@ -134,35 +129,6 @@ const handleSortChange = (key: string) => {
 		sortBy.value = key
 		sortOrder.value = sortOrder.value === '' ? 'desc' : sortOrder.value
 	}
-}
-
-const openReadmeModal = async (repo: Repo) => {
-	selectedRepo.value = repo
-	const manifestItem = readmeManifest.find((item) => item.repo === repo.name)
-
-	if (manifestItem?.path) {
-		try {
-			const response = await fetch(manifestItem.path)
-			if (response.ok) {
-				readmeContent.value = await response.text()
-			} else {
-				readmeContent.value = null
-			}
-		} catch (error) {
-			console.error('Error loading README:', error)
-			readmeContent.value = null
-		}
-	} else {
-		readmeContent.value = null
-	}
-
-	isReadmeModalOpen.value = true
-}
-
-const closeReadmeModal = () => {
-	isReadmeModalOpen.value = false
-	selectedRepo.value = null
-	readmeContent.value = null
 }
 
 const sortedRepos = computed(() => {

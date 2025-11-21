@@ -1,0 +1,173 @@
+---
+import { marked } from 'marked';
+import markedAlert from 'marked-alert';
+import { sanitizeHtml } from '../../../utils';
+import Header from '../../../Header.vue';
+import Footer from '../../../Footer.vue';
+import config from '../../../config.json';
+import profile from '../../../profile.json';
+import readmeManifest from '../../../readme-manifest.json';
+import repos from '../../../repos.json';
+import '../../../index.css';
+
+import '@fontsource/inter';
+import '@fontsource/outfit';
+
+// Configure marked with alert extension
+marked.use(markedAlert());
+
+export async function getStaticPaths() {
+  return readmeManifest
+    .filter(item => item.success)
+    .map(item => ({
+      params: { name: item.repo.replace(/\//g, '-') }
+    }));
+}
+
+const { name } = Astro.params;
+// Decode the name back - try to find the repo by checking both encoded and original names
+const ghUsername = GITHUB_ACTOR || 'your_username';
+
+let siteTitle = '';
+if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
+else siteTitle = config.siteTitle;
+siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
+
+// Find manifest item - the name param has slashes replaced with dashes
+const manifestItem = readmeManifest.find(item => item.repo.replace(/\//g, '-') === name);
+const repo = repos.find(r => r.name.replace(/\//g, '-') === name);
+
+let readmeHtml = '';
+let hasReadme = false;
+
+if (manifestItem?.path) {
+  try {
+    const response = await fetch(new URL(manifestItem.path, Astro.site || 'http://localhost:4321'));
+    if (response.ok) {
+      const markdown = await response.text();
+      readmeHtml = await sanitizeHtml(await marked.parse(markdown));
+      hasReadme = true;
+    }
+  } catch (error) {
+    console.error('Error loading README:', error);
+  }
+}
+
+const pageTitle = repo ? `${repo.name} README` : `${name} README`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle} | {siteTitle}</title>
+    <style is:global>
+      /* GitHub-style alert styling */
+      .markdown-alert {
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid;
+        border-radius: 0.375rem;
+      }
+
+      .markdown-alert > :first-child {
+        margin-top: 0;
+      }
+
+      .markdown-alert > :last-child {
+        margin-bottom: 0;
+      }
+
+      .markdown-alert .markdown-alert-title {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+				gap: 0.5rem;
+      }
+
+      .markdown-alert.markdown-alert-note {
+        border-color: #0969da;
+        background-color: #ddf4ff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+				.markdown-alert.markdown-alert-note {
+					border-color: #2f81f7;
+					background-color: #0c2d6b;
+				}
+			}
+
+      .markdown-alert.markdown-alert-tip {
+        border-color: #1a7f37;
+        background-color: #dcffe4;
+      }
+
+      @media (prefers-color-scheme: dark) {
+				.markdown-alert.markdown-alert-tip {
+					border-color: #3fb950;
+					background-color: #0d3d1a;
+				}
+			}
+
+      .markdown-alert.markdown-alert-important {
+        border-color: #8250df;
+        background-color: #f6f0ff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+				.markdown-alert.markdown-alert-important {
+					border-color: #a371f7;
+					background-color: #2e1f4d;
+				}
+			}
+
+      .markdown-alert.markdown-alert-warning {
+        border-color: #bf8700;
+        background-color: #fff8c5;
+      }
+
+      @media (prefers-color-scheme: dark) {
+				.markdown-alert.markdown-alert-warning {
+					border-color: #d29922;
+					background-color: #4d3800;
+				}
+			}
+
+      .markdown-alert.markdown-alert-caution {
+        border-color: #d1242f;
+        background-color: #ffebe9;
+      }
+
+      @media (prefers-color-scheme: dark) {
+				.markdown-alert.markdown-alert-caution {
+					border-color: #f85149;
+					background-color: #4d0f0f;
+				}
+			}
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
+    <div class="mx-auto p-4">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
+        <Header class="md:w-1/3 md:mt-4" config={config} profile={profile} ghUsername={ghUsername} siteTitle={siteTitle} isProjectPage />
+        <div class="md:w-1/2 prose dark:prose-invert max-w-none bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          {hasReadme ? (
+            <>
+              <div set:html={readmeHtml} />
+            </>
+          ) : (
+            <>
+              <h1>{repo?.name || name}</h1>
+              <p class="text-gray-500 dark:text-gray-400">No README available for this project.</p>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto p-4">
+      <Footer config={config} />
+    </div>
+  </body>
+</html>
