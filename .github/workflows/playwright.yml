@@ -13,6 +13,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        cache: 'npm'
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
@@ -22,7 +23,9 @@ jobs:
       run: |
         npm run fetch-data ${{ github.repository_owner }}
         npm run build
-
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VITE_GITHUB_ACTOR: ${{ github.repository_owner }}
     - name: Run Unit Tests
       run: npm test
     - name: Run Playwright tests

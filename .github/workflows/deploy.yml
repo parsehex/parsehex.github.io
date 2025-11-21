@@ -18,13 +18,14 @@ jobs:
       CI: true
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Fetch Repos
         run: npm run fetch-data ${{ github.repository_owner }}
         if: github.repository != 'ProjectDepot/Gallery'
