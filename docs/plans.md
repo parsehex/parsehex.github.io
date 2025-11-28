@@ -1,8 +1,10 @@
-# Plans for PD Gallery
+# Plans for SrcGallery
 
 ## Project Name
 
-The name ProjectDepot Gallery kind of sucks / is long, so I want to come up with something better.
+~~The name ProjectDepot Gallery kind of sucks / is long, so I want to come up with something better.~~
+
+I think `SrcGallery` is decent.
 
 ## Main Page
 
@@ -27,7 +29,6 @@ You would simply add a `<project-name>.md` file to the `content/projects` direct
 **Update**: Early Implementation
 
 If you add a Markdown file named after your repository (e.g., `my-repo.md`) to the `content/projects` directory, a "Learn more" link will automatically appear for that project on the main page, directing users to this dedicated project page.
-
 
 ## New Config File
 

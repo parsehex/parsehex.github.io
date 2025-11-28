@@ -1,10 +1,12 @@
 # Manual Setup
 
-These instructions are for those who don't want to use GitHub's [Fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) feature to consume the project. I also have/had to do this in order to use this project for the <https://ProjectDepot.github.io/> page - I'm writing this page while doing that.
+These instructions are for those who don't want to use GitHub's [Fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) feature to consume the project.
+
+I also have/had to do this in order to use this project for the <https://ProjectDepot.github.io/> page - I'm writing this page while doing that.
 
 ## Prerequisites
 
-You should have [Git](https://git-scm.com/install/) and [nm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+You should have [Git](https://git-scm.com/install/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
 ## Initial Setup
 
@@ -13,7 +15,7 @@ You should have [Git](https://git-scm.com/install/) and [nm](https://docs.npmjs.
 2. Clone the project, setting the name appropriately as you did above.
 
 ```bash
-git clone https://github.com/ProjectDepot/Gallery USERNAME.github.io
+git clone https://github.com/ProjectDepot/SrcGallery USERNAME.github.io
 cd USERNAME.github.io
 ```
 
@@ -49,7 +51,7 @@ git remote add origin git@github.com:USERNAME/USERNAME.github.io.git
 5. Set your repo to receive updates from the main repo:
 
 ```bash
-git remote add upstream https://github.com/ProjectDepot/Gallery.git
+git remote add upstream https://github.com/ProjectDepot/SrcGallery.git
 ```
 
 6. Push to GitHub.
