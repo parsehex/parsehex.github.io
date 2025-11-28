@@ -1,4 +1,4 @@
-# Get Started with ProjectDepot Gallery
+# Get Started with SrcGallery
 
 ## Setup
 
@@ -32,8 +32,8 @@ Done! The site will start building and should be online soon at `USERNAME.github
 
 ## Demo
 
-To see a working demo of Gallery in action, check out [parsehex.github.io](https://parsehex.github.io/).
+To see a working demo of SrcGallery in action, check out [parsehex.github.io](https://parsehex.github.io/).
 
 ## Updating
 
-When Gallery updates upstream, you can easily bring in the changes to your copy of the app by going to **your repo** → **Sync fork** → **Update branch**, which will start the re-building process.
+When SrcGallery updates upstream, you can easily bring in the changes to your copy of the app by going to **your repo** → **Sync fork** → **Update branch**, which will start the re-building process.

@@ -2,10 +2,10 @@ import { defineConfig } from 'vitepress';
 
 export default defineConfig(({ mode }) => {
 	return {
-		base: mode === 'production' ? '/Gallery/' : '/',
-		title: 'ProjectDepot Gallery Docs',
+		base: mode === 'production' ? '/SrcGallery/' : '/',
+		title: 'SrcGallery Docs',
 		description:
-			'Documentation for ProjectDepot Gallery - a zero-maintenance landing page for your GitHub repositories',
+			'Documentation for SrcGallery - a zero-maintenance landing page for your GitHub repositories',
 		themeConfig: {
 			nav: [
 				{ text: 'Get Started', link: '/getting-started' },
@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
 			],
 
 			socialLinks: [
-				{ icon: 'github', link: 'https://github.com/ProjectDepot/Gallery' },
+				{ icon: 'github', link: 'https://github.com/ProjectDepot/SrcGallery' },
 			],
 		},
 		server: {

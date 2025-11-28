@@ -1,4 +1,4 @@
-# Contributing to Project Depot Gallery
+# Contributing to SrcGallery
 
 I welcome contributions!
 

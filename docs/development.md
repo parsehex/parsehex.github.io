@@ -14,8 +14,8 @@ If you want to run the project locally:
 1. **Clone the repo**:
 
    ```bash
-   git clone https://github.com/ProjectDepot/Gallery
-   cd Gallery
+   git clone https://github.com/ProjectDepot/SrcGallery
+   cd SrcGallery
    ```
 
 2. **Set up environment variables**:
@@ -83,4 +83,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/ProjectDepot/Gallery/blob/main/LICENSE).
+This project is licensed under the [MIT License](https://github.com/ProjectDepot/SrcGallery/blob/main/LICENSE).
