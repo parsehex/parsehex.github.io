@@ -1,5 +1,5 @@
 {
-  "name": "project-depot-gallery",
+  "name": "srcgallery",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -55,5 +55,11 @@
     "vite-plugin-node-polyfills": "^0.24.0",
     "vitepress": "^1.6.4",
     "vitest": "^4.0.12"
+  },
+  "author": "parsehex",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProjectDepot/SrcGallery.git"
   }
 }
