@@ -1,10 +1,20 @@
-# ProjectDepot Gallery
+# SrcGallery
 
 > **Your GitHub Portfolio, On Autopilot.**
 
-![ProjectDepot Gallery preview](/readme-images/pd_gallery-preview.png)
+![SrcGallery preview](/readme-images/srcgallery-preview.png)
 
 A zero-maintenance landing page that updates itself. Fork this repo, and it will automatically showcase your projects using GitHub Actions.
+
+## Elevator Pitch
+
+Portfolios are just kind of a pain to make and maintain.
+
+On the other hand, it's easy to make a GitHub account and to build up a collection of projects over time.
+
+So why not use that GitHub profile to populate your portfolio? That's what this project does.
+
+If you've already made projects on GitHub, I think that's all you should need in order to have a portfolio.
 
 > [!NOTE]
 >
@@ -33,14 +43,14 @@ There's always improvements to make, but we have a decent score already:
 
 ## Documentation
 
-For detailed setup instructions and customization options, visit the [documentation site](https://projectdepot.github.io/Gallery/).
+For detailed setup instructions and customization options, visit the [documentation site](https://projectdepot.github.io/SrcGallery/).
 
 ## Key Features
 
-*   **Zero Maintenance:** Updates automatically via GitHub Actions.
-*   **Smart Filtering:** Showcases your best work (repos with homepage URLs) by default.
-*   **Fully Customizable:** Control exactly what gets displayed.
-*   **Modern Stack:** Built with Astro, Vue, TypeScript, and Tailwind.
+- **Zero Maintenance:** Updates automatically via GitHub Actions.
+- **Smart Filtering:** Showcases your best work (repos with homepage URLs) by default.
+- **Fully Customizable:** Control exactly what gets displayed.
+- **Modern Stack:** Built with Astro, Vue, TypeScript, and Tailwind.
 
 ## License
 
