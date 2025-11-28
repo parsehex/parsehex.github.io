@@ -41,4 +41,4 @@ That's it! Your repository gallery will be live and updating automatically. See 
 
 ## Motivation
 
-Creating and maintaining a portfolio website can be a time-consuming task -- one that I personally push to the back burner often. I built SrcGallery to solve that problem by using a GitHub profile to populate the site.
+Creating and maintaining a portfolio website can be a time-consuming task -- one that I personally push to the back burner often. I built SrcGallery to solve that problem by using the GitHub profile that I already had in order to populate the site, and I built it to work with any GitHub profile.
