@@ -35,11 +35,12 @@ Done! Your portfolio is now live and will auto-update daily.
 I use this project for my own GitHub site: <https://parsehex.github.io/>.
 It's also used for [ProjectDepot.github.io](https://projectdepot.github.io/).
 
-### Lighthouse Score
+<!-- TODO: not updated for astro version -->
+<!-- ### Lighthouse Score
 
 There's always improvements to make, but we have a decent score already:
 
-![Lighthouse score for parsehex.github.io](./lighthouse-score.png)
+![Lighthouse score for parsehex.github.io](./lighthouse-score.png) -->
 
 ## Documentation
 
