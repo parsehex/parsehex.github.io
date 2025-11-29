@@ -41,8 +41,7 @@
 		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-4 mt-auto">
 			<TopicBadge v-for="topic in repo.topics" :key="topic" :topic="topic" />
 		</div>
-		<CardFooter :view="view" :repo="repo" :readme-manifest="readmeManifest"
-			@readme-click="$emit('readme-click', repo)" />
+		<CardFooter :view="view" :repo="repo" />
 	</div>
 	<div v-else
 		class="bg-white dark:bg-gray-800/60 shadow-md rounded-xl p-6 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 space-y-3 border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
@@ -76,18 +75,17 @@
 		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-2">
 			<TopicBadge v-for="topic in repo.topics" :key="topic" :topic="topic" />
 		</div>
-		<CardFooter :view="view" :repo="repo" :readme-manifest="readmeManifest" @readme-click="toggleReadme" />
+		<CardFooter :view="view" :repo="repo" />
 	</div>
 </template>
 <script setup lang="ts">
 import { Clock, Calendar, Github, ExternalLink } from 'lucide-vue-next'
-import type { Repo, ReadmeManifestItem, Config } from '../../types'
+import type { Repo, ReadmeManifestItem } from '../../types'
 import { showRelativeTime, formatDate } from '../../utils'
 import LangBadge from './LangBadge.vue'
 import TopicBadge from './TopicBadge.vue'
 import CardFooter from './CardFooter.vue'
-import { computed, inject, ref } from 'vue'
-import ExpandableReadme from './ExpandableReadme.vue'
+import { computed, inject } from 'vue'
 import { Tippy } from 'vue-tippy'
 
 interface Props {
@@ -97,39 +95,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits<{
-	'readme-click': [repo: Repo]
-}>()
 
 const ghUsername = inject('ghUsername') as string
-
-const isReadmeExanded = ref(false)
-const readmeContent = ref<string | null>(null)
-const expandReadme = async () => {
-	const manifestItem = props.readmeManifest.find((item) => item.repo === props.repo.name)
-
-	if (manifestItem?.path) {
-		try {
-			const response = await fetch(manifestItem.path)
-			if (response.ok) {
-				readmeContent.value = await response.text()
-			} else {
-				readmeContent.value = null
-			}
-		} catch (error) {
-			console.error('Error loading README:', error)
-			readmeContent.value = null
-		}
-	} else {
-		readmeContent.value = null
-	}
-
-	isReadmeExanded.value = true
-}
-const toggleReadme = () => {
-	isReadmeExanded.value = !isReadmeExanded.value
-	if (isReadmeExanded.value) expandReadme()
-}
 
 const hasReadme = computed(() => props.readmeManifest.some(item => item.repo === props.repo.name && item.success))
 </script>
