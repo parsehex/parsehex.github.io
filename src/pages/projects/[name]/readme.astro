@@ -35,20 +35,18 @@ const repo = repos.find(r => r.name.replace(/\//g, '-') === name);
 let readmeHtml = '';
 let hasReadme = false;
 
-if (manifestItem?.path) {
-  try {
-    const keyName = `../../../content/readmes/${name}.md`;
-    // must use string literal for glob import, not even literal variables
-    const glob = import.meta.glob('../../../content/readmes/*.md', { eager: true });
-    const readme = glob[keyName];
-    if (readme) {
-      const readmeContent = await readme.rawContent();
-      readmeHtml = await sanitizeMdToHtml(readmeContent);
-      hasReadme = true;
-    }
-  } catch (error) {
-    console.error('Error loading README:', error);
+try {
+  const keyName = `../../../content/readmes/${name}.md`;
+  // must use string literal for glob import, not even literal variables
+  const glob = import.meta.glob('../../../content/readmes/*.md', { eager: true });
+  const readme = glob[keyName];
+  if (readme) {
+    const readmeContent = await readme.rawContent();
+    readmeHtml = await sanitizeMdToHtml(readmeContent);
+    hasReadme = true;
   }
+} catch (error) {
+  console.error('Error loading README:', error);
 }
 
 const pageTitle = repo ? `${repo.name} README` : `${name} README`;
