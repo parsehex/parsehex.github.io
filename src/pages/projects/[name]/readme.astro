@@ -1,7 +1,5 @@
 ---
-import { marked } from 'marked';
-import markedAlert from 'marked-alert';
-import { sanitizeHtml } from '../../../utils';
+import { sanitizeMdToHtml } from '../../../utils';
 import Header from '../../../Header.vue';
 import Footer from '../../../Footer.vue';
 import config from '../../../config.json';
@@ -12,9 +10,6 @@ import '../../../index.css';
 
 import '@fontsource/inter';
 import '@fontsource/outfit';
-
-// Configure marked with alert extension
-marked.use(markedAlert());
 
 export async function getStaticPaths() {
   return readmeManifest
@@ -42,10 +37,13 @@ let hasReadme = false;
 
 if (manifestItem?.path) {
   try {
-    const response = await fetch(new URL(manifestItem.path, Astro.site || 'http://localhost:4321'));
-    if (response.ok) {
-      const markdown = await response.text();
-      readmeHtml = await sanitizeHtml(await marked.parse(markdown));
+    const keyName = `../../../content/readmes/${name}.md`;
+    // must use string literal for glob import, not even literal variables
+    const glob = import.meta.glob('../../../content/readmes/*.md', { eager: true });
+    const readme = glob[keyName];
+    if (readme) {
+      const readmeContent = await readme.rawContent();
+      readmeHtml = await sanitizeMdToHtml(readmeContent);
       hasReadme = true;
     }
   } catch (error) {

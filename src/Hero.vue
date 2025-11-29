@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted, inject } from 'vue'
 import { Config } from './types';
-import { sanitizeMd } from './utils';
+import { sanitizeMdToHtml } from './utils';
 
 const TRUNCATE_HEIGHT = 300;
 const isTruncated = ref(true);
@@ -52,7 +52,7 @@ watch(() => props.source, async (newSource) => {
 		parsedMarkdown.value = ''
 		return
 	}
-	parsedMarkdown.value = await sanitizeMd(newSource)
+	parsedMarkdown.value = await sanitizeMdToHtml(newSource)
 	await nextTick(); // Ensure DOM is updated before checking scrollHeight
 	checkTruncation();
 }, { immediate: true })

@@ -1,7 +1,10 @@
 import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
 import { marked } from 'marked';
+import markedAlert from 'marked-alert';
 import DOMPurify from 'dompurify';
 import langColors from './lang-colors.json';
+
+marked.use(markedAlert());
 
 async function getDOMPurify() {
 	try {
@@ -17,7 +20,7 @@ async function getDOMPurify() {
 export async function sanitizeHtml(html: string) {
 	return (await getDOMPurify()).sanitize(html);
 }
-export async function sanitizeMd(md: string) {
+export async function sanitizeMdToHtml(md: string) {
 	const html = await marked.parse(md);
 	return sanitizeHtml(html);
 }

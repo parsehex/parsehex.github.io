@@ -263,7 +263,7 @@ async function fetchReadmes(repos) {
 			);
 
 			repoId = repoId.replace(/\//g, '-');
-			const readmeFilePath = join(publicDir, `${repoId}.md`);
+			const readmeFilePath = join(srcDir, `./content/readmes/${repoId}.md`);
 			writeFileSync(readmeFilePath, processedReadmeContent);
 
 			readmeManifest.push({
@@ -321,17 +321,12 @@ async function fetchAvatar() {
 		});
 
 		// Save avatar as WebP (original size)
-		await sharp(buffer)
-			.webp()
-			.toFile(avatarPath);
+		await sharp(buffer).webp().toFile(avatarPath);
 		console.log(`Avatar saved to ${avatarPath}`);
 
 		// Save avatar as WebP (150px)
 		const avatar150Path = join(publicDir, 'avatar-150.webp');
-		await sharp(buffer)
-			.resize(150)
-			.webp()
-			.toFile(avatar150Path);
+		await sharp(buffer).resize(150).webp().toFile(avatar150Path);
 		console.log(`Avatar (150px) saved to ${avatar150Path}`);
 
 		// Generate favicon.png (32x32)

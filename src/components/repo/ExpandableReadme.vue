@@ -23,7 +23,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { sanitizeMd } from '../../utils'
+import { sanitizeMdToHtml } from '../../utils'
 
 interface Props {
 	isExpanded: boolean
@@ -43,7 +43,7 @@ watch(() => props.readmeContent, async (newContent) => {
 		parsedReadmeContent.value = ''
 		return
 	}
-	parsedReadmeContent.value = await sanitizeMd(newContent)
+	parsedReadmeContent.value = await sanitizeMdToHtml(newContent)
 }, { immediate: true })
 </script>
 <style scoped>
