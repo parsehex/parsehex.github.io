@@ -27,7 +27,7 @@ lang-colors.json
 repos.json
 profile.json
 .env
-public/readmes
+src/content/readmes
 public/readme-images
 src/readme-manifest.json
 public/avatar*.png
