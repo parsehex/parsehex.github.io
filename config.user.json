@@ -13,7 +13,7 @@
     "text": "&copy; 2025 Thomas Mays",
     "includeGitCaseLink": true
   },
-  "extraRepos": ["ProjectDepot/Gallery", "ProjectDepot/vue-node-sqlite-starter"],
+  "extraRepos": ["ProjectDepot/SrcGallery", "ProjectDepot/vue-node-sqlite-starter"],
   "links": [
     {
       "name": "Mastodon",
