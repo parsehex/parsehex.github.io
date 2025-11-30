@@ -1,4 +1,7 @@
 ---
+import '@fontsource/inter';
+import '@fontsource/outfit';
+import { getCollection } from 'astro:content';
 import { sanitizeMdToHtml } from '../../../utils';
 import Header from '../../../Header.vue';
 import Footer from '../../../Footer.vue';
@@ -7,9 +10,6 @@ import profile from '../../../profile.json';
 import readmeManifest from '../../../readme-manifest.json';
 import repos from '../../../repos.json';
 import '../../../index.css';
-
-import '@fontsource/inter';
-import '@fontsource/outfit';
 
 export async function getStaticPaths() {
   return readmeManifest
@@ -29,19 +29,15 @@ else siteTitle = config.siteTitle;
 siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
 
 // Find manifest item - the name param has slashes replaced with dashes
-const manifestItem = readmeManifest.find(item => item.repo.replace(/\//g, '-') === name);
 const repo = repos.find(r => r.name.replace(/\//g, '-') === name);
 
 let readmeHtml = '';
 let hasReadme = false;
 
 try {
-  const keyName = `../../../content/readmes/${name}.md`;
-  // must use string literal for glob import, not even literal variables
-  const glob = import.meta.glob('../../../content/readmes/*.md', { eager: true });
-  const readme = glob[keyName];
+  const readme = (await getCollection('readmes')).find(r => r.slug === repo?.name.toLowerCase() || r.slug === repo?.full_name.replace(/\//g, '-').toLowerCase());
   if (readme) {
-    const readmeContent = await readme.rawContent();
+    const readmeContent = readme.body;
     readmeHtml = await sanitizeMdToHtml(readmeContent);
     hasReadme = true;
   }
