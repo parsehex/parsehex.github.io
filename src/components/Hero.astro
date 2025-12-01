@@ -1,146 +1,186 @@
 ---
 import { marked } from 'marked';
 import { sanitizeHtml } from '../utils';
-import config from '../config.json';
+import { getConfig } from '../config';
 
 interface Props {
-  source: string;
+	source: string;
 }
 
+const config = await getConfig();
 const { source } = Astro.props;
 const html = await sanitizeHtml(await marked.parse(source));
-const center = config.hero.center;
+const center = typeof config.hero === 'object' && config.hero.center;
+
+const TRUNCATE_HEIGHT =
+	typeof config.hero === 'object' &&
+	typeof config.hero.truncationHeight === 'number'
+		? config.hero.truncationHeight
+		: 300;
+const TRUNCATE_HEIGHTpx = TRUNCATE_HEIGHT + 'px';
 ---
 
-{html && (
-<section class="hero prose dark:prose-invert p-8 pb-4 bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl flex flex-col items-center border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
-  <div id="hero-content" class:list={["truncated-content", { "text-center": center, "text-left": !center }]} set:html={html} />
+{
+	html && (
+		<section class="hero prose dark:prose-invert p-8 pb-4 bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl flex flex-col items-center border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
+			<div
+				id="hero-content"
+				class:list={[
+					'truncated-content',
+					{ 'text-center': center, 'text-left': !center },
+				]}
+				set:html={html}
+			/>
 
-  <div id="hero-toggle" class="w-full py-4 cursor-pointer hidden group flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-b-xl transition-colors mt-2">
-    <div class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
-      <svg id="hero-arrow" class="w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
-      </svg>
-    </div>
-  </div>
-</section>
-)}
+			<div
+				id="hero-toggle"
+				class="w-full py-4 cursor-pointer hidden group flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-b-xl transition-colors mt-2"
+			>
+				<div class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+					<svg
+						id="hero-arrow"
+						class="w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-300"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2.5"
+							d="M19 9l-7 7-7-7"
+						/>
+					</svg>
+				</div>
+			</div>
+		</section>
+	)
+}
 
-<script is:inline>
-  (function() {
-    const TRUNCATE_HEIGHT = 300;
+<script is:inline define:vars={{ TRUNCATE_HEIGHT }}>
+	console.log(TRUNCATE_HEIGHT);
+	(function () {
+		function getElements() {
+			return {
+				content: document.getElementById('hero-content'),
+				toggle: document.getElementById('hero-toggle'),
+				arrow: document.getElementById('hero-arrow'),
+			};
+		}
 
-    function getElements() {
-      return {
-        content: document.getElementById('hero-content'),
-        toggle: document.getElementById('hero-toggle'),
-        arrow: document.getElementById('hero-arrow')
-      };
-    }
+		let isTruncated = true;
 
-    let isTruncated = true;
+		function checkTruncation() {
+			const { content, toggle } = getElements();
+			if (content && content.scrollHeight > TRUNCATE_HEIGHT) {
+				toggle?.classList.remove('hidden');
+				content.classList.add('truncated-content');
+			} else {
+				toggle?.classList.add('hidden');
+				content?.classList.remove('truncated-content');
+			}
+		}
 
-    function checkTruncation() {
-      const { content, toggle } = getElements();
-      if (content && content.scrollHeight > TRUNCATE_HEIGHT) {
-        toggle?.classList.remove('hidden');
-        content.classList.add('truncated-content');
-      } else {
-        toggle?.classList.add('hidden');
-        content?.classList.remove('truncated-content');
-      }
-    }
+		function toggleTruncate() {
+			const { content, arrow } = getElements();
+			isTruncated = !isTruncated;
+			if (isTruncated) {
+				content?.classList.add('truncated-content');
+				arrow?.classList.remove('rotate-180');
+			} else {
+				content?.classList.remove('truncated-content');
+				arrow?.classList.add('rotate-180');
+			}
+		}
 
-    function toggleTruncate() {
-      const { content, arrow } = getElements();
-      isTruncated = !isTruncated;
-      if (isTruncated) {
-        content?.classList.add('truncated-content');
-        arrow?.classList.remove('rotate-180');
-      } else {
-        content?.classList.remove('truncated-content');
-        arrow?.classList.add('rotate-180');
-      }
-    }
+		// Use event delegation to handle clicks even if DOM is updated by Vue
+		document.addEventListener('click', (e) => {
+			const target = e.target;
+			if (target.closest('#hero-toggle')) {
+				toggleTruncate();
+			} else if (target.closest('#hero-content')) {
+				const { content } = getElements();
+				// Only toggle if truncated and content is actually overflowing
+				if (isTruncated && content && content.scrollHeight > TRUNCATE_HEIGHT) {
+					toggleTruncate();
+				}
+			}
+		});
 
-    // Use event delegation to handle clicks even if DOM is updated by Vue
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-      if (target.closest('#hero-toggle')) {
-        toggleTruncate();
-      } else if (target.closest('#hero-content')) {
-        const { content } = getElements();
-        // Only toggle if truncated and content is actually overflowing
-        if (isTruncated && content && content.scrollHeight > TRUNCATE_HEIGHT) {
-             toggleTruncate();
-        }
-      }
-    });
+		// Initial check
+		checkTruncation();
 
-    // Initial check
-    checkTruncation();
-
-    // Re-check when DOM is ready and on resize
-    window.addEventListener('DOMContentLoaded', checkTruncation);
-    window.addEventListener('load', checkTruncation);
-    window.addEventListener('resize', checkTruncation);
-  })();
+		// Re-check when DOM is ready and on resize
+		window.addEventListener('DOMContentLoaded', checkTruncation);
+		window.addEventListener('load', checkTruncation);
+		window.addEventListener('resize', checkTruncation);
+	})();
 </script>
 
-<style>
-  @reference '../index.css';
+<style define:vars={{ TRUNCATE_HEIGHT: TRUNCATE_HEIGHTpx }}>
+	@reference '../index.css';
 
-  .truncated-content {
-    max-height: 300px;
-    overflow: hidden;
-    position: relative;
-  }
+	.truncated-content {
+		max-height: var(--TRUNCATE_HEIGHT);
+		overflow: hidden;
+		position: relative;
+	}
 
-  .truncated-content::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-    pointer-events: none;
-  }
+	.truncated-content::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 80px;
+		background: linear-gradient(
+			to top,
+			rgba(255, 255, 255, 1),
+			rgba(255, 255, 255, 0)
+		);
+		pointer-events: none;
+	}
 
-  @media (prefers-color-scheme: dark) {
-    .truncated-content::after {
-      /* Match the dark mode bg color roughly, but since it's transparent/glass, we use a solid approximation or the base color */
-      background: linear-gradient(to top, rgba(31, 41, 55, 1), rgba(31, 41, 55, 0));
-    }
-  }
+	@media (prefers-color-scheme: dark) {
+		.truncated-content::after {
+			/* Match the dark mode bg color roughly, but since it's transparent/glass, we use a solid approximation or the base color */
+			background: linear-gradient(
+				to top,
+				rgba(31, 41, 55, 1),
+				rgba(31, 41, 55, 0)
+			);
+		}
+	}
 
-  /* Prose styles */
-  .prose {
-    max-width: inherit;
-  }
+	/* Prose styles */
+	.prose {
+		max-width: inherit;
+	}
 
-  .prose :global(h1), .prose :global(h2) {
-    margin-top: 0 !important;
-  }
+	.prose :global(h1),
+	.prose :global(h2) {
+		margin-top: 0 !important;
+	}
 
-  .hero :global(h2) {
-    border-bottom: 1px solid lightgray;
-    padding-bottom: .3em;
-  }
+	.hero :global(h2) {
+		border-bottom: 1px solid lightgray;
+		padding-bottom: 0.3em;
+	}
 
-  .prose :global(:where(h1, h2, h3):not(:where([class~="not-prose"] *))) {
-    @apply text-gray-900 dark:text-white;
-  }
+	.prose :global(:where(h1, h2, h3):not(:where([class~='not-prose'] *))) {
+		@apply text-gray-900 dark:text-white;
+	}
 
-  .prose :global(:where(p):not(:where([class~="not-prose"] *))) {
-    @apply text-gray-700 dark:text-gray-300;
-  }
+	.prose :global(:where(p):not(:where([class~='not-prose'] *))) {
+		@apply text-gray-700 dark:text-gray-300;
+	}
 
-  .prose :global(:where(a):not(:where([class~="not-prose"] *))) {
-    @apply text-blue-600 dark:text-blue-400 hover:underline;
-  }
+	.prose :global(:where(a):not(:where([class~='not-prose'] *))) {
+		@apply text-blue-600 dark:text-blue-400 hover:underline;
+	}
 
-  .prose :global(:where(blockquote):not(:where([class~="not-prose"] *))) {
-    @apply border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400;
-  }
+	.prose :global(:where(blockquote):not(:where([class~='not-prose'] *))) {
+		@apply border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400;
+	}
 </style>

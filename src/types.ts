@@ -1,10 +1,18 @@
-type HeroConfig = { center: boolean };
+type HeroConfig = {
+	/** Whether to center the hero content. */
+	center: boolean;
+	/**
+	 * Size in number of pixels at which to truncate the hero content and
+	 * give the user a button to expand.
+	 */
+	truncationHeight: number;
+};
 export interface Config {
 	siteTitle: string;
 	profileHeader: boolean;
 	profileHeaderCenter: boolean;
 	headerText: string;
-	hero: boolean | HeroConfig;
+	hero: boolean | Partial<HeroConfig>;
 	controls: boolean;
 	displayView: 'grid' | 'list';
 	footerText: string;

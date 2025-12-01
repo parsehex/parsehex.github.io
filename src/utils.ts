@@ -68,3 +68,32 @@ export function showRelativeTime(dateStr: string) {
 		? formatDate(dateStr)
 		: relativeDate(dateStr);
 }
+
+export function mergeObject(target: any, source: any): any {
+	if (
+		typeof target !== 'object' ||
+		target === null ||
+		typeof source !== 'object' ||
+		source === null
+	) {
+		return source !== undefined ? source : target;
+	}
+
+	const result = Array.isArray(target) ? [...target] : { ...target };
+
+	for (const key in source) {
+		if (Object.prototype.hasOwnProperty.call(source, key)) {
+			if (
+				typeof source[key] === 'object' &&
+				source[key] !== null &&
+				!Array.isArray(source[key])
+			) {
+				result[key] = mergeObject(result[key], source[key]);
+			} else {
+				result[key] = source[key];
+			}
+		}
+	}
+
+	return result;
+}

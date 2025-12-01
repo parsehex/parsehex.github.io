@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 import { sanitizeMdToHtml } from '../../../utils';
 import Header from '../../../Header.vue';
 import Footer from '../../../Footer.vue';
-import config from '../../../config.json';
+import { getConfig } from '../../../config';
 import profile from '../../../profile.json';
 import readmeManifest from '../../../readme-manifest.json';
 import repos from '../../../repos.json';
@@ -23,6 +23,7 @@ const { name } = Astro.params;
 // Decode the name back - try to find the repo by checking both encoded and original names
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
+const config = await getConfig();
 let siteTitle = '';
 if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
 else siteTitle = config.siteTitle;
