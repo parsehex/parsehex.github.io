@@ -22,8 +22,8 @@ const description = `List of ${ghUsername}'s GitHub projects`;
 const projects = await getCollection('projects');
 const projectPages = projects.map(p => p.slug) as string[];
 
-const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(56, 189, 248, 0.15)';
-const topRight = config.theme?.gradientColors?.topRight || 'rgba(168, 85, 247, 0.15)';
+const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(0, 0, 0, 0)';
+const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
 ---
 
 <html lang="en-US">

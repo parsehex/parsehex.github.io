@@ -12,29 +12,25 @@ const defaultConfig: Config = {
 	footerText: '',
 	creditLink: true,
 	links: [],
-	theme: {
-		gradientColors: {
-			topLeft: 'rgba(96, 165, 250, 0.15)',
-			topRight: 'rgba(147, 51, 234, 0.15)',
-		},
-	},
 };
 
 export async function getConfig() {
 	let config: Config;
 	let buildInfo: Record<string, string> = {};
 	try {
+		// @ts-ignore: file may not exist
 		const { userConfig } = await import('./config.user');
 		config = mergeObject(defaultConfig, userConfig);
 	} catch (error: any) {
-		console.error('Failed to load user config:', error.message);
+		console.warn('Failed to load user config:', error.message);
 		config = defaultConfig;
 	}
 	try {
+		// @ts-ignore: file may not exist
 		const info = await import('./build-info.json');
 		buildInfo = info.default;
 	} catch (error: any) {
-		console.error('Failed to load user config:', error.message);
+		console.warn('Failed to load build info:', error.message);
 		buildInfo = {};
 	}
 	return mergeObject(config, buildInfo);
