@@ -1,15 +1,12 @@
 import type { Config } from './types';
-import { userConfig } from './config.user';
 import { mergeObject } from './utils';
-import buildInfo from './build-info.json';
 
 const defaultConfig: Config = {
 	siteTitle: "{username}'s Sites",
-	headerText: 'A list of my projects that have a GitHub Pages site.',
+	headerText: '',
 	profileHeader: true,
-	hero: {
-		center: false,
-	},
+	profileHeaderCenter: false,
+	hero: true,
 	controls: true,
 	displayView: 'grid',
 	footerText: '',
@@ -23,7 +20,22 @@ const defaultConfig: Config = {
 	},
 };
 
-export const config: Config = mergeObject(
-	mergeObject(defaultConfig, userConfig),
-	buildInfo
-);
+export async function getConfig() {
+	let config: Config;
+	let buildInfo: Record<string, string> = {};
+	try {
+		const { userConfig } = await import('./config.user');
+		config = mergeObject(defaultConfig, userConfig);
+	} catch (error: any) {
+		console.error('Failed to load user config:', error.message);
+		config = defaultConfig;
+	}
+	try {
+		const info = await import('./build-info.json');
+		buildInfo = info.default;
+	} catch (error: any) {
+		console.error('Failed to load user config:', error.message);
+		buildInfo = {};
+	}
+	return mergeObject(config, buildInfo);
+}

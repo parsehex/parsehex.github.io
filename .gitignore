@@ -38,6 +38,8 @@ src/config.json
 scripts/repo-filter.js
 /docs/.vitepress/cache
 /.astro
+src/config.user.ts
+src/build-info.json
 
 # Playwright
 /test-results/
