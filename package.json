@@ -14,7 +14,7 @@
     "docs:preview": "vitepress preview docs",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "randomize-gradient": "node scripts/randomize-gradient.js"
+    "bg-colors": "tsx scripts/randomize-gradient.ts"
   },
   "dependencies": {
     "@astrojs/vue": "^5.1.3",
