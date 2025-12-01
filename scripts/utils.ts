@@ -1,9 +1,19 @@
 import { writeFileSync } from 'fs';
 
-export async function downloadFile(url, filePath, options = {}) {
+interface DownloadOptions {
+	accept?: string;
+	token?: string;
+	isBinary?: boolean;
+}
+
+export async function downloadFile(
+	url: string,
+	filePath?: string | null,
+	options: DownloadOptions = {}
+) {
 	const { accept, isBinary = false } = options;
 	let { token } = options;
-	const headers = {};
+	const headers: Record<string, string> = {};
 	if (!token) token = process.env.GITHUB_TOKEN;
 	if (token) {
 		headers.Authorization = `token ${token}`;
@@ -34,8 +44,9 @@ export async function downloadFile(url, filePath, options = {}) {
 			console.log(`Downloaded and saved to ${filePath}`);
 		}
 		return content;
-	} catch (error) {
-		console.error(`Error downloading ${url}:`, error.message);
+	} catch (error: any) {
+		if (error.message)
+			console.error(`Error downloading ${url}:`, error.message);
 		throw error;
 	}
 }

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "fetch-data": "node -r dotenv/config scripts/fetch-data.js",
+    "fetch-data": "tsx -r dotenv/config scripts/fetch-data.ts",
     "build": "astro build",
     "lint": "eslint .",
     "preview": "astro preview",
