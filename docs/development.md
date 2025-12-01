@@ -74,7 +74,8 @@ The application will be available at `http://localhost:4321`.
 │   ├── main.ts             # Vue main page entry point script
 │   └── utils.ts            # Utility functions
 ├── astro.config.mjs       # Astro configuration
-└── config.*.json          # Configuration files
+├── src/config.ts          # Main configuration
+└── src/config.user.ts     # User configuration override
 ```
 
 ## Contributing
