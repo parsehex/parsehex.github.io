@@ -25,7 +25,6 @@ export async function getConfig() {
 	// load user config
 	if (cfgIndex > -1) {
 		const { userConfig } = (await tsFiles[cfgIndex][1]()) as any;
-		console.log(userConfig);
 		config = mergeObject(defaultConfig, userConfig);
 	} else {
 		config = defaultConfig;
