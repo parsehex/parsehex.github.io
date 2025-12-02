@@ -1,20 +1,38 @@
+type HeroConfig = {
+	/** Whether to center the hero content. */
+	center: boolean;
+	/**
+	 * Size in number of pixels at which to truncate the hero content and
+	 * give the user a button to expand.
+	 */
+	truncationHeight: number;
+};
 export interface Config {
-	header: boolean;
 	siteTitle: string;
+	profileHeader: boolean;
+	profileHeaderCenter: boolean;
 	headerText: string;
-	hero: {
-		src: string;
-		center: boolean;
-	};
-	display: {
-		view: string;
-	};
-	footer: {
-		text: string;
-		includeGitCaseLink: boolean;
-	};
+	hero: boolean | Partial<HeroConfig>;
+	controls: boolean;
+	displayView: 'grid' | 'list';
+	footerText: string;
+	creditLink: boolean;
 	extraRepos?: string[];
 	links?: Link[];
+	theme?: {
+		gradientColors?: {
+			topLeft: string;
+			topRight: string;
+		};
+	};
+	/**
+	 * Use a custom function to filter the fetched GitHub repositories based on desired criteria. Customize this function to change which repos are included in the showcase.
+	 * If not provided, then the default filter is used.
+	 *
+	 * @param {Repo[]} data - The raw array of repository objects from GitHub API
+	 * @returns {Repo[]} The filtered array of repositories
+	 */
+	reposFilter?: (data: Repo[]) => Repo[];
 	lastUpdated?: string;
 }
 

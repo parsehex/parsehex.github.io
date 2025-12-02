@@ -1,20 +1,21 @@
-#!/usr/bin/env node
+// run with either:
+//  npm run fetch-data
+//  vite-node scripts/fetch-data.ts
+import 'dotenv/config';
 
-import {
-	mkdirSync,
-	existsSync,
-	writeFileSync,
-	copyFileSync,
-	readFileSync,
-} from 'fs';
-import { join, basename, dirname } from 'path';
-import { downloadFile } from './utils.js';
+import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'fs';
+import { join, basename } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
 import sharp from 'sharp';
+import ico from 'sharp-ico';
+import { downloadFile } from './utils';
+import { type Repo } from '../src/types';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const username = process.env.VITE_GITHUB_ACTOR || process.argv[2];
+const srcDir = join(__dirname, '..', 'src');
+const buildInfoPath = join(srcDir, 'build-info.json');
 
 if (!username) {
 	throw new Error('Did not find username in env (VITE_GITHUB_Actor)');
@@ -22,61 +23,55 @@ if (!username) {
 
 const perPage = 100;
 
-function getFilteredReposDefault(data) {
+function getFilteredReposDefault(data: Repo[]) {
 	return data.filter((repo) => repo.homepage);
+}
+
+function processRepoLastUpdate(repo: Repo) {
+	// Add latest_update helper object to repo
+	const updated = new Date(repo.updated_at);
+	const pushed = new Date(repo.pushed_at);
+	if (isBefore(updated, pushed)) {
+		repo.latest_update = {
+			label: 'Pushed',
+			value: repo.pushed_at,
+		};
+	} else {
+		repo.latest_update = {
+			label: 'Updated',
+			value: repo.updated_at,
+		};
+	}
+	return repo;
 }
 
 async function fetchRepos() {
 	console.log('Fetching repo list for', username);
 	try {
 		const reposUrl = `https://api.github.com/users/${username}/repos?per_page=${perPage}`;
-		const dataStr = await downloadFile(reposUrl, null);
+		const dataStr = (await downloadFile(reposUrl, null)) as string;
 		const data = JSON.parse(dataStr);
-
-		// Load extra repos from config.user.json if exists
-		let extraReposData = [];
-		const userConfigPath = join(__dirname, '..', 'config.user.json');
-		if (existsSync(userConfigPath)) {
-			try {
-				const userConfigStr = await import('fs').then((fs) =>
-					fs.readFileSync(userConfigPath, 'utf8')
-				);
-				const userConfig = JSON.parse(userConfigStr);
-				extraReposData = userConfig.extraRepos || [];
-			} catch (error) {
-				console.log('Error loading config.user.json:', error);
-			}
-		}
-
-		// Copy config to src directory
-		const srcDir = join(__dirname, '..', 'src');
-		if (!existsSync(srcDir)) {
-			mkdirSync(srcDir, { recursive: true });
-		}
-		let configToCopy = 'config.json';
-		if (existsSync(userConfigPath)) {
-			configToCopy = 'config.user.json';
-		}
-		const sourceConfigPath = join(__dirname, '..', configToCopy);
-		const destConfigPath = join(srcDir, 'config.json');
-		try {
-			copyFileSync(sourceConfigPath, destConfigPath);
-			console.log(`Copied ${configToCopy} to ${destConfigPath}`);
-		} catch (error) {
-			console.log(`Error copying config:`, error.message);
-		}
 
 		// download profile json
 		const profileUrl = `https://api.github.com/users/${username}`;
 		await downloadFile(profileUrl, join(srcDir, 'profile.json'));
 
-		// Read the config file to update it
-		let configContent = JSON.parse(readFileSync(destConfigPath, 'utf8'));
-		configContent.lastUpdated = new Date().toISOString();
-		writeFileSync(destConfigPath, JSON.stringify(configContent, null, 2));
-		console.log(`Updated lastUpdated in ${destConfigPath}`);
+		// Update build-info file
+		let infoContent = {};
+		try {
+			const c = JSON.parse(readFileSync(buildInfoPath, 'utf8'));
+			infoContent = c;
+		} catch (e) {
+			infoContent = {};
+		}
+		infoContent.lastUpdated = new Date().toISOString();
+		writeFileSync(buildInfoPath, JSON.stringify(infoContent, null, 2));
+		console.log(`Updated lastUpdated in ${buildInfoPath}`);
 
 		// Fetch data for extra repos
+		const { getConfig } = await import('../src/config');
+		const config = await getConfig();
+		const extraReposData = config.extraRepos || [];
 		let extraRepos = [];
 		for (const fullName of extraReposData) {
 			if (!fullName || typeof fullName !== 'string') continue;
@@ -84,45 +79,18 @@ async function fetchRepos() {
 				const [owner, repoName] = fullName.split('/');
 				if (!owner || !repoName) continue;
 				const extraRepoUrl = `https://api.github.com/repos/${owner}/${repoName}`;
-				const extraDataStr = await downloadFile(extraRepoUrl, null);
+				const extraDataStr = (await downloadFile(extraRepoUrl, null)) as string;
 				const extraRepo = JSON.parse(extraDataStr);
 				// external repos should use the full name
 				extraRepo.name = fullName;
-				// Add latest_update
-				const updated = new Date(extraRepo.updated_at);
-				const pushed = new Date(extraRepo.pushed_at);
-				if (isBefore(updated, pushed)) {
-					extraRepo.latest_update = {
-						label: 'Pushed',
-						value: extraRepo.pushed_at,
-					};
-				} else {
-					extraRepo.latest_update = {
-						label: 'Updated',
-						value: extraRepo.updated_at,
-					};
-				}
 				extraRepos.push(extraRepo);
-			} catch (error) {
+			} catch (error: any) {
 				console.log(`Error fetching extra repo ${fullName}:`, error.message);
 			}
 		}
 
-		let getFilteredRepos;
-
-		try {
-			const func = (await import('./repo-filter.js')).getFilteredRepos;
-			getFilteredRepos = func;
-		} catch (e) {
-			if (!e.toString().includes('ERR_MODULE_NOT_FOUND'))
-				console.log(
-					'Did not find repo-filter.js and using default function - Error:',
-					e
-				);
-			getFilteredRepos = getFilteredReposDefault;
-		}
-
-		let sites = getFilteredRepos(data).concat(extraRepos);
+		const filteredReposFunc = config.reposFilter || getFilteredReposDefault;
+		let sites = filteredReposFunc(data).concat(extraRepos);
 
 		// Remove duplicates by name (prefer main user repos if conflict)
 		const seenNames = new Set();
@@ -133,23 +101,7 @@ async function fetchRepos() {
 				uniqueSites.push(repo);
 			}
 		}
-		sites = uniqueSites;
-
-		for (const repo of sites) {
-			const updated = new Date(repo.updated_at);
-			const pushed = new Date(repo.pushed_at);
-			if (isBefore(updated, pushed)) {
-				repo.latest_update = {
-					label: 'Pushed',
-					value: repo.pushed_at,
-				};
-			} else {
-				repo.latest_update = {
-					label: 'Updated',
-					value: repo.updated_at,
-				};
-			}
-		}
+		sites = uniqueSites.map(processRepoLastUpdate);
 
 		// Fetch languages for each repo
 		for (const repo of sites) {
@@ -158,16 +110,16 @@ async function fetchRepos() {
 					? repo.name.split('/')
 					: [username, repo.name];
 				const languagesUrl = `https://api.github.com/repos/${owner}/${repoName}/languages`;
-				const languagesStr = await downloadFile(languagesUrl, null);
+				const languagesStr = (await downloadFile(languagesUrl, null)) as string;
 				const rawLanguages = JSON.parse(languagesStr);
 
 				const totalSize = Object.values(rawLanguages).reduce(
-					(acc, size) => acc + size,
+					(acc: number, size: any) => acc + size,
 					0
 				);
 				if (totalSize > 0) {
 					repo.languages = Object.entries(rawLanguages).reduce(
-						(acc, [lang, size]) => {
+						(acc: any, [lang, size]: any) => {
 							acc[lang] = (size / totalSize) * 100;
 							return acc;
 						},
@@ -176,7 +128,7 @@ async function fetchRepos() {
 				} else {
 					repo.languages = {};
 				}
-			} catch (error) {
+			} catch (error: any) {
 				console.log(
 					`Error fetching languages for ${repo.name}:`,
 					error.message
@@ -196,7 +148,10 @@ async function fetchRepos() {
 	}
 }
 
-async function processReadmeImages(repoFullName, readmeContent) {
+async function processReadmeImages(
+	repoFullName: string,
+	readmeContent: string
+) {
 	const imageDir = join(__dirname, '..', 'public', 'readme-images');
 	if (!existsSync(imageDir)) {
 		mkdirSync(imageDir, { recursive: true });
@@ -221,7 +176,7 @@ async function processReadmeImages(repoFullName, readmeContent) {
 				relativePath,
 				`/readme-images/${imageName}`
 			);
-		} catch (error) {
+		} catch (error: any) {
 			console.log(
 				`Error downloading image ${imageUrl} for ${repoFullName}:`,
 				error.message
@@ -231,7 +186,7 @@ async function processReadmeImages(repoFullName, readmeContent) {
 	return updatedReadmeContent;
 }
 
-async function fetchReadmes(repos) {
+async function fetchReadmes(repos: Repo[]) {
 	console.log('Fetching READMEs for repositories');
 	const publicDir = join(__dirname, '..', 'public', 'readmes');
 
@@ -250,9 +205,9 @@ async function fetchReadmes(repos) {
 			const readmeUrl = `https://api.github.com/repos/${repoId}/readme`;
 
 			// Download README content as a string first
-			const readmeRawContent = await downloadFile(readmeUrl, null, {
+			const readmeRawContent = (await downloadFile(readmeUrl, null, {
 				accept: 'application/vnd.github.v3.raw',
-			});
+			})) as string;
 
 			const repoFullName = repo.name.includes('/')
 				? repo.name
@@ -272,7 +227,7 @@ async function fetchReadmes(repos) {
 				success: true,
 				timestamp: new Date().toISOString(),
 			});
-		} catch (error) {
+		} catch (error: any) {
 			console.log(`No README found for ${repo.name}`);
 			readmeManifest.push({
 				repo: repo.name,
@@ -308,7 +263,8 @@ async function fetchAvatar() {
 	const avatarUrl = `https://github.com/${username}.png`;
 	const publicDir = join(__dirname, '..', 'public');
 	const avatarPath = join(publicDir, 'avatar.webp');
-	const faviconPath = join(publicDir, 'favicon.png');
+	const faviconPngPath = join(publicDir, 'favicon.png');
+	const faviconIcoPath = join(publicDir, 'favicon.ico');
 
 	// Ensure the public directory exists
 	if (!existsSync(publicDir)) {
@@ -329,7 +285,7 @@ async function fetchAvatar() {
 		await sharp(buffer).resize(150).webp().toFile(avatar150Path);
 		console.log(`Avatar (150px) saved to ${avatar150Path}`);
 
-		// Generate favicon.png (32x32)
+		// Generate favicon.png
 		const faviconBuffer = await sharp(buffer)
 			.resize(32, 32, {
 				kernel: sharp.kernel.nearest,
@@ -338,11 +294,23 @@ async function fetchAvatar() {
 			})
 			.png()
 			.toBuffer();
+		writeFileSync(faviconPngPath, faviconBuffer);
+		console.log(`Favicon PNG saved to ${faviconPngPath}`);
 
-		writeFileSync(faviconPath, faviconBuffer);
-
-		console.log(`Favicon saved to ${faviconPath}`);
-	} catch (error) {
+		// Generate favicon.ico for other GH Pages sites to
+		//   fallback to without changing to point to the png
+		ico.sharpsToIco(
+			[
+				sharp(buffer).resize(32, 32, {
+					kernel: sharp.kernel.nearest,
+					fit: 'contain',
+					background: { r: 255, g: 255, b: 255, alpha: 1 },
+				}),
+			],
+			faviconIcoPath
+		);
+		console.log(`Favicon ICO saved to ${faviconIcoPath}`);
+	} catch (error: any) {
 		console.error('Error fetching avatar:', error.message);
 		// Don't exit the process for avatar failure, as it's not critical
 	}

@@ -32,12 +32,14 @@ public/readme-images
 src/readme-manifest.json
 public/avatar*.png
 public/avatar*.webp
-public/favicon.png
+public/favicon.*
 src/hero.md
 src/config.json
 scripts/repo-filter.js
 /docs/.vitepress/cache
 /.astro
+src/config.user.ts
+src/build-info.json
 
 # Playwright
 /test-results/

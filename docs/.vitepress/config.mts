@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 		themeConfig: {
 			nav: [
 				{ text: 'Get Started', link: '/getting-started' },
-				{ text: 'Configuration', link: '/configuration' },
+				{ text: 'Config', link: '/config' },
 				{ text: 'Development', link: '/development' },
 				{ text: 'Plans', link: '/plans' },
 			],

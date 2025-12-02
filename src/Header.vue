@@ -21,12 +21,12 @@
 				</Tippy>
 			</a>
 		</div>
-		<Tippy class="text-gray-700 dark:text-gray-300 text-sm select-none" :content="lastUpdatedTooltip" placement="bottom"
-			:delay="250"> Last updated {{ lastUpdatedDisplay }} </Tippy>
+		<Tippy v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm select-none"
+			:content="lastUpdatedTooltip" placement="bottom" :delay="250"> Last updated {{ lastUpdatedDisplay }} </Tippy>
 	</header>
 </template>
 <script setup lang="ts">
-import { computed, ComputedRef, inject, Ref } from 'vue'
+import { computed, inject, Ref } from 'vue'
 import { Tippy } from 'vue-tippy';
 import Icon from './components/Icon.vue';
 import { formatDate, showRelativeTime } from './utils';
@@ -38,6 +38,7 @@ interface Props {
 	ghUsername?: string
 	siteTitle?: string | Ref<string>
 	isProjectPage?: boolean
+	class?: string
 }
 
 const props = defineProps<Props>()

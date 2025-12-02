@@ -30,6 +30,7 @@ export default defineConfig({
 			rollupOptions: {
 				external: ['jsdom', 'cssstyle'],
 			},
+			modulePreload: false,
 		},
 	},
 });
