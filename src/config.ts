@@ -15,23 +15,30 @@ const defaultConfig: Config = {
 };
 
 export async function getConfig() {
+	const tsFiles = Object.entries(import.meta.glob('./*.ts'));
+	const cfgIndex = tsFiles.findIndex((v) => v[0].includes('config.user'));
+	const jsonFiles = Object.entries(import.meta.glob('./*.json'));
+	const infoIndex = jsonFiles.findIndex((v) => v[0].includes('build-info'));
 	let config: Config;
 	let buildInfo: Record<string, string> = {};
-	try {
-		// @ts-ignore: file may not exist
-		const { userConfig } = await import('./config.user');
+
+	// load user config
+	if (cfgIndex > -1) {
+		const { userConfig } = (await tsFiles[cfgIndex][1]()) as any;
+		console.log(userConfig);
 		config = mergeObject(defaultConfig, userConfig);
-	} catch (error: any) {
-		console.warn('Failed to load user config:', error.message);
+	} else {
 		config = defaultConfig;
+		console.log('User config not available');
 	}
-	try {
-		// @ts-ignore: file may not exist
-		const info = await import('./build-info.json');
-		buildInfo = info.default;
-	} catch (error: any) {
-		console.warn('Failed to load build info:', error.message);
-		buildInfo = {};
+
+	// load build info
+	if (infoIndex > -1) {
+		const info = ((await jsonFiles[infoIndex][1]()) as any).default;
+		buildInfo = info as any;
+	} else {
+		config = defaultConfig;
+		console.log('Build info not available');
 	}
 	return mergeObject(config, buildInfo);
 }

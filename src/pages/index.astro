@@ -29,7 +29,6 @@ const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
 let langColors = {};
 try {
 	const l = await import('../lang-colors.json');
-	console.log(l);
 	langColors = l;
 } catch (e) {
 	//
