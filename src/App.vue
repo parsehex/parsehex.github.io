@@ -18,8 +18,8 @@
 		<TopicFilter v-if="config?.controls" :topics="allTopics" :selected-topics="selectedTopics"
 			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
-			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view"
-				:readme-manifest="readmeManifest" />
+			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
+				:lang-colors="langColors" />
 		</main>
 		<Footer />
 	</div>
@@ -45,6 +45,7 @@ interface Props {
 	ghUsername: string
 	projectPages: string[]
 	hasHero: boolean
+	langColors: any
 }
 
 const props = defineProps<Props>()

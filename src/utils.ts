@@ -2,7 +2,6 @@ import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
 import { marked } from 'marked';
 import markedAlert from 'marked-alert';
 import DOMPurify from 'dompurify';
-import langColors from './lang-colors.json';
 
 marked.use(markedAlert());
 
@@ -25,7 +24,8 @@ export async function sanitizeMdToHtml(md: string) {
 	return sanitizeHtml(html);
 }
 
-export function getColor(lang: string) {
+export function getColor(lang: string, langColors: any) {
+	if (!langColors || ~langColors[lang]) return '#111';
 	// @ts-expect-error n/a
 	const c = langColors[lang] as LangColor;
 	return c.color;

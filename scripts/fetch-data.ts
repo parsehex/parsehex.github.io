@@ -7,6 +7,7 @@ import { join, basename } from 'path';
 import * as url from 'url';
 import { isBefore } from 'date-fns';
 import sharp from 'sharp';
+import ico from 'sharp-ico';
 import { downloadFile } from './utils';
 import { getConfig } from '../src/config';
 import { Repo } from '../src/types';
@@ -56,7 +57,13 @@ async function fetchRepos() {
 		await downloadFile(profileUrl, join(srcDir, 'profile.json'));
 
 		// Update build-info file
-		let infoContent = JSON.parse(readFileSync(buildInfoPath, 'utf8'));
+		let infoContent = {};
+		try {
+			const c = JSON.parse(readFileSync(buildInfoPath, 'utf8'));
+			infoContent = c;
+		} catch (e) {
+			infoContent = {};
+		}
 		infoContent.lastUpdated = new Date().toISOString();
 		writeFileSync(buildInfoPath, JSON.stringify(infoContent, null, 2));
 		console.log(`Updated lastUpdated in ${buildInfoPath}`);
@@ -289,18 +296,18 @@ async function fetchAvatar() {
 		writeFileSync(faviconPngPath, faviconBuffer);
 		console.log(`Favicon PNG saved to ${faviconPngPath}`);
 
-		// Generate favicon.ico for other GH Pages sites to fallback to
-		//   without changing to point to the png
-		const faviconIcoBuffer = await sharp(buffer)
-			.resize(32, 32, {
-				kernel: sharp.kernel.nearest,
-				fit: 'contain',
-				background: { r: 255, g: 255, b: 255, alpha: 1 },
-			})
-			.ico()
-			.toBuffer();
-
-		writeFileSync(faviconIcoPath, faviconIcoBuffer);
+		// Generate favicon.ico for other GH Pages sites to
+		//   fallback to without changing to point to the png
+		ico.sharpsToIco(
+			[
+				sharp(buffer).resize(32, 32, {
+					kernel: sharp.kernel.nearest,
+					fit: 'contain',
+					background: { r: 255, g: 255, b: 255, alpha: 1 },
+				}),
+			],
+			faviconIcoPath
+		);
 		console.log(`Favicon ICO saved to ${faviconIcoPath}`);
 	} catch (error: any) {
 		console.error('Error fetching avatar:', error.message);

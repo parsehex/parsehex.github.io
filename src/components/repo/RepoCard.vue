@@ -23,7 +23,7 @@
 					</a>
 				</Tippy>
 			</div>
-			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
+			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" :lang-colors="langColors" />
 		</div>
 		<p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed"> {{ repo.description || 'No description provided.'
 		}} </p>
@@ -70,7 +70,7 @@
 					</a>
 				</Tippy>
 			</div>
-			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" />
+			<LangBadge v-if="repo.language" :language="repo.language" :languages="repo.languages" :lang-colors="langColors" />
 		</div>
 		<div v-if="repo.topics && repo.topics.length > 0" class="flex flex-wrap gap-2 mb-2">
 			<TopicBadge v-for="topic in repo.topics" :key="topic" :topic="topic" />
@@ -92,6 +92,7 @@ interface Props {
 	repo: Repo
 	view: 'grid' | 'list'
 	readmeManifest: ReadmeManifestItem[]
+	langColors: any
 }
 
 const props = defineProps<Props>()

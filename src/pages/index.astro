@@ -25,6 +25,15 @@ const projectPages = projects.map((p) => p.slug) as string[];
 
 const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(0, 0, 0, 0)';
 const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
+
+let langColors = {};
+try {
+	const l = await import('../lang-colors.json');
+	console.log(l);
+	langColors = l;
+} catch (e) {
+	//
+}
 ---
 
 <html lang="en-US">
@@ -52,6 +61,7 @@ const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
 				ghUsername={ghUsername}
 				projectPages={projectPages}
 				hasHero={!!heroMd}
+				langColors={langColors}
 			>
 				<Hero slot="hero" source={heroMd} />
 			</App>
