@@ -2,7 +2,7 @@
 
 > **Your GitHub Portfolio, On Autopilot.**
 
-![SrcGallery preview](./srcgallery-preview.png)
+![SrcGallery preview](./srcgallery-preview-2.png)
 
 A zero-maintenance landing page that updates itself. Fork this repo, and it will automatically showcase your projects using GitHub Actions.
 

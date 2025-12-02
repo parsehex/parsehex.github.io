@@ -15,11 +15,12 @@ import { getColor, getContrastYIQ } from '../../utils'
 interface Props {
 	language: string
 	languages?: { [key: string]: number }
+	langColors: any
 }
 
 const props = defineProps<Props>()
 
-const color = computed(() => getColor(props.language))
+const color = computed(() => getColor(props.language, props.langColors))
 const contrast = computed(() => getContrastYIQ(color.value))
 
 const sortedLanguages = computed(() => {
@@ -37,13 +38,13 @@ const languageDistributionHtml = computed(() => {
 	for (const [lang, percent] of Object.entries(sortedLanguages.value)) {
 		html += `<div class="flex justify-between text-sm gap-4 py-0.5">
 					<span  class="text-gray-800 dark:text-gray-200">${lang}</span>
-					<span style="color: ${getColor(lang)}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${(percent as number).toFixed(1)}%</span>
+					<span style="color: ${getColor(lang, props.langColors)}; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${(percent as number).toFixed(1)}%</span>
 				</div>`
 	}
 	// Colors bar:
 	html += '<div class="lang flex w-full h-2 rounded-b-md overflow-hidden mt-2">'
 	for (const [lang, percent] of Object.entries(sortedLanguages.value)) {
-		html += `<div style="width: ${percent}%; background-color: ${getColor(lang)};" class="h-full"></div>`
+		html += `<div style="width: ${percent}%; background-color: ${getColor(lang, props.langColors)};" class="h-full"></div>`
 	}
 	html += '</div></div>'
 	return html

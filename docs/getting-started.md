@@ -26,7 +26,7 @@ Done! The site will start building and should be online soon at `USERNAME.github
 ## Key Features
 
 - **Automatic daily updates** via GitHub Actions – set-and-forget
-- **Displays only repositories with a homepage URL** or [using your own filter](./configuration#custom-filters)
+- **Displays only repositories with a homepage URL** or [using your own filter](./config#custom-filters)
 - **Interactive UI** with layout and sorting options
 - **Built with modern technologies**: Astro, Vue, TypeScript, and Tailwind
 

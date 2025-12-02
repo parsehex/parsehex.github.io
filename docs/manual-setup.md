@@ -19,27 +19,7 @@ git clone https://github.com/ProjectDepot/SrcGallery USERNAME.github.io
 cd USERNAME.github.io
 ```
 
-3. Copy the `config.user.json.example` file and rename it to **`config.user.json`**. You'll want to change at least the following lines:
-
-```json{3,4,16}
-{
-  "header": true,
-  "siteTitle": "{username}'s Sites",
-  "headerText": "A list of my projects that have a GitHub Pages site.",
-  "hero": {
-    "src": "/hero.md",
-    "center": true
-  },
-  "display": {
-    "view": "grid"
-  },
-  "footer": {
-    "text": "",
-    "includeGitCaseLink": true
-  },
-  "extraRepos": ["owner/repo-name"]
-}
-```
+3. (optional) Copy the `src/config.user.ts.example` file and name it **`src/config.user.ts`**. You can [learn about this file here](./config).
 
 4. Now for some git commands to add your. In the second command below, you should **replace `USERNAME` with your username.**
 

@@ -10,10 +10,7 @@ const projectsCollection = defineCollection({
 
 const readmesCollection = defineCollection({
 	type: 'content',
-	schema: z.object({
-		title: z.string().optional(),
-		description: z.string().optional(),
-	}),
+	schema: z.object({}),
 });
 
 export const collections = {

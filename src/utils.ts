@@ -2,7 +2,6 @@ import { formatDistanceToNow, parseISO, isBefore, subWeeks } from 'date-fns';
 import { marked } from 'marked';
 import markedAlert from 'marked-alert';
 import DOMPurify from 'dompurify';
-import langColors from './lang-colors.json';
 
 marked.use(markedAlert());
 
@@ -25,7 +24,8 @@ export async function sanitizeMdToHtml(md: string) {
 	return sanitizeHtml(html);
 }
 
-export function getColor(lang: string) {
+export function getColor(lang: string, langColors: any) {
+	if (!langColors || ~langColors[lang]) return '#111';
 	// @ts-expect-error n/a
 	const c = langColors[lang] as LangColor;
 	return c.color;
@@ -67,4 +67,33 @@ export function showRelativeTime(dateStr: string) {
 	return isBefore(date, subWeeks(new Date(), 1))
 		? formatDate(dateStr)
 		: relativeDate(dateStr);
+}
+
+export function mergeObject(target: any, source: any): any {
+	if (
+		typeof target !== 'object' ||
+		target === null ||
+		typeof source !== 'object' ||
+		source === null
+	) {
+		return source !== undefined ? source : target;
+	}
+
+	const result = Array.isArray(target) ? [...target] : { ...target };
+
+	for (const key in source) {
+		if (Object.prototype.hasOwnProperty.call(source, key)) {
+			if (
+				typeof source[key] === 'object' &&
+				source[key] !== null &&
+				!Array.isArray(source[key])
+			) {
+				result[key] = mergeObject(result[key], source[key]);
+			} else {
+				result[key] = source[key];
+			}
+		}
+	}
+
+	return result;
 }

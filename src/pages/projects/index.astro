@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Header from '../../Header.vue';
 import Footer from '../../Footer.vue';
-import config from '../../config.json';
+import { getConfig } from '../../config';
 import profile from '../../profile.json';
 import '../../index.css';
 
@@ -10,6 +10,7 @@ const projects = await getCollection('projects');
 
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
+const config = await getConfig();
 let siteTitle = '';
 if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
 else siteTitle = config.siteTitle;
@@ -17,31 +18,54 @@ siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
 ---
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Pages | {siteTitle}</title>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
-    <div class="mx-auto p-4">
-        <div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
-            <Header client:load class="md:w-1/3 md:mt-4" config={config} profile={profile} ghUsername={ghUsername} siteTitle={siteTitle} isProjectPage />
-            <div class="md:w-1/2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                <h1 class="text-3xl font-bold mb-6">Project Pages</h1>
-                <div class="space-y-4">
-                    {projects.map((project) => (
-                        <a href={`/projects/${project.slug}`} class="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                            <h2 class="text-xl font-semibold mb-2">{project.data.title || project.slug}</h2>
-                            {project.data.description && <p class="text-gray-600 dark:text-gray-400">{project.data.description}</p>}
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mx-auto p-4 w-full max-w-4xl">
-        <Footer config={config} />
-    </div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Project Pages | {siteTitle}</title>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
+		<div class="mx-auto p-4">
+			<div
+				class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative"
+			>
+				<Header
+					client:load
+					class="md:w-1/3 md:mt-4"
+					config={config}
+					profile={profile}
+					ghUsername={ghUsername}
+					siteTitle={siteTitle}
+					isProjectPage
+				/>
+				<div
+					class="md:w-1/2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+				>
+					<h1 class="text-3xl font-bold mb-6">Project Pages</h1>
+					<div class="space-y-4">
+						{
+							projects.map((project) => (
+								<a
+									href={`/projects/${project.slug}`}
+									class="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+								>
+									<h2 class="text-xl font-semibold mb-2">
+										{project.data.title || project.slug}
+									</h2>
+									{project.data.description && (
+										<p class="text-gray-600 dark:text-gray-400">
+											{project.data.description}
+										</p>
+									)}
+								</a>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mx-auto p-4 w-full max-w-4xl">
+			<Footer config={config} />
+		</div>
+	</body>
 </html>

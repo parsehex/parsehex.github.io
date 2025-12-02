@@ -1,6 +1,6 @@
 ---
 import App from '../App.vue';
-import config from '../config.json';
+import { getConfig } from '../config';
 import profile from '../profile.json';
 
 import { getCollection } from 'astro:content';
@@ -12,6 +12,7 @@ import '@fontsource/outfit';
 
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
+const config = await getConfig();
 let siteTitle = '';
 if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
 else siteTitle = config.siteTitle;
@@ -20,33 +21,49 @@ siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
 const description = `List of ${ghUsername}'s GitHub projects`;
 
 const projects = await getCollection('projects');
-const projectPages = projects.map(p => p.slug) as string[];
+const projectPages = projects.map((p) => p.slug) as string[];
 
-const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(56, 189, 248, 0.15)';
-const topRight = config.theme?.gradientColors?.topRight || 'rgba(168, 85, 247, 0.15)';
+const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(0, 0, 0, 0)';
+const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
+
+let langColors = {};
+try {
+	const l = await import('../lang-colors.json');
+	langColors = l;
+} catch (e) {
+	//
+}
 ---
 
 <html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{siteTitle}</title>
-    <meta name="description" content={description} />
-    <meta property="og:description" content={description} />
-    <meta property="og:title" content={siteTitle} />
-    <style is:global define:vars={{topLeft, topRight}}>
-      :root {
-        --gradient-top-left: var(--topLeft);
-        --gradient-top-right: var(--topRight);
-      }
-    </style>
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
-    <div id="app">
-      <App client:load config={config} profile={profile} ghUsername={ghUsername} projectPages={projectPages} hasHero={!!heroMd}>
-        <Hero slot="hero" source={heroMd} />
-      </App>
-    </div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{siteTitle}</title>
+		<meta name="description" content={description} />
+		<meta property="og:description" content={description} />
+		<meta property="og:title" content={siteTitle} />
+		<style is:global define:vars={{ topLeft, topRight }}>
+			:root {
+				--gradient-top-left: var(--topLeft);
+				--gradient-top-right: var(--topRight);
+			}
+		</style>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100">
+		<div id="app">
+			<App
+				client:load
+				config={config}
+				profile={profile}
+				ghUsername={ghUsername}
+				projectPages={projectPages}
+				hasHero={!!heroMd}
+				langColors={langColors}
+			>
+				<Hero slot="hero" source={heroMd} />
+			</App>
+		</div>
+	</body>
 </html>

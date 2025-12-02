@@ -1,23 +1,25 @@
 <template>
 	<div class="mx-auto p-4">
-		<div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
-			<Header v-if="config?.header" class="md:w-1/3 md:mt-4" />
-			<div v-if="hasHero" class="md:w-1/2">
+		<div v-if="showHeaderWrapper"
+			:class="{ 'flex flex-col md:flex-row md:justify-center gap-4 mb-4 relative': true, 'md:items-start': !config.profileHeaderCenter, 'md:items-center': config.profileHeaderCenter }">
+			<Header v-if="config?.profileHeader" class="md:w-1/3 md:mt-4" />
+			<div v-if="hasHero && config?.hero" class="md:w-1/2">
 				<slot name="hero"></slot>
 			</div>
 		</div>
-		<div class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
+		<div v-if="config?.controls"
+			class="container mx-auto flex flex-wrap justify-center sm:justify-between items-center mb-4 space-x-6">
 			<SortControls :sort-by="sortBy" :sort-options="sortOptions" :sort-order="sortOrder"
 				@sort-change="handleSortChange" />
 			<LanguageFilter :selected-language="selectedLanguage" :all-languages="allLanguages"
 				@update:selectedLanguage="selectedLanguage = $event" />
 			<ViewToggle :view="view" @view-change="setView" />
 		</div>
-		<TopicFilter :topics="allTopics" :selected-topics="selectedTopics"
+		<TopicFilter v-if="config?.controls" :topics="allTopics" :selected-topics="selectedTopics"
 			@update:selectedTopics="selectedTopics = $event" />
 		<main :class="viewClassCommon + ' ' + viewClass">
-			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view"
-				:readme-manifest="readmeManifest" />
+			<RepoCard v-for="repo in sortedRepos" :key="repo.id" :repo="repo" :view="view" :readme-manifest="readmeManifest"
+				:lang-colors="langColors" />
 		</main>
 		<Footer />
 	</div>
@@ -43,6 +45,7 @@ interface Props {
 	ghUsername: string
 	projectPages: string[]
 	hasHero: boolean
+	langColors: any
 }
 
 const props = defineProps<Props>()
@@ -105,6 +108,10 @@ const siteTitle = computed(() => {
 
 	// replace {username} with actual username
 	return title.replace(/\{username\}/g, props.ghUsername);
+});
+
+const showHeaderWrapper = computed(() => {
+	return props.config?.profileHeader || props.hasHero;
 });
 
 watch([sortBy, sortOrder, view], () => {
