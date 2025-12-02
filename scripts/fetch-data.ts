@@ -1,6 +1,7 @@
 // run with either:
 //  npm run fetch-data
-//  tsx scripts/fetch-data.ts
+//  vite-node scripts/fetch-data.ts
+import 'dotenv/config';
 
 import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'fs';
 import { join, basename } from 'path';
@@ -9,8 +10,7 @@ import { isBefore } from 'date-fns';
 import sharp from 'sharp';
 import ico from 'sharp-ico';
 import { downloadFile } from './utils';
-import { getConfig } from '../src/config';
-import { Repo } from '../src/types';
+import { type Repo } from '../src/types';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const username = process.env.VITE_GITHUB_ACTOR || process.argv[2];
@@ -69,6 +69,7 @@ async function fetchRepos() {
 		console.log(`Updated lastUpdated in ${buildInfoPath}`);
 
 		// Fetch data for extra repos
+		const { getConfig } = await import('../src/config');
 		const config = await getConfig();
 		const extraReposData = config.extraRepos || [];
 		let extraRepos = [];
