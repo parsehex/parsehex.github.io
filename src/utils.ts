@@ -25,7 +25,7 @@ export async function sanitizeMdToHtml(md: string) {
 }
 
 export function getColor(lang: string, langColors: any) {
-	if (!langColors || ~langColors[lang]) return '#111';
+	if (!langColors || !langColors[lang]) return '#111';
 	// @ts-expect-error n/a
 	const c = langColors[lang] as LangColor;
 	return c.color;
