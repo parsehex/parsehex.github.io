@@ -35,6 +35,7 @@ export const userConfig: Partial<Config> = {
 			url: 'https://ko-fi.com/parsehex',
 		},
 	],
+	extraRepos: ['ProjectDepot/SrcGallery', 'ProjectDepot/vue-node-sqlite-starter'],
 	theme: {
 		gradientColors: {
 			topLeft: 'rgba(56, 189, 248, 0.15)',
