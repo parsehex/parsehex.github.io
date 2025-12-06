@@ -1,5 +1,5 @@
-import { state } from '../state';
-import { log, err } from '../log';
+import { state } from '../../state';
+import { log, err } from '../../log';
 import { downloadTextFile } from '../../utils';
 
 export async function fetchColors() {

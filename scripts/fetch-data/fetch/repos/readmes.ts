@@ -2,8 +2,8 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { Repo } from '../../../../src/types';
 import { downloadTextFile } from '../../../utils';
-import { log } from '../../log';
-import { state } from '../../state';
+import { log } from '../../../log';
+import { state } from '../../../state';
 import { processReadmeImages } from './readme-images';
 
 export async function fetchReadmes(repos: Repo[]) {

@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import ico from 'sharp-ico';
-import { err, log } from '../log';
-import { state } from '../state';
+import { err, log } from '../../log';
+import { state } from '../../state';
 import { downloadBinFile } from '../../utils';
 import { writeFileSync } from 'fs';
 

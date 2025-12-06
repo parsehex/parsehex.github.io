@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "fetch-data": "vite-node scripts/fetch-data.ts",
+    "fetch-data": "vite-node scripts/fetch-data",
     "build": "astro build",
     "lint": "eslint .",
     "preview": "astro preview",

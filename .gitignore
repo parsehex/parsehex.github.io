@@ -47,3 +47,4 @@ src/build-info.json
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/.cache

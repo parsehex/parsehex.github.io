@@ -1,7 +1,7 @@
 import { basename, join } from 'path';
-import { state } from '../../state';
+import { state } from '../../../state';
 import { downloadBinFile } from '../../../utils';
-import { log } from '../../log';
+import { log } from '../../../log';
 
 export async function processReadmeImages(
 	repoFullName: string,

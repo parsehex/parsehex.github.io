@@ -1,13 +1,13 @@
 import { join } from 'path';
 import * as url from 'url';
-import { state } from './state';
+import { state } from '../state';
 import { existsSync, mkdirSync } from 'fs';
 
 export function setPaths() {
 	const { paths } = state;
 	const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-	const src = join(__dirname, '..', 'src');
-	const _public = join(__dirname, '..', 'public');
+	const src = join(__dirname, '../..', 'src');
+	const _public = join(__dirname, '../..', 'public');
 	const readmes = join(src, 'content/readmes');
 	const readmeImages = join(_public, 'readme-images');
 

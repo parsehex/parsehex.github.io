@@ -1,4 +1,7 @@
 import { writeFileSync } from 'fs';
+import { cacheManager } from './cache';
+import { err, log } from './log';
+import { state } from './state';
 
 interface DownloadOptions {
 	accept?: string;
@@ -22,13 +25,33 @@ export async function downloadFile(
 		headers.Accept = accept;
 	}
 
+	const cached = cacheManager.get(url);
+	if (cached) {
+		headers['If-None-Match'] = cached.etag;
+	}
+
 	try {
 		const response = await fetch(url, { headers });
+		state.stats.requests++;
+
+		if (cached && response.status === 304) {
+			state.stats.cacheHits++;
+			log(`Cache hit for ${url}`);
+			return isBinary ? cached.content : cached.content.toString();
+		}
+
 		if (!response.ok) {
 			throw new Error(`Fetch error: ${response.status}`);
 		}
 
+		const etag = response.headers.get('etag');
+		const rateLimitUsed = response.headers.get('X-RateLimit-Used');
+		const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+		if (rateLimitUsed) state.stats.rateLimitUsed = parseInt(rateLimitUsed);
+		if (rateLimitRemaining)
+			state.stats.rateLimitRemaining = parseInt(rateLimitRemaining);
 		let content;
+
 		if (isBinary) {
 			const arrayBuffer = await response.arrayBuffer();
 			content = Buffer.from(arrayBuffer);
@@ -39,14 +62,19 @@ export async function downloadFile(
 			}
 		}
 
+		if (etag) {
+			cacheManager.set(url, etag, content);
+		} else {
+			cacheManager.remove(url);
+		}
+
 		if (filePath) {
 			writeFileSync(filePath, content);
-			console.log(`Downloaded and saved to ${filePath}`);
+			log(`Downloaded and saved to ${filePath}`);
 		}
 		return content;
 	} catch (error: any) {
-		if (error.message)
-			console.error(`Error downloading ${url}:`, error.message);
+		if (error.message) err(`Error downloading ${url}:`, error.message);
 		throw error;
 	}
 }
@@ -56,38 +84,11 @@ export async function downloadTextFile(
 	filePath?: string | null,
 	options: DownloadOptions = {}
 ) {
-	const { accept } = options;
-	let { token } = options;
-	const headers: Record<string, string> = {};
-	if (!token) token = process.env.GITHUB_TOKEN;
-	if (token) {
-		headers.Authorization = `token ${token}`;
-	}
-	if (accept) {
-		headers.Accept = accept;
-	}
-
-	try {
-		const response = await fetch(url, { headers });
-		if (!response.ok) {
-			throw new Error(`Fetch error: ${response.status}`);
-		}
-
-		const content = await response.text();
-		if (content.startsWith('<!DOCTYPE html>')) {
-			throw new Error('Received HTML instead of expected content');
-		}
-
-		if (filePath) {
-			writeFileSync(filePath, content);
-			console.log(`Downloaded and saved to ${filePath}`);
-		}
-		return content;
-	} catch (error: any) {
-		if (error.message)
-			console.error(`Error downloading ${url}:`, error.message);
-		throw error;
-	}
+	const res = downloadFile(url, filePath, {
+		...options,
+		isBinary: false,
+	});
+	return res as Promise<string>;
 }
 
 export async function downloadBinFile(
@@ -95,34 +96,6 @@ export async function downloadBinFile(
 	filePath?: string | null,
 	options: DownloadOptions = {}
 ) {
-	const { accept } = options;
-	let { token } = options;
-	const headers: Record<string, string> = {};
-	if (!token) token = process.env.GITHUB_TOKEN;
-	if (token) {
-		headers.Authorization = `token ${token}`;
-	}
-	if (accept) {
-		headers.Accept = accept;
-	}
-
-	try {
-		const response = await fetch(url, { headers });
-		if (!response.ok) {
-			throw new Error(`Fetch error: ${response.status}`);
-		}
-
-		const arrayBuffer = await response.arrayBuffer();
-		const content = Buffer.from(arrayBuffer);
-
-		if (filePath) {
-			writeFileSync(filePath, content);
-			console.log(`Downloaded and saved to ${filePath}`);
-		}
-		return content;
-	} catch (error: any) {
-		if (error.message)
-			console.error(`Error downloading ${url}:`, error.message);
-		throw error;
-	}
+	const res = downloadFile(url, filePath, { ...options, isBinary: true });
+	return res as Promise<Buffer<ArrayBuffer>>;
 }

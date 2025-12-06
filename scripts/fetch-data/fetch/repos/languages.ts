@@ -1,7 +1,7 @@
 import { Repo } from '../../../../src/types';
 import { downloadTextFile } from '../../../utils';
-import { log } from '../../log';
-import { state } from '../../state';
+import { log } from '../../../log';
+import { state } from '../../../state';
 
 export async function fetchReposLanguages(sites: Repo[]) {
 	const username = state.ghUsername;

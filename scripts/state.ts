@@ -2,6 +2,12 @@ interface State {
 	ghUsername: string;
 	perPage: number;
 	quiet: boolean;
+	stats: {
+		requests: number;
+		cacheHits: number;
+		rateLimitUsed: number | null;
+		rateLimitRemaining: number | null;
+	};
 	paths: {
 		src: string;
 		public: string;
@@ -23,7 +29,13 @@ interface State {
 export const state: State = {
 	ghUsername: '',
 	perPage: 100,
-	quiet: true,
+	quiet: !process.argv.includes('--debug'),
+	stats: {
+		requests: 0,
+		cacheHits: 0,
+		rateLimitUsed: null,
+		rateLimitRemaining: null,
+	},
 	paths: {
 		src: '',
 		public: '',
