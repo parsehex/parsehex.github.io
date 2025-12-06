@@ -14,7 +14,7 @@ const defaultConfig: Config = {
 	links: [],
 };
 
-export async function getConfig() {
+export async function getConfig(): Promise<Config> {
 	const tsFiles = Object.entries(import.meta.glob('./*.ts'));
 	const cfgIndex = tsFiles.findIndex((v) => v[0].includes('config.user'));
 	const jsonFiles = Object.entries(import.meta.glob('./*.json'));

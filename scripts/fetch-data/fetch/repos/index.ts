@@ -54,11 +54,10 @@ export async function fetchRepos() {
 		writeFileSync(state.paths.buildInfo, JSON.stringify(infoContent, null, 2));
 		log('Updated build-info file');
 
-		const { getConfig } = await import('../../../../src/config');
-		const config = await getConfig();
-		const extraRepos = await fetchExtraRepos(config);
+		const extraRepos = await fetchExtraRepos();
 
-		const filteredReposFunc = config.reposFilter || getFilteredReposDefault;
+		const filteredReposFunc =
+			state.config.reposFilter || getFilteredReposDefault;
 		let sites = filteredReposFunc(data).concat(extraRepos);
 
 		// Remove duplicates by name (prefer main user repos if conflict)

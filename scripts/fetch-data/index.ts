@@ -12,6 +12,8 @@ import { logStats } from '../log';
 		throw new Error('Did not find username in env (VITE_GITHUB_ACTOR)');
 	}
 
+	const { getConfig } = await import('../../src/config');
+	state.config = await getConfig();
 	state.ghUsername = username;
 	setPaths();
 

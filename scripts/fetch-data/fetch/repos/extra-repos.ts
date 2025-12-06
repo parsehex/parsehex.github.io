@@ -1,8 +1,9 @@
 import { Repo } from '../../../../src/types';
+import { state } from '../../../state';
 import { downloadTextFile } from '../../../utils';
 
-export async function fetchExtraRepos(config?: any) {
-	const extraReposData = config?.extraRepos || [];
+export async function fetchExtraRepos() {
+	const extraReposData = state.config.extraRepos || [];
 	let extraRepos = [];
 	for (const fullName of extraReposData) {
 		if (!fullName || typeof fullName !== 'string') continue;

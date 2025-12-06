@@ -1,4 +1,7 @@
+import { Config } from '../src/types';
+
 interface State {
+	config: Config;
 	ghUsername: string;
 	perPage: number;
 	quiet: boolean;
@@ -27,6 +30,7 @@ interface State {
 }
 
 export const state: State = {
+	config: {} as any,
 	ghUsername: '',
 	perPage: 100,
 	quiet: !process.argv.includes('--debug'),
