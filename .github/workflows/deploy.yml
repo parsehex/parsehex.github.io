@@ -28,19 +28,20 @@ jobs:
         run: npm ci
       - name: Fetch Repos
         run: npm run fetch-data ${{ github.repository_owner }}
-        if: github.repository != 'ProjectDepot/SrcGallery'
+        if: github.repository != 'ProjectDepot/SrcGallery' || ${{ github.event.act }} # fetch data during local testing
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build SrcGallery
         run: npm run build
-        if: github.repository != 'ProjectDepot/SrcGallery'
+        if: github.repository != 'ProjectDepot/SrcGallery' || ${{ github.event.act }}
         env:
           VITE_GITHUB_ACTOR: ${{ github.repository_owner }}
       - name: Build Docs
         run: npm run docs:build
-        if: github.repository == 'ProjectDepot/SrcGallery'
+        if: github.repository == 'ProjectDepot/SrcGallery' && ${{ !github.event.act }} # skip docs during local testing
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
+        if: ${{ !github.event.act }} # skip during local actions testing
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.repository == 'ProjectDepot/SrcGallery' && './docs/.vitepress/dist' || './dist' }}
