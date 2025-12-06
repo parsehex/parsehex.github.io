@@ -31,5 +31,6 @@ export async function fetchGists() {
 		log(`Fetched ${data.length} gists and wrote to ${state.paths.gists}`);
 	} catch (error) {
 		err('Error fetching gists', error);
+		writeFileSync(state.paths.gists, '[]');
 	}
 }
