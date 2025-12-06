@@ -1,0 +1,65 @@
+---
+import { Code } from 'astro:components';
+import '@fontsource/inter';
+import '@fontsource/outfit';
+import Header from '../Header.vue';
+import Footer from '../Footer.vue';
+import GistCard from '../components/GistCard.vue';
+import { getConfig } from '../config';
+import profile from '../profile.json';
+import gists from '../gists.json';
+import '../index.css';
+
+const ghUsername = GITHUB_ACTOR || 'your_username';
+
+const config = await getConfig();
+let siteTitle = '';
+if (config.siteTitle === undefined) siteTitle = "{username}'s Sites";
+else siteTitle = config.siteTitle;
+siteTitle = siteTitle.replace(/\{username\}/g, ghUsername);
+
+const pageTitle = `Gists | ${siteTitle}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
+    <div class="mx-auto p-4">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-center gap-4 mb-4 relative">
+        <Header class="md:w-1/3 md:mt-4" config={config} profile={profile} ghUsername={ghUsername} siteTitle={siteTitle} />
+        <div class="md:w-1/2">
+          <h1 class="text-3xl font-bold mb-6 font-heading">Gists by {ghUsername}</h1>
+          {gists.length > 0 ? (
+            gists.map((gist) => (
+              <GistCard client:load gist={gist}>
+                {Object.entries(gist.files).map(([filename, file]) => (
+                  <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                      <span>{filename}</span>
+                      <span class="text-xs text-gray-500">{file.language}</span>
+                    </div>
+                    <div class="text-sm">
+                      <Code class="p-2" code={file.content || ''} lang={(file.language?.toLowerCase() || 'text') as any} theme="github-dark" />
+                    </div>
+                  </div>
+                ))}
+              </GistCard>
+            ))
+          ) : (
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+              <p class="text-gray-600 dark:text-gray-400">No public gists found.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto p-4">
+      <Footer config={config} />
+    </div>
+  </body>
+</html>

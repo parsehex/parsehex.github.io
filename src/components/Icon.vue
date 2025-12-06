@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import {
   IconBrandGithub,
+  IconBrandGithubFilled,
   IconBrandTwitter,
   IconBrandLinkedin,
   IconBrandFacebook,
@@ -37,6 +38,7 @@ const props = defineProps({
 
 const iconMap = {
   'brand-github': IconBrandGithub,
+  'brand-github-filled': IconBrandGithubFilled,
   'brand-twitter': IconBrandTwitter,
   'brand-linkedin': IconBrandLinkedin,
   'brand-facebook': IconBrandFacebook,

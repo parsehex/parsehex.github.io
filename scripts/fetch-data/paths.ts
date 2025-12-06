@@ -31,4 +31,5 @@ export function setPaths() {
 	paths.avatar150 = join(_public, 'avatar-150.webp');
 	paths.faviconIco = join(_public, 'favicon.ico');
 	paths.faviconPng = join(_public, 'favicon.png');
+	paths.gists = join(src, 'gists.json');
 }

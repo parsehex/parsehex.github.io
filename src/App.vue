@@ -2,7 +2,7 @@
 	<div class="mx-auto p-4">
 		<div v-if="showHeaderWrapper"
 			:class="{ 'flex flex-col md:flex-row md:justify-center gap-4 mb-4 relative': true, 'md:items-start': !config.profileHeaderCenter, 'md:items-center': config.profileHeaderCenter }">
-			<Header v-if="config?.profileHeader" class="md:w-1/3 md:mt-4" />
+			<Header v-if="config?.profileHeader" class="md:w-1/3 md:mt-4" :isHomePage="true" />
 			<div v-if="hasHero && config?.hero" class="md:w-1/2">
 				<slot name="hero"></slot>
 			</div>

@@ -5,6 +5,7 @@ import { fetchAvatar } from './fetch/avatar';
 import { fetchUserReadme } from './fetch/user-readme';
 import { setPaths } from './paths';
 import { logStats } from '../log';
+import { fetchGists } from './fetch/gists';
 
 (async () => {
 	const username = process.env.VITE_GITHUB_ACTOR || process.argv[2];
@@ -21,6 +22,7 @@ import { logStats } from '../log';
 	await fetchColors();
 	await fetchAvatar();
 	await fetchUserReadme();
+	if (state.config.showGists) await fetchGists();
 
 	logStats();
 })();

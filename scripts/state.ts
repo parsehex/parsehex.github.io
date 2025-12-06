@@ -26,6 +26,7 @@ interface State {
 		avatar150: string;
 		faviconPng: string;
 		faviconIco: string;
+		gists: string;
 	};
 }
 
@@ -55,5 +56,6 @@ export const state: State = {
 		avatar150: '',
 		faviconIco: '',
 		faviconPng: '',
+		gists: '',
 	},
 };

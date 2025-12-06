@@ -48,3 +48,4 @@ src/build-info.json
 /playwright/.cache/
 /playwright/.auth/
 /.cache
+src/gists.json

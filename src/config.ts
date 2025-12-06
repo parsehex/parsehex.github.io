@@ -6,6 +6,7 @@ const defaultConfig: Config = {
 	headerText: '',
 	profileHeader: true,
 	profileHeaderCenter: false,
+	showGists: true,
 	hero: true,
 	controls: true,
 	displayView: 'grid',
