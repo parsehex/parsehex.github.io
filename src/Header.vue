@@ -12,12 +12,22 @@
 			</div>
 		</div>
 		<div v-if="links && links.length > 0" class="flex justify-center space-x-4 py-2">
-			<a v-for="link in links" :key="link.url" :href="link.url" target="_blank" rel="me noopener noreferrer"
+			<a v-for="link in links" :key="link.url" :href="link.url" :target="link.url.startsWith('/') ? '_self' : '_blank'"
+				rel="me noopener noreferrer"
 				class="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 flex items-center space-x-1"
 				:aria-label="`Link to ${ghUsername}${link.name ? ' on ' + link.name : ''}`">
 				<Tippy :content="link.icon ? link.name : ''" placement="bottom">
-					<Icon v-if="link.icon" :name="link.icon" />
+					<img v-if="link.icon && link.icon.startsWith('/')" :src="link.icon" class="w-5 h-5" :alt="link.name" />
+					<Icon v-else-if="link.icon" :name="link.icon" />
 					<span v-else>{{ link.name }}</span>
+				</Tippy>
+			</a>
+			<a href="/gists" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 flex items-center ml-2"
+				aria-label="Link to Gists">
+				<Tippy class="flex items-center space-x-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2"
+					:content="`${ghUsername}'s Gists`" placement="bottom">
+					<Icon name="brand-github-filled" />
+					<span>Gists</span>
 				</Tippy>
 			</a>
 		</div>
@@ -37,7 +47,7 @@ interface Props {
 	profile?: GHProfile
 	ghUsername?: string
 	siteTitle?: string | Ref<string>
-	isProjectPage?: boolean
+	isHomePage?: boolean
 	class?: string
 }
 
@@ -55,13 +65,12 @@ const siteTitle = computed(() => {
 })
 
 const linkHref = computed(() => {
-	// link to home if on project page
-	if (props.isProjectPage) return `/`
-	return `https://github.com/${ghUsername}`
+	if (props.isHomePage) return `https://github.com/${ghUsername}`
+	return '/'
 })
 const linkTarget = computed(() => {
-	if (props.isProjectPage) return '_self'
-	return '_blank'
+	if (props.isHomePage) return '_blank'
+	return '_self'
 })
 
 const { headerText, links } = config
