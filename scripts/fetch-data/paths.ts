@@ -26,7 +26,7 @@ export function setPaths() {
 	paths.readmeManifest = join(src, 'readme-manifest.json');
 	paths.langColors = join(src, 'lang-colors.json');
 	paths.userProfile = join(src, 'profile.json');
-	paths.userReadme = join(src, 'hero.md');
+	paths.userReadme = join(src, 'hero.txt');
 	paths.avatar = join(_public, 'avatar.webp');
 	paths.avatar150 = join(_public, 'avatar-150.webp');
 	paths.faviconIco = join(_public, 'favicon.ico');

@@ -34,6 +34,7 @@ public/avatar*.png
 public/avatar*.webp
 public/favicon.*
 src/hero.md
+src/hero.txt
 src/config.json
 scripts/repo-filter.js
 /docs/.vitepress/cache

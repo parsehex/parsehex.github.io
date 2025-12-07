@@ -1,15 +1,19 @@
 ---
+import '@fontsource/inter';
+import '@fontsource/outfit';
 import App from '../App.vue';
 import { getConfig } from '../config';
 import profile from '../profile.json';
 
 import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
-import heroMd from '../hero.md?raw';
 import { cautiousImport } from '../utils';
 
-import '@fontsource/inter';
-import '@fontsource/outfit';
+const heroMdB64 = await cautiousImport(import.meta.glob('../hero.txt'));
+let heroMd = '';
+if (heroMdB64) {
+	heroMd = Buffer.from(heroMdB64.split(',')[1], 'base64').toString('utf8');
+}
 
 const ghUsername = GITHUB_ACTOR || 'your_username';
 
