@@ -3,7 +3,6 @@ import VueTippy from 'vue-tippy';
 import 'tippy.js/dist/tippy.css';
 
 export default function createVueApp(App: Component) {
-	console.log('main');
 	const app = createApp(App);
 	app.use(VueTippy, {
 		defaultProps: {},

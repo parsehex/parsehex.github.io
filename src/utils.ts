@@ -5,6 +5,40 @@ import DOMPurify from 'dompurify';
 
 marked.use(markedAlert());
 
+/**
+ * Attempts to import a file/module using a glob pattern
+ * (via `import.meta.glob`), which should be resistant to thrown
+ * errors due to missing files.
+ *
+ * If the file can't be found then `undefined` is the result.
+ */
+export async function cautiousImport(
+	globObj: Record<string, () => Promise<unknown>>,
+	search?: string,
+	keyName = 'default'
+) {
+	const files = Object.entries(globObj);
+	if (!search) {
+		if (files.length !== 1) {
+			console.log('Found more than one result but no search');
+			return;
+		}
+		const file = files[0][1];
+		const module = (await file()) as any;
+		const desired = module[keyName];
+		return desired;
+	}
+	const fileIndex = files.findIndex((v) => v[0].includes(search));
+	if (fileIndex > -1) {
+		const file = files[fileIndex][1];
+		const module = (await file()) as any;
+		const desired = module[keyName];
+		return desired;
+	} else {
+		console.log(search, 'was not found');
+	}
+}
+
 async function getDOMPurify() {
 	try {
 		DOMPurify.sanitize('<div>test</div>');
