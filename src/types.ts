@@ -17,6 +17,7 @@ export interface Config {
 	displayView: 'grid' | 'list';
 	footerText: string;
 	creditLink: boolean;
+	showGists: boolean;
 	extraRepos?: string[];
 	links?: Link[];
 	theme?: {
@@ -120,4 +121,23 @@ export interface Link {
 	name?: string;
 	url: string;
 	icon?: string;
+}
+
+export interface GistFile {
+	filename: string;
+	type: string;
+	language: string;
+	raw_url: string;
+	size: number;
+	content?: string;
+}
+
+export interface Gist {
+	id: string;
+	html_url: string;
+	public: boolean;
+	created_at: string;
+	updated_at: string;
+	description: string;
+	files: { [filename: string]: GistFile };
 }

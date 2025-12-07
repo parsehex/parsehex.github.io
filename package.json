@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "fetch-data": "vite-node scripts/fetch-data.ts",
+    "fetch-data": "vite-node scripts/fetch-data",
     "build": "astro build",
     "lint": "eslint .",
     "preview": "astro preview",
@@ -14,7 +14,8 @@
     "docs:preview": "vitepress preview docs",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "bg-colors": "vite-node scripts/randomize-gradient.ts"
+    "bg-colors": "vite-node scripts/randomize-gradient.ts",
+    "gh-actions-test": "act --container-architecture linux/amd64 -e .act-env.json -W '.github/workflows/deploy.yml'"
   },
   "dependencies": {
     "@astrojs/vue": "^5.1.3",

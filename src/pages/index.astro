@@ -6,6 +6,7 @@ import profile from '../profile.json';
 import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
 import heroMd from '../hero.md?raw';
+import { cautiousImport } from '../utils';
 
 import '@fontsource/inter';
 import '@fontsource/outfit';
@@ -26,13 +27,8 @@ const projectPages = projects.map((p) => p.slug) as string[];
 const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(0, 0, 0, 0)';
 const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
 
-let langColors = {};
-try {
-	const l = await import('../lang-colors.json');
-	langColors = l;
-} catch (e) {
-	//
-}
+const langColors =
+	(await cautiousImport(import.meta.glob('../lang-colors.json'))) || {};
 ---
 
 <html lang="en-US">
