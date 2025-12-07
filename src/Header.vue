@@ -32,7 +32,7 @@
 				</Tippy>
 			</a>
 		</div>
-		<Tippy v-if="lastUpdatedDisplay" class="text-gray-700 dark:text-gray-300 text-sm select-none"
+		<Tippy v-if="lastUpdatedDisplay && isHomePage" class="text-gray-700 dark:text-gray-300 text-sm select-none"
 			:content="lastUpdatedTooltip" placement="bottom" :delay="250"> Last updated {{ lastUpdatedDisplay }} </Tippy>
 	</header>
 </template>
