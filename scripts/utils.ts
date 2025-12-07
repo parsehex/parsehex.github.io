@@ -32,10 +32,10 @@ export async function downloadFile(
 
 	try {
 		const response = await fetch(url, { headers });
-		state.stats.requests++;
+		if (token) state.stats.requests++;
 
 		if (cached && response.status === 304) {
-			state.stats.cacheHits++;
+			if (token) state.stats.cacheHits++;
 			log(`Cache hit for ${url}`);
 			return isBinary ? cached.content : cached.content.toString();
 		}
@@ -47,8 +47,9 @@ export async function downloadFile(
 		const etag = response.headers.get('etag');
 		const rateLimitUsed = response.headers.get('X-RateLimit-Used');
 		const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
-		if (rateLimitUsed) state.stats.rateLimitUsed = parseInt(rateLimitUsed);
-		if (rateLimitRemaining)
+		if (rateLimitUsed && token)
+			state.stats.rateLimitUsed = parseInt(rateLimitUsed);
+		if (rateLimitRemaining && token)
 			state.stats.rateLimitRemaining = parseInt(rateLimitRemaining);
 		let content;
 
