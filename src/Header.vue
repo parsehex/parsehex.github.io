@@ -22,7 +22,8 @@
 					<span v-else>{{ link.name }}</span>
 				</Tippy>
 			</a>
-			<a href="/gists" class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 flex items-center ml-2"
+			<a v-if="showGists" href="/gists"
+				class="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 flex items-center ml-2"
 				aria-label="Link to Gists">
 				<Tippy class="flex items-center space-x-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2"
 					:content="`${ghUsername}'s Gists`" placement="bottom">
@@ -41,6 +42,7 @@ import { Tippy } from 'vue-tippy';
 import Icon from './components/Icon.vue';
 import { formatDate, showRelativeTime } from './utils';
 import { Config, GHProfile } from './types';
+import gists from './gists.json';
 
 interface Props {
 	config?: Config
@@ -63,6 +65,12 @@ const siteTitle = computed(() => {
 	if (siteTitleInj) return siteTitleInj.value
 	return ''
 })
+
+const showGists = computed(() => {
+	if (!config.showGists) return false;
+	if (gists.length === 0) return false;
+	return true;
+});
 
 const linkHref = computed(() => {
 	if (props.isHomePage) return `https://github.com/${ghUsername}`
