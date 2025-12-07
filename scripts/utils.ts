@@ -37,7 +37,12 @@ export async function downloadFile(
 		if (cached && response.status === 304) {
 			if (token) state.stats.cacheHits++;
 			log(`Cache hit for ${url}`);
-			return isBinary ? cached.content : cached.content.toString();
+			const content = isBinary ? cached.content : cached.content.toString();
+			if (filePath) {
+				writeFileSync(filePath, content);
+				log(`Downloaded and saved cached copy to ${filePath}`);
+			}
+			return content;
 		}
 
 		if (!response.ok) {
