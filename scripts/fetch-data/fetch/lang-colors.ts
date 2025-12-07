@@ -8,7 +8,9 @@ export async function fetchColors() {
 	const url =
 		'https://raw.githubusercontent.com/ozh/github-colors/master/colors.json';
 	try {
-		await downloadTextFile(url, state.paths.langColors);
+		const res = await downloadTextFile(url);
+		log('lang-colors.json length:', res.length);
+		writeFileSync(state.paths.langColors, res);
 	} catch (error) {
 		err('Error fetching lang-colors.json', error);
 		writeFileSync(state.paths.langColors, '{}');
