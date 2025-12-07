@@ -11,14 +11,16 @@ export async function fetchGists() {
 
 	try {
 		const gistsUrl = `https://api.github.com/users/${username}/gists?per_page=${state.perPage}`;
-		const dataStr = await downloadTextFile(gistsUrl, null);
+		const dataStr = await downloadTextFile(gistsUrl, null, { token: '' });
 		const data: Gist[] = JSON.parse(dataStr);
 
 		for (const gist of data) {
 			for (const file of Object.values(gist.files)) {
 				if (file.raw_url) {
 					try {
-						const content = await downloadTextFile(file.raw_url, null);
+						const content = await downloadTextFile(file.raw_url, null, {
+							token: '',
+						});
 						file.content = content;
 					} catch (e) {
 						err(`Error fetching content for ${file.filename}`, e);
