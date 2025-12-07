@@ -1,6 +1,7 @@
 import { state } from '../../state';
 import { log, err } from '../../log';
 import { downloadTextFile } from '../../utils';
+import { writeFileSync } from 'fs';
 
 export async function fetchColors() {
 	log('Fetching lang-colors.json');
@@ -10,6 +11,6 @@ export async function fetchColors() {
 		await downloadTextFile(url, state.paths.langColors);
 	} catch (error) {
 		err('Error fetching lang-colors.json', error);
-		process.exit(1);
+		writeFileSync(state.paths.langColors, '{}');
 	}
 }
