@@ -38,7 +38,11 @@ export async function cautiousImport(
 		const desired = module[keyName];
 		return desired;
 	} else {
-		console.log(search, 'was not found');
+		console.log(
+			search,
+			'was not found. Entries:',
+			files.map((v) => v[0])
+		);
 	}
 }
 

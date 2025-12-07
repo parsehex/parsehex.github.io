@@ -9,10 +9,10 @@ import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
 import { cautiousImport } from '../utils';
 
-let heroMdB64 = await cautiousImport(import.meta.glob('../hero.txt'));
+let heroMdB64 = await cautiousImport(import.meta.glob('/src/hero.txt'), 'hero.txt');
 let heroMd = '';
 if (import.meta.env.DEV) {
-	heroMd = (await import('../hero.txt?raw')).default;
+	heroMd = (await import('/src/hero.txt?raw')).default;
 	heroMdB64 = '';
 }
 if (heroMdB64) {
@@ -36,7 +36,7 @@ const topLeft = config.theme?.gradientColors?.topLeft || 'rgba(0, 0, 0, 0)';
 const topRight = config.theme?.gradientColors?.topRight || 'rgba(0, 0, 0, 0)';
 
 const langColors =
-	(await cautiousImport(import.meta.glob('../lang-colors.json'))) || {};
+	(await cautiousImport(import.meta.glob('/src/lang-colors.json'), 'lang-colors.json')) || {};
 ---
 
 <html lang="en-US">
