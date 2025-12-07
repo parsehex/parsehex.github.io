@@ -18,12 +18,15 @@ const defaultConfig: Config = {
 export async function getConfig(): Promise<Config> {
 	const userConfigImport = await cautiousImport(
 		import.meta.glob('./config.user.ts'),
-		undefined,
+		'config.user',
 		'userConfig'
 	);
 	let config: Config;
 	const buildInfo: Record<string, string> =
-		(await cautiousImport(import.meta.glob('./build-info.json'))) || {};
+		(await cautiousImport(
+			import.meta.glob('./build-info.json'),
+			'build-info'
+		)) || {};
 
 	// load user config
 	if (userConfigImport) {

@@ -20,7 +20,10 @@ export async function cautiousImport(
 	const files = Object.entries(globObj);
 	if (!search) {
 		if (files.length !== 1) {
-			console.log('Found more than one result but no search');
+			console.log(
+				'Found more than one result but no search. Entries:',
+				files.map((v) => v[0])
+			);
 			return;
 		}
 		const file = files[0][1];
