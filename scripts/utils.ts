@@ -17,7 +17,7 @@ export async function downloadFile(
 	const { accept, isBinary = false } = options;
 	let { token } = options;
 	const headers: Record<string, string> = {};
-	if (!token) token = process.env.GITHUB_TOKEN;
+	if (token === undefined) token = process.env.GITHUB_TOKEN;
 	if (token) {
 		headers.Authorization = `token ${token}`;
 	}
