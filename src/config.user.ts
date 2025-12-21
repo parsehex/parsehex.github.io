@@ -5,6 +5,7 @@ export const userConfig: Partial<Config> = {
 	siteTitle: '{username}',
 	profileHeaderCenter: true,
 	footerText: '&copy; 2025 Thomas Mays',
+	reposFilter: (data) => data.filter(repo => repo.homepage && repo.description),
 	links: [
 		{
 			name: 'Mastodon',
