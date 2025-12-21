@@ -4,6 +4,9 @@ export const userConfig: Partial<Config> = {
 	// https://projectdepot.github.io/SrcGallery/config.html
 	siteTitle: '{username}',
 	profileHeaderCenter: true,
+	footer: {
+		text: '&copy; 2025 Thomas Mays',
+	},
 	links: [
 		{
 			name: 'Mastodon',
