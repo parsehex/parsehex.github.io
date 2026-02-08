@@ -4,7 +4,7 @@ export const userConfig: Partial<Config> = {
 	// https://projectdepot.github.io/SrcGallery/config.html
 	siteTitle: '{username}',
 	profileHeaderCenter: true,
-	footerText: '&copy; 2025 Thomas Mays',
+	footerText: '&copy; 2025-2026 Thomas Mays',
 	reposFilter: (data) => data.filter(repo => repo.homepage && repo.description),
 	links: [
 		{
