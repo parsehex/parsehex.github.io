@@ -8,11 +8,6 @@ export const userConfig: Partial<Config> = {
 	reposFilter: (data) => data.filter(repo => repo.homepage && repo.description),
 	links: [
 		{
-			name: 'GitHub',
-			icon: 'brand-github',
-			url: 'https://github.com/parsehex',
-		},
-		{
 			name: 'Buy Me A Coffee',
 			icon: 'mug',
 			url: 'https://buymeacoffee.com/parsehex',
